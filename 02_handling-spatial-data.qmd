@@ -12,8 +12,8 @@ editor_options:
 
 ```{r,echo=FALSE}
 library(wpgpDownloadR)
-lbr_pop_url <- "data/lbr_ppp_2014_1km_Aggregated.tif" 
-
+library(terra)
+lbr_pop_100 <- rast("data/lbr_pop_100.tif")
 ```
 
 # Handling of spatial data in R {#sec-handling-data}
@@ -204,15 +204,16 @@ The `st_read()` function reads various spatial data formats, automatically recog
 
 Raster data consists of a grid of cells, where each cell holds a value representing a spatial attribute such as elevation or temperature. The `terra` package in R is designed to work with raster data and has superseded the older `raster` package due to better performance and greater functionality. Let's see now how to import a GeoTIFF file using `terra`. We can upload the population raster for Liberia that we have downloaded in @sec-pop-data.
 
+```{r, eval=FALSE}
+# Import a raster file 
+lbr_pop_100 <- rast(lbr_pop_url)
+```
 ```{r}
 #| label: fig-lbr-pop
 #| message: false
 #| fig-cap: Liberia population count for 2014 at 100m resolution (log-scale).
 # Load the terra package
 library(terra)
-
-# Import a raster file 
-lbr_pop_100 <- rast(lbr_pop_url)
 
 # Inspect the raster data
 print(lbr_pop_100)
@@ -504,9 +505,12 @@ In `ggplot2`, you can visualize raster data by converting it into a data frame o
 # Convert the raster to a data frame for ggplot2
 raster_df <- as.data.frame(log(lbr_pop_100), xy = TRUE)
 
+# Rename of the variable in the data-frame to pass to 'fill'
+colnames(raster_df)[3] <- "pop_dens"
+
 # Plot raster using ggplot2
 ggplot(data = raster_df) +
-  geom_raster(aes(x = x, y = y, fill = lbr_ppp_2014)) + 
+  geom_raster(aes(x = x, y = y, fill = pop_dens)) + 
   scale_fill_viridis_c() +
   coord_sf(crs = 4326) +
   theme_minimal() +
@@ -525,7 +529,7 @@ In many cases, it's useful to combine different spatial data types (points, poly
 #| fig-cap: Overlay of raster (population density), polygons (admin-1 boundaries), and points (survey locations) in a single `ggplot2` map.
 # Combine points, polygons, and raster data in one plot
 combined_map <- ggplot() +
-  geom_raster(data = raster_df, aes(x = x, y = y, fill = lbr_ppp_2014)) + 
+  geom_raster(data = raster_df, aes(x = x, y = y, fill = pop_dens)) + 
   geom_sf(data = liberia_admin1, fill = NA, color = "black") +    
   geom_sf(data = liberia_sf, shape = 21, col = "black", fill = "white") +
   scale_fill_viridis_c() +  

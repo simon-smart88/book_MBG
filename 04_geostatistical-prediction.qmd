@@ -74,7 +74,7 @@ The `pred_over_grid` function enables us to predict the the separate effects of 
 library(sf)
 library(RiskMap)
 library(ggplot2)
-load("./data/fit_liberia.RData")
+load("./data/fit_Liberia.RData")
 data("malkenya")
 malkenya_comm <- malkenya[malkenya$Survey=="community", ]
 load("./data/fit_malkenya.RData")
