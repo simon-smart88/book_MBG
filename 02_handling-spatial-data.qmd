@@ -571,14 +571,14 @@ combined_map +
 
 ## Exercises
 
-1. **Import and visualize shapefiles**: Download a shapefile of administrative boundaries for a country of your choice using the `rgeoboundaries` package. Visualize the boundaries using both base R and `ggplot2`.
+1.  Download a shapefile of administrative boundaries for a country of your choice using the `rgeoboundaries` package. Once the shapefile has been imported into R, visualize it in two different ways: first using base R plotting functions and then using `ggplot2`. Compare the two visualizations and discuss what advantages or disadvantages each approach offers.
 
-2. **Download and plot raster data**: Use either the `wpgpDownloadR` or `rgee` package to obtain raster data (e.g., elevation or population) for the same country. Plot it using `terra::plot()` and `ggplot2`.
+2.  Obtain raster data for the same country, such as elevation or population density. You may use either the `wpgpDownloadR` package or access Google Earth Engine through the `rgee` package. Plot the raster with `terra::plot()` and again with `ggplot2`. Comment on how the raster is displayed under each method and the flexibility provided by each plotting tool.
 
-3. **Coordinate transformation**: Convert the CRS of both vector and raster datasets to UTM. Check the CRS before and after transformation and plot the results to confirm proper alignment.
+3.  Transform the coordinate reference system (CRS) of both your vector and raster datasets to a UTM projection. Begin by checking the CRS of each dataset, then apply the transformation. Plot the transformed datasets together and confirm that the vector and raster layers are properly aligned. Explain why coordinate transformations are important in spatial analysis.
 
-4. **Covariate extraction**: Sample 50 random points within your country boundary. Extract elevation or population values at each point and add them to the point data.
+4.  Generate 50 random points within the boundary of your chosen country. At each of these locations, extract the values of the raster dataset (for example elevation or population). Add these values to the point dataset as new attributes. Reflect on the usefulness of point-level covariates for modelling and prediction.
 
-5. **Buffered extraction**: Create a 2 km buffer around each point. Extract and summarize (e.g., mean) raster values within each buffer, then compare with the point-level values.
+5.  Create a 2 km buffer around each of the random points generated in the previous exercise. For each buffer, extract the raster values that fall within it and summarize these values, for example by computing their mean. Compare the buffer-based summaries with the single-point extractions and discuss what these differences reveal about spatial variability.
 
-6. **Create a predictive grid**: Build a 5 km prediction grid over your country and plot it along with the raster background. Prepare the grid for input into a geostatistical model by extracting covariates at each grid point.
+6.  Construct a prediction grid over the country, using grid cells spaced approximately 5 km apart. Overlay this prediction grid on the raster background to check the coverage. At each grid cell, extract covariate values from the raster dataset so that the grid can be used as input to a geostatistical model. Reflect on why prediction grids are a key step in spatial prediction and mapping.

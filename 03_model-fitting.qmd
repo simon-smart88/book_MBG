@@ -16,6 +16,11 @@ fig-asp: 0.75
 | `glgm` | `RiskMap` | Fitting generalized linear geostatistical models |
 | `s_variogram` | `RiskMap` | Computing the empirical variogram and carrying out permutation test for spatial independence |
 
+This chapter introduces the process of moving from exploratory analysis to the formal specification of statistical models, through to parameter estimation and interpretation of results. We outline the main steps involved, highlight the role of covariates, and present simple approaches for exploring and modelling non-linear relationships. We then turn to the assessment of residual spatial correlation, which motivates the use of geostatistical models, and describe how maximum likelihood methods can be applied for their estimation.
+
+
+
+
 ## Exploratory analysis
 
 As illustrated in @fig-stages, exploratory analysis is the first step that should be carried out in a statistical analysis. This stage is essential to inform how covariates should be introduced in the model and, in our case, whether the variation unexplained by those covariates exhibits spatial correlation.
@@ -96,9 +101,11 @@ $$ {#eq-lspline-elev-glm} Based on the equation above, the effect of elevation b
 
 Before proceeding further, it is important to explain the differences between the use of the logarithmic transformation (@eq-log-elev-glm) and the linear spline (@eq-lspline-elev-glm). We observe that both curves provide a similar fit to the data, with larger differences observed for larger values in elevation, where the log-transformed elevation models yields larger values for the predicted prevalence. This also suggests that if we were to extrapolate the predictions beyond 600 meters in elevation the implied pattern by the model with the log-transformed elevation would predict an increasingly larger elevation, which is unrealistic, since the fly that transmits the diseases cannot breed at those altitudes. The linear spline model instead would generate predictions that would be very similar to those observed between 150 and 600 meters. From this point view, the linear spline model would thus have more scientific validity than the other model. However, which of the two approaches should be chosen to model the effect of elevation is a question that closely depends on the research question to be addressed.
 
-If the interest of the study was in better understanding the association between elevation and prevalence, the linear spline model does not only provide a more credible explanation but also its regression parameters can be more easily interpreted. In fact, for a unit increase in elevation, the multiplicative change in the odds for river-blindness is $\exp\{\beta_1\}$, if elevation is below 150 meters, and $\exp\{\beta_1+\beta_2\}$, if elevation is above 150 meters. When instead we use the log-transformed elevation, the interpretation of $\beta_1$ in @eq-log-elev-glm is slightly more complicated, as it is based on the multiplicative increase in elevation by the same amount given by the base of the algorithm, which is about $e \approx 2.718$[^03_model-fitting-1]. To avoid this, one could rescale the regression coefficient as, for example, $\beta_1/\log_{2}(e)$ which would be interpreted as the multiplicative change in the odds for river-blindness for a doubling in elevation. However, a doubling in elevation is less meaningful when considering larger values of elevation.
+If the interest of the study was in better understanding the association between elevation and prevalence, the linear spline model does not only provide a more credible explanation but also its regression parameters can be more easily interpreted. In fact, for a unit increase in elevation, the multiplicative change in the odds for river-blindness is $\exp\{\beta_1\}$, if elevation is below 150 meters, and $\exp\{\beta_1+\beta_2\}$, if elevation is above 150 meters. When instead we use the log-transformed elevation, the interpretation of $\beta_1$ in @eq-log-elev-glm is slightly more complicated, as it is based on the multiplicative increase in elevation by the same amount given by the base of the algorithm, which is about $e \approx 2.718$. To avoid this, one could rescale the regression coefficient as, for example, $\beta_1/\log_{2}(e)$ which would be interpreted as the multiplicative change in the odds for river-blindness for a doubling in elevation. However, a doubling in elevation is less meaningful when considering larger values of elevation.
 
-[^03_model-fitting-1]: The letter $e$ stands for the so called Euler's number and represents the base of the natural logarithm. In the book, we write $\log(\cdot)$ to mean the "natural logarithm of $\cdot$".
+::: {.callout-note}
+The letter $e$ stands for the so called Euler's number and represents the base of the natural logarithm. In the book, we write $\log(\cdot)$ to mean the "natural logarithm of $\cdot$".
+:::
 
 When the goal of statistical analysis is instead in developing a predictive model for the outcome of interest, the explanatory power and interpretability of the model may be of less concern. For this reason, the model with the log-transformed model could be preferred over the model with the linear spline, if it shown to yield more predictive power. We will come back to this point again in @sec-geo-prediction, where will show how to assess and compare the predictive performance of different geostatistical models.
 
@@ -662,6 +669,7 @@ We now consider the analysis of geostatistical data with a hierarchical structur
 italy_regions <- readRDS("data/ita_adm2_geoboundaries.rds")
 italy_provinces <- readRDS("data/ita_adm3_geoboundaries.rds")
 ```
+
 ```{r, eval=FALSE}
 library(rgeoboundaries)
 library(mapview)
@@ -670,6 +678,7 @@ italy_regions <- geoboundaries(country = "italy", adm_lvl = "adm2")
 italy_provinces <- geoboundaries(country = "italy", adm_lvl = "adm3")
 
 ```
+
 ```{r, collapse=TRUE, message=FALSE}
 #| label: fig-italy-maps
 #| fig-cap: "The plot shows the location of the data-set `italy_sim` (red crosses), with the boundaries of the regions (left) and provinces (right) of Italy."

@@ -18,8 +18,6 @@ fig-asp: 0.75
 | `surf_sim` | `RiskMap` | Simulating surfaces and data from geostatistical models |
 | `assess_sim` | `RiskMap` | Assessing the predictive performance of geostatistical models using simulations |
 
-## Introduction
-
 Geostatistics was originally developed and applied as a predictive tool for improving mining operations and planning. In the seminal paper on model-based geostatistics (MBG) [@diggle1998], the authors begin by stating:
 
 > \*"Conventional geostatistical methodology solves the problem of predicting the realized value of a linear functional of a Gaussian spatial stochastic process\* $S(x)$ based on observations $Y_i= S(x_i) + Z_i$ at sampling locations $x_i$, where the $Z_i$ are mutually independent, zero-mean Gaussian random variables."
@@ -46,9 +44,11 @@ In our exposition so far, we have also made the implicit assumption that predict
 
 -   **Areal-level targets**, usually defined as transformation of the spatially continuous surface $\mathcal{T}$, defined previously, and which we denote as $\mathcal{T}_{A} = F(\mathcal{T}, A)$. For example, the average of $T(x)$ over $A$ is an areal-level target, formally defined as $F(\mathcal{T}, A) = \int_{A} T(x) \: dx / |A|$, where $|A|$ is the area of $A$.
 
-Before we consider these two types of prediction targets more in detail, we first explain the preliminary steps that need to be performed and are common to both. Whether our goal is predict a spatially continuous or areal-level target, the initial task is to draw Monte Carlo samples from the predictive distribution of the spatial process $S(x)$[^05_geostatistical-prediction-1]. Next, we define a set of prediction locations, say $q$ in total, denoted as $\tilde{X} = {\tilde{x}_1, \ldots, \tilde{x}_q}$. These locations correspond to a regular grid that spans our region of interest, $A$. the predictive distribution of the spatial process over the grid, represented as $[S(\tilde{X}) \: |\: y]$. This distribution allows us to generate Monte Carlo samples for $S(\tilde{X})$, which will later be used for computing our target.
+Before we consider these two types of prediction targets more in detail, we first explain the preliminary steps that need to be performed and are common to both. Whether our goal is predict a spatially continuous or areal-level target, the initial task is to draw Monte Carlo samples from the predictive distribution of the spatial process $S(x)$. Next, we define a set of prediction locations, say $q$ in total, denoted as $\tilde{X} = {\tilde{x}_1, \ldots, \tilde{x}_q}$. These locations correspond to a regular grid that spans our region of interest, $A$. the predictive distribution of the spatial process over the grid, represented as $[S(\tilde{X}) \: |\: y]$. This distribution allows us to generate Monte Carlo samples for $S(\tilde{X})$, which will later be used for computing our target.
 
-[^05_geostatistical-prediction-1]: Here, we are overlooking the fact that when $T(x)$ is a linear transformation of $S(x)$ and the the model fitted to the data is a linear geostatistical model, then we can derive any summary of the predictive distribution analytically, without the need of carrying out any simulation. Although this may displease some of our fellow statisticians who care about computational efficiency, for pedagogical reasons, here we have chosen to explain only the Monte Carlo based approach, which works in all scenarios.
+::: {.callout-note}
+Here, we are overlooking the fact that when $T(x)$ is a linear transformation of $S(x)$ and the the model fitted to the data is a linear geostatistical model, then we can derive any summary of the predictive distribution analytically, without the need of carrying out any simulation. Although this may displease some of our fellow statisticians who care about computational efficiency, for pedagogical reasons, here we have chosen to explain only the Monte Carlo based approach, which works in all scenarios.
+::: 
 
 At this stage, we need to consider which of the two following types of predictions from $[S(\tilde{X}) \: |\: y]$ are required.
 
@@ -260,9 +260,11 @@ fit_malkenya <- glgpm(RDT ~ Age +  pmax(Age-15, 0) +
                       family = "binomial")
 ```
 
-After fitting the model, we create a prediction grid at a spatial resolution of 500 meters and extract the values of elevation. In this analysis, due to the small size of the study area, we do not use administrative boundaries as they are too large. Instead, we use the convex hull[^05_geostatistical-prediction-2] of the sample locations to define the boundaries of our study area.
+After fitting the model, we create a prediction grid at a spatial resolution of 500 meters and extract the values of elevation. In this analysis, due to the small size of the study area, we do not use administrative boundaries as they are too large. Instead, we use the convex hull of the sample locations to define the boundaries of our study area.
 
-[^05_geostatistical-prediction-2]: The convex hull of a set of spatial locations is the smallest possible shape (usually a polygon) that completely encloses all the points, such that if you take any two points inside the shape, the straight line connecting them is also entirely inside the shape. In simple terms, it can be thought of as stretching a rubber band around the outermost points in a set, and the shape the rubber band forms is the convex hull.
+::: {.callout-note}
+The convex hull of a set of spatial locations is the smallest possible shape (usually a polygon) that completely encloses all the points, such that if you take any two points inside the shape, the straight line connecting them is also entirely inside the shape. In simple terms, it can be thought of as stretching a rubber band around the outermost points in a set, and the shape the rubber band forms is the convex hull.
+::: 
 
 ```{r, eval=FALSE}
 
