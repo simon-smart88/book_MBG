@@ -1,0 +1,5 @@
+- source: project
+  quarto-pub:
+    - url: https://mbgr.quarto.pub/book
+    - id: b997fb05-d9f8-42bd-8f40-0bfebe5434e5
+      url: https://mbgr.quarto.pub/book

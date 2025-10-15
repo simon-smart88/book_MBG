@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.42">
+<meta name="generator" content="quarto-1.7.33">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>4&nbsp; Geostatistical prediction – Model-based geostatistics for global public health using R</title>
 <style>
@@ -18,8 +18,9 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -30,7 +31,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -82,15 +83,16 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./05_case-studies.html" rel="next">
 <link href="./03_model-fitting.html" rel="prev">
-<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-0de45b8b5f35a93596f1d788d60c4c11.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-425560e6e27c88e19529b7c03591d40d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-51aeb3c3e75aa4fd935c6ef44004bc43.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-21c7f0257b9bb094a624d430cf8b6a6a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -144,7 +146,7 @@ window.Quarto = {
 };
 </script>
 </head>
-<body class="nav-sidebar floating">
+<body class="nav-sidebar floating quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
@@ -220,12 +222,6 @@ window.Quarto = {
  <span class="menu-text">References</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./appendix.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Appendix</span></a>
-  </div>
-</li>
     </ul>
 </div>
 </nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
@@ -235,56 +231,55 @@ window.Quarto = {
    
   <ul>
 <li><a href="#list-of-the-main-functions-used-in-the-chapter" id="toc-list-of-the-main-functions-used-in-the-chapter" class="nav-link active" data-scroll-target="#list-of-the-main-functions-used-in-the-chapter">List of the main functions used in the chapter</a></li>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">4.1</span> Introduction</a></li>
   <li>
-<a href="#sec-spat-pred-target" id="toc-sec-spat-pred-target" class="nav-link" data-scroll-target="#sec-spat-pred-target"><span class="header-section-number">4.2</span> Spatial prediction using geostatistical models</a>
+<a href="#sec-spat-pred-target" id="toc-sec-spat-pred-target" class="nav-link" data-scroll-target="#sec-spat-pred-target"><span class="header-section-number">4.1</span> Spatial prediction using geostatistical models</a>
   <ul class="collapse">
-<li><a href="#sec-pred-samples" id="toc-sec-pred-samples" class="nav-link" data-scroll-target="#sec-pred-samples"><span class="header-section-number">4.2.1</span> Generating samples from the predictive distribution of <span class="math inline">\(S(\tilde{X})\)</span> (continue from <span>Section 3.3.1</span>)</a></li>
+<li><a href="#sec-pred-samples" id="toc-sec-pred-samples" class="nav-link" data-scroll-target="#sec-pred-samples"><span class="header-section-number">4.1.1</span> Generating samples from the predictive distribution of <span class="math inline">\(S(\tilde{X})\)</span> (continue from <span>Section 3.3.1</span>)</a></li>
   </ul>
 </li>
   <li>
-<a href="#sec-spat-cont-target" id="toc-sec-spat-cont-target" class="nav-link" data-scroll-target="#sec-spat-cont-target"><span class="header-section-number">4.3</span> Spatially continuous targets</a>
+<a href="#sec-spat-cont-target" id="toc-sec-spat-cont-target" class="nav-link" data-scroll-target="#sec-spat-cont-target"><span class="header-section-number">4.2</span> Spatially continuous targets</a>
   <ul class="collapse">
-<li><a href="#sec-liberia-prediction-1" id="toc-sec-liberia-prediction-1" class="nav-link" data-scroll-target="#sec-liberia-prediction-1"><span class="header-section-number">4.3.1</span> Example: mapping riverblidness prevalence in Liberia (continuing from <span>Section 4.2.1</span>)</a></li>
-  <li><a href="#sec-non-spar-covariates" id="toc-sec-non-spar-covariates" class="nav-link" data-scroll-target="#sec-non-spar-covariates"><span class="header-section-number">4.3.2</span> Example: mapping malaria using age and elevation as predictors</a></li>
+<li><a href="#sec-liberia-prediction-1" id="toc-sec-liberia-prediction-1" class="nav-link" data-scroll-target="#sec-liberia-prediction-1"><span class="header-section-number">4.2.1</span> Example: mapping riverblidness prevalence in Liberia (continuing from <span>Section 4.1.1</span>)</a></li>
+  <li><a href="#sec-non-spar-covariates" id="toc-sec-non-spar-covariates" class="nav-link" data-scroll-target="#sec-non-spar-covariates"><span class="header-section-number">4.2.2</span> Example: mapping malaria using age and elevation as predictors</a></li>
   </ul>
 </li>
   <li>
-<a href="#sec-areal-target" id="toc-sec-areal-target" class="nav-link" data-scroll-target="#sec-areal-target"><span class="header-section-number">4.4</span> Areal-level targets</a>
+<a href="#sec-areal-target" id="toc-sec-areal-target" class="nav-link" data-scroll-target="#sec-areal-target"><span class="header-section-number">4.3</span> Areal-level targets</a>
   <ul class="collapse">
-<li><a href="#sec-liberia-prediction-2" id="toc-sec-liberia-prediction-2" class="nav-link" data-scroll-target="#sec-liberia-prediction-2"><span class="header-section-number">4.4.1</span> Example: predicting the average riverblindness prevalence at admin level 1 in Liberia (continuing from <span>Section 4.3.1</span>)</a></li>
-  <li><a href="#sec-anopheles-pred" id="toc-sec-anopheles-pred" class="nav-link" data-scroll-target="#sec-anopheles-pred"><span class="header-section-number">4.4.2</span> Example: predicting the total number of Anopheles gambiae mosquitoes (continuing from <span>Section 3.3.2</span>)</a></li>
+<li><a href="#sec-liberia-prediction-2" id="toc-sec-liberia-prediction-2" class="nav-link" data-scroll-target="#sec-liberia-prediction-2"><span class="header-section-number">4.3.1</span> Example: predicting the average riverblindness prevalence at admin level 1 in Liberia (continuing from <span>Section 4.2.1</span>)</a></li>
+  <li><a href="#sec-anopheles-pred" id="toc-sec-anopheles-pred" class="nav-link" data-scroll-target="#sec-anopheles-pred"><span class="header-section-number">4.3.2</span> Example: predicting the total number of Anopheles gambiae mosquitoes (continuing from <span>Section 3.3.2</span>)</a></li>
   </ul>
 </li>
   <li>
-<a href="#sec-compare-pp" id="toc-sec-compare-pp" class="nav-link" data-scroll-target="#sec-compare-pp"><span class="header-section-number">4.5</span> Assessing the predictive performance of geostatistical models with cross-validation</a>
+<a href="#sec-compare-pp" id="toc-sec-compare-pp" class="nav-link" data-scroll-target="#sec-compare-pp"><span class="header-section-number">4.4</span> Assessing the predictive performance of geostatistical models with cross-validation</a>
   <ul class="collapse">
-<li><a href="#sec-split-data" id="toc-sec-split-data" class="nav-link" data-scroll-target="#sec-split-data"><span class="header-section-number">4.5.1</span> How to split geostatistical data for model performance comparisons</a></li>
-  <li><a href="#sec-anpit" id="toc-sec-anpit" class="nav-link" data-scroll-target="#sec-anpit"><span class="header-section-number">4.5.2</span> Assessing calibration using the nonrandomized probability integral transform</a></li>
-  <li><a href="#assessing-calibration-and-sharpness-using-continuous-ranked-probability-scores" id="toc-assessing-calibration-and-sharpness-using-continuous-ranked-probability-scores" class="nav-link" data-scroll-target="#assessing-calibration-and-sharpness-using-continuous-ranked-probability-scores"><span class="header-section-number">4.5.3</span> Assessing calibration and sharpness using continuous ranked probability scores</a></li>
+<li><a href="#sec-split-data" id="toc-sec-split-data" class="nav-link" data-scroll-target="#sec-split-data"><span class="header-section-number">4.4.1</span> How to split geostatistical data for model performance comparisons</a></li>
+  <li><a href="#sec-anpit" id="toc-sec-anpit" class="nav-link" data-scroll-target="#sec-anpit"><span class="header-section-number">4.4.2</span> Assessing calibration using the nonrandomized probability integral transform</a></li>
+  <li><a href="#assessing-calibration-and-sharpness-using-continuous-ranked-probability-scores" id="toc-assessing-calibration-and-sharpness-using-continuous-ranked-probability-scores" class="nav-link" data-scroll-target="#assessing-calibration-and-sharpness-using-continuous-ranked-probability-scores"><span class="header-section-number">4.4.3</span> Assessing calibration and sharpness using continuous ranked probability scores</a></li>
   </ul>
 </li>
   <li>
-<a href="#simulation-based-assessment-of-predictive-performance" id="toc-simulation-based-assessment-of-predictive-performance" class="nav-link" data-scroll-target="#simulation-based-assessment-of-predictive-performance"><span class="header-section-number">4.6</span> Simulation-based assessment of predictive performance</a>
+<a href="#simulation-based-assessment-of-predictive-performance" id="toc-simulation-based-assessment-of-predictive-performance" class="nav-link" data-scroll-target="#simulation-based-assessment-of-predictive-performance"><span class="header-section-number">4.5</span> Simulation-based assessment of predictive performance</a>
   <ul class="collapse">
-<li><a href="#sec-sim-step1" id="toc-sec-sim-step1" class="nav-link" data-scroll-target="#sec-sim-step1"><span class="header-section-number">4.6.1</span> Step 1: Define the aim of the simulation study</a></li>
-  <li><a href="#step-2-simulate-the-spatial-surface-and-the-data-from-the-true-model" id="toc-step-2-simulate-the-spatial-surface-and-the-data-from-the-true-model" class="nav-link" data-scroll-target="#step-2-simulate-the-spatial-surface-and-the-data-from-the-true-model"><span class="header-section-number">4.6.2</span> Step 2: Simulate the spatial surface and the data from the true model</a></li>
-  <li><a href="#sec-sim-step3" id="toc-sec-sim-step3" class="nav-link" data-scroll-target="#sec-sim-step3"><span class="header-section-number">4.6.3</span> Step 3: Fit the candidate models to the simulated data and predict the target</a></li>
-  <li><a href="#step-4-summarize-the-results-using-a-pre-defined-objective-function" id="toc-step-4-summarize-the-results-using-a-pre-defined-objective-function" class="nav-link" data-scroll-target="#step-4-summarize-the-results-using-a-pre-defined-objective-function"><span class="header-section-number">4.6.4</span> Step 4: Summarize the results using a pre-defined objective function</a></li>
-  <li><a href="#sec-sim-assessment" id="toc-sec-sim-assessment" class="nav-link" data-scroll-target="#sec-sim-assessment"><span class="header-section-number">4.6.5</span> Assessessment of threshold-based classification of spatial units using geostatistical models</a></li>
+<li><a href="#sec-sim-step1" id="toc-sec-sim-step1" class="nav-link" data-scroll-target="#sec-sim-step1"><span class="header-section-number">4.5.1</span> Step 1: Define the aim of the simulation study</a></li>
+  <li><a href="#step-2-simulate-the-spatial-surface-and-the-data-from-the-true-model" id="toc-step-2-simulate-the-spatial-surface-and-the-data-from-the-true-model" class="nav-link" data-scroll-target="#step-2-simulate-the-spatial-surface-and-the-data-from-the-true-model"><span class="header-section-number">4.5.2</span> Step 2: Simulate the spatial surface and the data from the true model</a></li>
+  <li><a href="#sec-sim-step3" id="toc-sec-sim-step3" class="nav-link" data-scroll-target="#sec-sim-step3"><span class="header-section-number">4.5.3</span> Step 3: Fit the candidate models to the simulated data and predict the target</a></li>
+  <li><a href="#step-4-summarize-the-results-using-a-pre-defined-objective-function" id="toc-step-4-summarize-the-results-using-a-pre-defined-objective-function" class="nav-link" data-scroll-target="#step-4-summarize-the-results-using-a-pre-defined-objective-function"><span class="header-section-number">4.5.4</span> Step 4: Summarize the results using a pre-defined objective function</a></li>
+  <li><a href="#sec-sim-assessment" id="toc-sec-sim-assessment" class="nav-link" data-scroll-target="#sec-sim-assessment"><span class="header-section-number">4.5.5</span> Assessessment of threshold-based classification of spatial units using geostatistical models</a></li>
   </ul>
 </li>
   <li>
-<a href="#sec-theory-prediction" id="toc-sec-theory-prediction" class="nav-link" data-scroll-target="#sec-theory-prediction"><span class="header-section-number">4.7</span> Theory</a>
+<a href="#sec-theory-prediction" id="toc-sec-theory-prediction" class="nav-link" data-scroll-target="#sec-theory-prediction"><span class="header-section-number">4.6</span> Theory</a>
   <ul class="collapse">
-<li><a href="#sec-pred-distr-theory" id="toc-sec-pred-distr-theory" class="nav-link" data-scroll-target="#sec-pred-distr-theory"><span class="header-section-number">4.7.1</span> Expression of the predictive distribution for a linear geostatistical model</a></li>
-  <li><a href="#a-brief-overview-of-scoring-rules" id="toc-a-brief-overview-of-scoring-rules" class="nav-link" data-scroll-target="#a-brief-overview-of-scoring-rules"><span class="header-section-number">4.7.2</span> A brief overview of scoring rules</a></li>
+<li><a href="#sec-pred-distr-theory" id="toc-sec-pred-distr-theory" class="nav-link" data-scroll-target="#sec-pred-distr-theory"><span class="header-section-number">4.6.1</span> Expression of the predictive distribution for a linear geostatistical model</a></li>
+  <li><a href="#a-brief-overview-of-scoring-rules" id="toc-a-brief-overview-of-scoring-rules" class="nav-link" data-scroll-target="#a-brief-overview-of-scoring-rules"><span class="header-section-number">4.6.2</span> A brief overview of scoring rules</a></li>
   </ul>
 </li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">4.8</span> Summary</a></li>
-  <li><a href="#faqs" id="toc-faqs" class="nav-link" data-scroll-target="#faqs"><span class="header-section-number">4.9</span> FAQs</a></li>
-  <li><a href="#review-questions" id="toc-review-questions" class="nav-link" data-scroll-target="#review-questions"><span class="header-section-number">4.10</span> Review questions</a></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">4.11</span> Exercises</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">4.7</span> Summary</a></li>
+  <li><a href="#faqs" id="toc-faqs" class="nav-link" data-scroll-target="#faqs"><span class="header-section-number">4.8</span> FAQs</a></li>
+  <li><a href="#review-questions" id="toc-review-questions" class="nav-link" data-scroll-target="#review-questions"><span class="header-section-number">4.9</span> Review questions</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">4.10</span> Exercises</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -347,40 +342,52 @@ window.Quarto = {
 <td>Assessing the predictive performance of geostatistical models using simulations</td>
 </tr>
 </tbody>
-</table></section><section id="introduction" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="introduction">
-<span class="header-section-number">4.1</span> Introduction</h2>
+</table>
 <p>Geostatistics was originally developed and applied as a predictive tool for improving mining operations and planning. In the seminal paper on model-based geostatistics (MBG) <span class="citation" data-cites="diggle1998">(<a href="references.html#ref-diggle1998" role="doc-biblioref">P. J. Diggle, Tawn, and Moyeed 1998</a>)</span>, the authors begin by stating:</p>
 <blockquote class="blockquote">
 <p>*“Conventional geostatistical methodology solves the problem of predicting the realized value of a linear functional of a Gaussian spatial stochastic process* <span class="math inline">\(S(x)\)</span> based on observations <span class="math inline">\(Y_i= S(x_i) + Z_i\)</span> at sampling locations <span class="math inline">\(x_i\)</span>, where the <span class="math inline">\(Z_i\)</span> are mutually independent, zero-mean Gaussian random variables.”</p>
 </blockquote>
 <p>It is no coincidence that, although MBG represents a broad class of statistical models applicable to both estimation and prediction problems, the majority of its applications have focused on prediction. This is evident in many scientific fields where MBG has been used, including global public health, which is the primary application focus in this book. In line with the quote above, for most of the examples considered in this book, the analyses we illustrate aim to use a finite set of locations <span class="math inline">\(x_i\)</span> — typically corresponding to households or villages — to make inferences about an observed disease risk surface. Having performed estimation of MBG models in <a href="03_model-fitting.html" class="quarto-xref"><span>Chapter 3</span></a>, we can now carry out spatial prediction to answer critical public health questions, such as identifying hot-spots and cold-spots — areas of unusually high or low disease risk, respectively — or determining whether the average prevalence across a region exceeds a predefined policy threshold.</p>
 <p>In this chapter, we will explore these issues, beginning with a formal statistical formulation of the spatial prediction problem and a description of the necessary steps for its implementation. We will then demonstrate how spatial prediction is performed when considering predictive targets at both the <em>pixel-level</em> and <em>areal-level</em>. Finally, we will conclude the chapter by presenting methods for comparing the predictive performance of different models, with some insights into their relative strengths and weaknesses.</p>
-</section><section id="sec-spat-pred-target" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="sec-spat-pred-target">
-<span class="header-section-number">4.2</span> Spatial prediction using geostatistical models</h2>
+</section><section id="sec-spat-pred-target" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="sec-spat-pred-target">
+<span class="header-section-number">4.1</span> Spatial prediction using geostatistical models</h2>
 <p>Let us consider the class of generalized linear geostatistical models (GLGM) as in <a href="01_intro.html#sec-geostat-models" class="quarto-xref"><span>Section 1.5</span></a>. In the formulation of prediction problems, the first step consists of defining our predictive target, which we denote as <span class="math inline">\(T(x)\)</span> where <span class="math inline">\(x\)</span> denotes any locations within the study, which is usually not part of the sampled data. For example in the analysis of the riverblindness in Liberia, our interest lies in identifying areas where disease prevalence exceeds 20<span class="math inline">\(\%\)</span>, a threshold that use been used in the past to identify areas in need of mass drug administration due to the potential for significant disease burden and transmission <span class="citation" data-cites="amazigo2008">(<a href="references.html#ref-amazigo2008" role="doc-biblioref">Amazigo 2008</a>)</span>. Hence, in this case, disease prevalence corresponds to our predictive target <span class="math inline">\(T(x)\)</span>. To draw inferences on <span class="math inline">\(T(x)\)</span> and allow us to answer the question of where <span class="math inline">\(T(x)\)</span> exceeds a 20<span class="math inline">\(\%\)</span> threshold, we first need to obtain the so called <em>predictive distribution</em> of <span class="math inline">\(T(x)\)</span>. More specifically, the <em>predictive distribution</em> of <span class="math inline">\(T(x)\)</span> is the distribution of <span class="math inline">\(T(x)\)</span> conditioned to the data, which we denote by <span class="math inline">\([T(x) \: \mid \: y]\)</span>. More importantly, by incorporating the information provided by the data, the predictive distribution of the target enables us to quantify the uncertainty stemming from the stochastic nature of the process we are modeling. In other words, the predictive distribution reflects the range of possible values that the target <span class="math inline">\(T(x)\)</span> can take and their likelihoods based on the model we have fitted to the data. As we shall see in our examples, we can use the predictive distribution of <span class="math inline">\(T(x)\)</span> both to provide what is our “best guess” for <span class="math inline">\(T(x)\)</span> and a summary of uncertainty which quantifies how much concentrated is the predictive distribution around that guess. However, providing a single “best guess” for <span class="math inline">\(T(x)\)</span> is not always the answer to our research question. In the example on riverblindness mentioned at the start of the this section, a more natural way to use the predictive distribution would be to compute the likelihood that <span class="math inline">\(T(x)\)</span> exceeds 0.2 at any given location <span class="math inline">\(x\)</span>.</p>
 <p>In summary, the first two steps of spatial prediction are:</p>
 <ul>
 <li><p>Step 1. define the predictive target <span class="math inline">\(T(x)\)</span>;</p></li>
 <li><p>Step 2. obtain the predictive distribution of <span class="math inline">\(T(x)\)</span> and use this to compute summaries that helps to answer your original research question.</p></li>
 </ul>
-<p>This begs two practical questions: “How do we obtain the predictive distribution of <span class="math inline">\(T(x)\)</span>?” and “How do we use the predictive distribution to compute our summaries?”. For a mathematical derivation of the predictive distribution and the form that this takes in the special case of a linear geostatistical model, you can read <a href="#sec-theory-prediction" class="quarto-xref"><span>Section 4.7</span></a>. In what follows, we shall assume that we can simulate directly from <span class="math inline">\([T(x) \: \mid \: y]\)</span> either using direct simulation or Markov Chains Monte Carlo (see <a href="03_model-fitting.html#sec-mcmc-mala" class="quarto-xref"><span>Section 3.5.2.2</span></a>).</p>
+<p>This begs two practical questions: “How do we obtain the predictive distribution of <span class="math inline">\(T(x)\)</span>?” and “How do we use the predictive distribution to compute our summaries?”. For a mathematical derivation of the predictive distribution and the form that this takes in the special case of a linear geostatistical model, you can read <a href="#sec-theory-prediction" class="quarto-xref"><span>Section 4.6</span></a>. In what follows, we shall assume that we can simulate directly from <span class="math inline">\([T(x) \: \mid \: y]\)</span> either using direct simulation or Markov Chains Monte Carlo (see <a href="03_model-fitting.html#sec-mcmc-mala" class="quarto-xref"><span>Section 3.5.2.2</span></a>).</p>
 <p>In our exposition so far, we have also made the implicit assumption that prediction is required for our predictive target at a single, unsampled, location <span class="math inline">\(x\)</span> and for this reason we have denote our predictive target simply as <span class="math inline">\(T(x)\)</span>. However, this is almost never the case, since in most cases, our predictive target correspond to either of the following.</p>
 <ul>
 <li><p><strong>Spatially continuous targets</strong> correspond to an unobserved spatially continuous surface (e.g.&nbsp;disease prevalence), formally denoted by <span class="math inline">\(\mathcal{T} = \{T(x), x \in A\}\)</span>, where <span class="math inline">\(A\)</span> is our region of interest.</p></li>
 <li><p><strong>Areal-level targets</strong>, usually defined as transformation of the spatially continuous surface <span class="math inline">\(\mathcal{T}\)</span>, defined previously, and which we denote as <span class="math inline">\(\mathcal{T}_{A} = F(\mathcal{T}, A)\)</span>. For example, the average of <span class="math inline">\(T(x)\)</span> over <span class="math inline">\(A\)</span> is an areal-level target, formally defined as <span class="math inline">\(F(\mathcal{T}, A) = \int_{A} T(x) \: dx / |A|\)</span>, where <span class="math inline">\(|A|\)</span> is the area of <span class="math inline">\(A\)</span>.</p></li>
 </ul>
-<p>Before we consider these two types of prediction targets more in detail, we first explain the preliminary steps that need to be performed and are common to both. Whether our goal is predict a spatially continuous or areal-level target, the initial task is to draw Monte Carlo samples from the predictive distribution of the spatial process <span class="math inline">\(S(x)\)</span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Next, we define a set of prediction locations, say <span class="math inline">\(q\)</span> in total, denoted as <span class="math inline">\(\tilde{X} = {\tilde{x}_1, \ldots, \tilde{x}_q}\)</span>. These locations correspond to a regular grid that spans our region of interest, <span class="math inline">\(A\)</span>. the predictive distribution of the spatial process over the grid, represented as <span class="math inline">\([S(\tilde{X}) \: |\: y]\)</span>. This distribution allows us to generate Monte Carlo samples for <span class="math inline">\(S(\tilde{X})\)</span>, which will later be used for computing our target.</p>
+<p>Before we consider these two types of prediction targets more in detail, we first explain the preliminary steps that need to be performed and are common to both. Whether our goal is predict a spatially continuous or areal-level target, the initial task is to draw Monte Carlo samples from the predictive distribution of the spatial process <span class="math inline">\(S(x)\)</span>. Next, we define a set of prediction locations, say <span class="math inline">\(q\)</span> in total, denoted as <span class="math inline">\(\tilde{X} = {\tilde{x}_1, \ldots, \tilde{x}_q}\)</span>. These locations correspond to a regular grid that spans our region of interest, <span class="math inline">\(A\)</span>. the predictive distribution of the spatial process over the grid, represented as <span class="math inline">\([S(\tilde{X}) \: |\: y]\)</span>. This distribution allows us to generate Monte Carlo samples for <span class="math inline">\(S(\tilde{X})\)</span>, which will later be used for computing our target.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Here, we are overlooking the fact that when <span class="math inline">\(T(x)\)</span> is a linear transformation of <span class="math inline">\(S(x)\)</span> and the the model fitted to the data is a linear geostatistical model, then we can derive any summary of the predictive distribution analytically, without the need of carrying out any simulation. Although this may displease some of our fellow statisticians who care about computational efficiency, for pedagogical reasons, here we have chosen to explain only the Monte Carlo based approach, which works in all scenarios.</p>
+</div>
+</div>
 <p>At this stage, we need to consider which of the two following types of predictions from <span class="math inline">\([S(\tilde{X}) \: |\: y]\)</span> are required.</p>
 <ul>
 <li><p><strong>Marginal predictions</strong> are obtained by simulating independently from the <span class="math inline">\(q\)</span> marginal predictive distributions of <span class="math inline">\([S(\tilde{X}) | y]\)</span>. In other words, we consider a prediction location <span class="math inline">\(\tilde{x}_j\)</span>, simulate from <span class="math inline">\([S(\tilde{x}_j) \: |\: y]\)</span> say <span class="math inline">\(B\)</span> samples, and repeat this for <span class="math inline">\(j=1,\ldots,q\)</span></p></li>
 <li><p><strong>Joint predictions</strong> are obtained by simulating from the joint distribution of <span class="math inline">\([S(\tilde{X}) \: |\: y]\)</span>. Unlike marginal predictions, joint predictions take into account the correlation between the different components of <span class="math inline">\([S(\tilde{X}) \: |\: y]\)</span>.</p></li>
 </ul>
-<p>To better understand the technical differences between marginal and joint predictions, we refer you to <a href="#sec-pred-distr-theory" class="quarto-xref"><span>Section 4.7.1</span></a>. However, in practice, the two following observations are important.</p>
+<p>To better understand the technical differences between marginal and joint predictions, we refer you to <a href="#sec-pred-distr-theory" class="quarto-xref"><span>Section 4.6.1</span></a>. However, in practice, the two following observations are important.</p>
 <p>O1. Joint predictions are computationally more intensive than marginal predictions.</p>
 <p>O2. Joint predictions are required when the predictive target is at areal-level.</p>
 <p>O3. For spatially continuous targets, both marginal and joint predictions can be used but, in light of O1, we might prefer using the former.</p>
-<section id="sec-pred-samples" class="level3" data-number="4.2.1"><h3 data-number="4.2.1" class="anchored" data-anchor-id="sec-pred-samples">
-<span class="header-section-number">4.2.1</span> Generating samples from the predictive distribution of <span class="math inline">\(S(\tilde{X})\)</span> (continue from <a href="03_model-fitting.html#sec-liberia-estim1" class="quarto-xref"><span>Section 3.3.1</span></a>)</h3>
+<section id="sec-pred-samples" class="level3" data-number="4.1.1"><h3 data-number="4.1.1" class="anchored" data-anchor-id="sec-pred-samples">
+<span class="header-section-number">4.1.1</span> Generating samples from the predictive distribution of <span class="math inline">\(S(\tilde{X})\)</span> (continue from <a href="03_model-fitting.html#sec-liberia-estim1" class="quarto-xref"><span>Section 3.3.1</span></a>)</h3>
 <p>We now show how the ideas and concepts discussed above are put into practice in an geostatistical analysis, using the Liberia data example. Using the fitted model in <a href="03_model-fitting.html#sec-liberia-estim1" class="quarto-xref"><span>Section 3.3.1</span></a>, we use the <code>predict_over_grid</code> function in <code>RiskMap</code>, to sample from the predictive distribution of the spatial Gaussian process <span class="math inline">\(S(x)\)</span> based on a regular grid spanning the country of Liberia.</p>
 <p>The <code>pred_over_grid</code> function enables us to predict the the separate effects of the covariates, given by <span class="math inline">\(d(x)^\top \beta\)</span>, and the spatial random effects, <span class="math inline">\(S(x)\)</span>, at any desired location <span class="math inline">\(x\)</span>. Hence, before we can use the <code>pred_over_grid</code> function, we need to do 1) obtain a shape file that defines the boundaries of our study area, 2) use that to create a regular grid and 3) extract the covariates values at those locations. The R script below performs all these steps.</p>
 <div class="cell">
@@ -437,8 +444,8 @@ Figure&nbsp;4.1: Histrogram of the predictive distribution of the first componen
 </div>
 </div>
 </div>
-</section></section><section id="sec-spat-cont-target" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="sec-spat-cont-target">
-<span class="header-section-number">4.3</span> Spatially continuous targets</h2>
+</section></section><section id="sec-spat-cont-target" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="sec-spat-cont-target">
+<span class="header-section-number">4.2</span> Spatially continuous targets</h2>
 <p>In the previous section, we explained and demonstrated how to obtain Monte Carlo samples from the predictive distribution of <span class="math inline">\(S(\tilde{X})\)</span>, which we denoted by <span class="math inline">\([S(\tilde{X}) \: |\: y]\)</span>. Let <span class="math inline">\(S_{(j)}(\tilde{X})\)</span> and <span class="math inline">\([S(\tilde{X}) \: |\: y]\)</span> represent the <span class="math inline">\(j\)</span>-th Monte Carlo samples for the entire grid and the specific location <span class="math inline">\(x_k\)</span>, respectively, for <span class="math inline">\(j=1,\ldots,B\)</span> and <span class="math inline">\(k=1,\ldots,q\)</span>.</p>
 <p>We define our predictive target, <span class="math inline">\(T(x)\)</span>, at any given location <span class="math inline">\(x\)</span>, as a transformation of <span class="math inline">\(S(x)\)</span>. Thus, we express it as <span class="math inline">\(T(x) = f\{S(x)\}\)</span>. Note that <span class="math inline">\(f(\cdot)\)</span> can represent any type of non-linear transformation of <span class="math inline">\(S(x)\)</span> and may include covariate effects and other non-structured random effects. A list of common predictive targets frequently used in geostatistical analysis is provided in <a href="#tbl-spat-cont-pred-target" class="quarto-xref">Table&nbsp;<span>4.1</span></a>.</p>
 <div id="tbl-spat-cont-pred-target" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -490,8 +497,8 @@ Table&nbsp;4.1: List of some of the most common spatially continuous predictive 
 </div>
 <p>An important feature of the predictive targets listed in <a href="#tbl-spat-cont-pred-target" class="quarto-xref">Table&nbsp;<span>4.1</span></a> is that none of them include the nugget effect, denoted by <span class="math inline">\(Z_i\)</span> in our linear predictor definition for generalized linear geostatistical models. The reason for excluding <span class="math inline">\(Z_i\)</span> from the predictive targets is that, in most cases, it lacks a clear, unambiguous scientific interpretation. However, <span class="math inline">\(Z_i\)</span> might be included, for example, in environmental studies focusing on highly localized phenomena where measurement error or small-scale variability is of direct scientific interest; or in epidemiological studies where inferences at the individual level, rather than the population level, are required, and where <span class="math inline">\(Z_i\)</span> is introduced to account for unexplained individual-level variation. It is also worth noticing, the primary impact of including <span class="math inline">\(Z_i\)</span> in <span class="math inline">\(T(x)\)</span> would be an increase in the uncertainty of predictive inferences for <span class="math inline">\(T(x)\)</span>, with minimal effect (or none at all, if <span class="math inline">\(T(x)\)</span> corresponds to the linear predictor) on the point predictions.</p>
 <p>The predictive targets in <a href="#tbl-spat-cont-pred-target" class="quarto-xref">Table&nbsp;<span>4.1</span></a> corresponding to <span class="math inline">\(d(x)^\top \beta\)</span> or the spatial random effects <span class="math inline">\(S(x)\)</span> might be considered when the goal is to highlight the different contribution to the overall predictive inferences from the measured covariates.</p>
-<section id="sec-liberia-prediction-1" class="level3" data-number="4.3.1"><h3 data-number="4.3.1" class="anchored" data-anchor-id="sec-liberia-prediction-1">
-<span class="header-section-number">4.3.1</span> Example: mapping riverblidness prevalence in Liberia (continuing from <a href="#sec-pred-samples" class="quarto-xref"><span>Section 4.2.1</span></a>)</h3>
+<section id="sec-liberia-prediction-1" class="level3" data-number="4.2.1"><h3 data-number="4.2.1" class="anchored" data-anchor-id="sec-liberia-prediction-1">
+<span class="header-section-number">4.2.1</span> Example: mapping riverblidness prevalence in Liberia (continuing from <a href="#sec-pred-samples" class="quarto-xref"><span>Section 4.1.1</span></a>)</h3>
 <p>Let us continue the geostatistical of the riverblindness data in Liberia. The predictive target we consider is prevalence, hence <span id="eq-rb-prev-target"><span class="math display">\[T(x) = \frac{\exp\{ \beta_{0} + \beta_{1}\log\{e(x)\} + S(x)\}}{1+\exp\{\beta_{0} + \beta_{1}\log\{e(x)\} + S(x)\}}, \tag{4.1}\]</span></span> where <span class="math inline">\(e(x)\)</span> is the elevation in meters at location <span class="math inline">\(x\)</span>.</p>
 <p>Through the <code>pred_target_grid</code> we can use the output in <code>lb_pred_S_m</code> (or <code>lb_pred_S_j</code> as well, in this case) to generate predictions of prevalence over the regular grid at 5 km we have created earlier.</p>
 <div class="cell">
@@ -530,8 +537,8 @@ Figure&nbsp;4.2: Mapping riverblindness in Liberia. Plots of the mean (left pane
 </div>
 </div>
 <p>The maps in <a href="#fig-lb-maps" class="quarto-xref">Figure&nbsp;<span>4.2</span></a> indicate a higher prevalence as we move away from the coast and at higher altitudes. A very similar spatial pattern is observed in the likelihood of exceeding 20<span class="math inline">\(\%\)</span> prevalence. Also, based on the map of the coefficient of variation, the uncertainty around the point predictions of prevalence is higher along the coast and lower in the inland areas of Liberia.</p>
-</section><section id="sec-non-spar-covariates" class="level3" data-number="4.3.2"><h3 data-number="4.3.2" class="anchored" data-anchor-id="sec-non-spar-covariates">
-<span class="header-section-number">4.3.2</span> Example: mapping malaria using age and elevation as predictors</h3>
+</section><section id="sec-non-spar-covariates" class="level3" data-number="4.2.2"><h3 data-number="4.2.2" class="anchored" data-anchor-id="sec-non-spar-covariates">
+<span class="header-section-number">4.2.2</span> Example: mapping malaria using age and elevation as predictors</h3>
 <p>We now consider an example on malaria mapping, where we use two different types of covariates: a spatially referenced covariate corresponding to elevation; the individual age. We use the <code>malkenya_comm</code> subset of the <code>malkenya</code> data-set (see <a href="03_model-fitting.html#sec-indiv-expl-analysis" class="quarto-xref"><span>Section 3.1.1.2</span></a>) and, to alleviate the computational burden, we further reduce this data-set by taking the first 1000 rows. Hence, we create our new data-set, <code>malkenya_comm1000</code>, using the followind code.</p>
 <div class="cell">
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">malkenya_comm1000</span> <span class="op">&lt;-</span> <span class="va">malkenya_comm</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>,<span class="op">]</span></span>
@@ -562,7 +569,20 @@ Figure&nbsp;4.2: Mapping riverblindness in Liberia. Plots of the mean (left pane
 <span>                      data <span class="op">=</span> <span class="va">malkenya_comm1000</span>,</span>
 <span>                      family <span class="op">=</span> <span class="st">"binomial"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>After fitting the model, we create a prediction grid at a spatial resolution of 500 meters and extract the values of elevation. In this analysis, due to the small size of the study area, we do not use administrative boundaries as they are too large. Instead, we use the convex hull<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> of the sample locations to define the boundaries of our study area.</p>
+<p>After fitting the model, we create a prediction grid at a spatial resolution of 500 meters and extract the values of elevation. In this analysis, due to the small size of the study area, we do not use administrative boundaries as they are too large. Instead, we use the convex hull of the sample locations to define the boundaries of our study area.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The convex hull of a set of spatial locations is the smallest possible shape (usually a polygon) that completely encloses all the points, such that if you take any two points inside the shape, the straight line connecting them is also entirely inside the shape. In simple terms, it can be thought of as stretching a rubber band around the outermost points in a set, and the shape the rubber band forms is the convex hull.</p>
+</div>
+</div>
 <div class="cell">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Create grid from convex hull</span></span>
 <span><span class="va">shp_ch</span> <span class="op">&lt;-</span> <span class="fu">convex_hull_sf</span><span class="op">(</span><span class="va">malkenya_comm1000</span><span class="op">)</span></span>
@@ -633,8 +653,8 @@ Figure&nbsp;4.3: Maps of the predictive mean of the rapid diagnostic test (RDT) 
 </div>
 </div>
 <p>The exploratory analysis of <a href="03_model-fitting.html#sec-indiv-expl-analysis" class="quarto-xref"><span>Section 3.1.1.2</span></a> had shown that the prevalence around the age of 15 is higher than at other ages. This is also reflected in <a href="#fig-malaria-maps" class="quarto-xref">Figure&nbsp;<span>4.3</span></a>, when the left panel, corresponding to the RDT prevalence for children at the age of 15 years, shows a higher level of prevalence than the right panel, which is instead for the general population.</p>
-</section></section><section id="sec-areal-target" class="level2" data-number="4.4"><h2 data-number="4.4" class="anchored" data-anchor-id="sec-areal-target">
-<span class="header-section-number">4.4</span> Areal-level targets</h2>
+</section></section><section id="sec-areal-target" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="sec-areal-target">
+<span class="header-section-number">4.3</span> Areal-level targets</h2>
 <p>When determining areal-level targets, we must first address the following questions:</p>
 <ol type="1">
 <li>What spatially continuous target, <span class="math inline">\(T(x)\)</span>, are we seeking to aggregate?</li>
@@ -663,8 +683,8 @@ Figure&nbsp;4.3: Maps of the predictive mean of the rapid diagnostic test (RDT) 
 <p>In cases where certain sub-regions within <span class="math inline">\(A_i\)</span> are at higher risk for disease (e.g., proximity to environmental hazards or areas with lower access to healthcare), risk-based weights could be applied. Here, <span class="math inline">\(w(x)\)</span> would be higher in regions identified as higher risk, providing a more targeted aggregation of disease prevalence. For example, populations in rural areas may face higher exposure to infectious diseases than those in urban areas, making it important to assign greater weight to these higher-risk regions in the aggregation process.</p>
 <p>If the objective is to account for proximity effects (such as the spread of an infectious disease or contamination from a known source), distance-based weights could be used. Locations closer to a known disease outbreak area or source of exposure could be given more weight to reflect the spatial dynamics of disease transmission.</p>
 <p>Using spatial weights in these ways ensures that the aggregation of disease prevalence <span class="math inline">\(T(x)\)</span> reflects not only the distribution of the disease but also the underlying population, risk, or spatial characteristics relevant to the public health problem under investigation.</p>
-<section id="sec-liberia-prediction-2" class="level3" data-number="4.4.1"><h3 data-number="4.4.1" class="anchored" data-anchor-id="sec-liberia-prediction-2">
-<span class="header-section-number">4.4.1</span> Example: predicting the average riverblindness prevalence at admin level 1 in Liberia (continuing from <a href="#sec-liberia-prediction-1" class="quarto-xref"><span>Section 4.3.1</span></a>)</h3>
+<section id="sec-liberia-prediction-2" class="level3" data-number="4.3.1"><h3 data-number="4.3.1" class="anchored" data-anchor-id="sec-liberia-prediction-2">
+<span class="header-section-number">4.3.1</span> Example: predicting the average riverblindness prevalence at admin level 1 in Liberia (continuing from <a href="#sec-liberia-prediction-1" class="quarto-xref"><span>Section 4.2.1</span></a>)</h3>
 <p>We continue our analysis of the Liberia data and consider areal-level targets. More specifically, we aim to predict the average prevalence over the regions which give the administrative level 1 of Liberia. By denoting with <span class="math inline">\(A_i\)</span> the i-th out of the 15 regions in Liberia. By denoting with <span class="math inline">\(T(x)\)</span> reiverblindness prevalence as defined in <a href="#eq-rb-prev-target" class="quarto-xref">Equation&nbsp;<span>4.1</span></a>, we define our predictive target as <span class="math display">\[
 T_{i} = \frac{1}{|A_i|} \int_{A_i} T(x) \: dx.
 \]</span> The R code below shows how predictions for <span class="math inline">\(T_i\)</span> can be performed using the <code>pred_target_shp</code> function.</p>
@@ -745,8 +765,8 @@ Figure&nbsp;4.4: Maps of the predictive mean for the admin level 1 average preva
 </div>
 </div>
 <p>In <a href="#fig-average-prev-Liberia" class="quarto-xref">Figure&nbsp;<span>4.4</span></a>, we observe that the differences between the two predictive targets, with and without weights, are not substantial. However, we observe that the predicted average prevalence shows slightly greater variation in coastal regions, particularly in Montserrado County, where the majority of the population residing in the capital of Monrovia. This concentration of population likely accounts for the more noticeable differences in this area.</p>
-</section><section id="sec-anopheles-pred" class="level3" data-number="4.4.2"><h3 data-number="4.4.2" class="anchored" data-anchor-id="sec-anopheles-pred">
-<span class="header-section-number">4.4.2</span> Example: predicting the total number of Anopheles gambiae mosquitoes (continuing from <a href="03_model-fitting.html#sec-anopheles-fit" class="quarto-xref"><span>Section 3.3.2</span></a>)</h3>
+</section><section id="sec-anopheles-pred" class="level3" data-number="4.3.2"><h3 data-number="4.3.2" class="anchored" data-anchor-id="sec-anopheles-pred">
+<span class="header-section-number">4.3.2</span> Example: predicting the total number of Anopheles gambiae mosquitoes (continuing from <a href="03_model-fitting.html#sec-anopheles-fit" class="quarto-xref"><span>Section 3.3.2</span></a>)</h3>
 <p>For the analysis on Anopheles gambiae mosquitoes, we consider the prediction of the total number of mosquitoes within the study area. In this case, because there is not a natural definition of the study area borders as in the previous analysis, we consider the convex hull as representing those borders. To pursue this let us first, visualize the predictive map of the number of mosquitoes on a regular grid cover the study area. In other words, we first consider the spatially continuous target <span class="math display">\[
 T(x) = \exp\{\beta_0 + \beta_1 e(x) + S(x)\},
 \]</span> where, we recall, <span class="math inline">\(e(x)\)</span> is the elevation in meters at location <span class="math inline">\(x\)</span>. In the code below in addition to generate prediction for <span class="math inline">\(T(x)\)</span>, we also create a binary indicator defined as <span class="math display">\[
@@ -812,24 +832,24 @@ Figure&nbsp;4.5: Maps of the predicted averae number of mosqutoes (left panel). 
 <span></span>
 <span><span class="va">pred_n_mosq_shp</span><span class="op">$</span><span class="va">target</span><span class="op">$</span><span class="va">reg1</span><span class="op">$</span><span class="va">n_mosq</span></span>
 <span><span class="co">## $mean</span></span>
-<span><span class="co">## [1] 19472.13</span></span>
+<span><span class="co">## [1] 19552.92</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $q025</span></span>
 <span><span class="co">##     2.5% </span></span>
-<span><span class="co">## 16653.66 </span></span>
+<span><span class="co">## 16649.89 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $q075</span></span>
 <span><span class="co">##    97.5% </span></span>
-<span><span class="co">## 23349.93</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="co">## 23052.59</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Since we are not standardizing the weights, there is no need to specify <code>standardize_weights</code>, as it is set to <code>FALSE</code> by default. In the code above, we printed the mean of the predictive distribution of <span class="math inline">\(T\)</span> along with the 95% prediction interval. The point estimate of approximately 17,719 mosquitoes is likely an underestimate of the total number of Anopheles gambiae in the area, as the trap used to count the mosquitoes may not capture all of them, particularly those outside the immediate trapping zone or those active at different times.</p>
-</section></section><section id="sec-compare-pp" class="level2" data-number="4.5"><h2 data-number="4.5" class="anchored" data-anchor-id="sec-compare-pp">
-<span class="header-section-number">4.5</span> Assessing the predictive performance of geostatistical models with cross-validation</h2>
+</section></section><section id="sec-compare-pp" class="level2" data-number="4.4"><h2 data-number="4.4" class="anchored" data-anchor-id="sec-compare-pp">
+<span class="header-section-number">4.4</span> Assessing the predictive performance of geostatistical models with cross-validation</h2>
 <p>In this section, we address the problem of identifying the geostatistical model that offers the best predictive performance among a set of candidates. However, we first need a clear definition of predictive performance which can be used to select suitable statistical tools that can be to used to evaluate it. Broadly speaking, predictive performance is defined by how well a model’s predictive distribution aligns with observed data. Evaluating predictive performance requires examining two key characteristics of the predictive distribution: <em>sharpness</em> and <em>calibration</em>.</p>
-<section id="sec-split-data" class="level3" data-number="4.5.1"><h3 data-number="4.5.1" class="anchored" data-anchor-id="sec-split-data">
-<span class="header-section-number">4.5.1</span> How to split geostatistical data for model performance comparisons</h3>
-<p>To carry out the assessment and comparison of the predictive performance of geostatistical models using the methods illustrated in the following sections, the first crucial step to decide which approach to use to use split the data-set into a <em>training set</em> and <em>test set</em>. In the context of geostatistical analysis, the <em>training set</em> is the subset of the original data-set that is used to estimate the model parameters and then predict at the locations of the <em>test set</em>, which is used to assess how well the model can predict unseen data.</p>
-<p>When splitting geostatistical data-sets for model performance evaluation, it is essential to consider the objective of the spatial prediction. Here, we consider two main prediction objectives: 1) predicting in areas disjoint from the study area where there are no data; 2) inferring the spatial surface of disease risk within a given study area. Let us give an example to better explain the difference between these two objectives. Under objective 1), if survey data exist for a specific country, say Kenya, but not for a neighboring country, say Somalia, a model trained on Kenyan data might then be used to predict disease prevalence in Somalia. In objective 2), instead, high-resolution risk maps of a health outcome might be required within a single country. The splitting of geostatistical data for predictive performance assessment should align with the intended application of the model and reflect whether the goal is to predict in entirely disjoint areas with no data (objective 1) ) or to infer the spatial surface of interest within the same study area (objective 2) ). Below, we elaborate on suitable methods for each of these two.</p>
+<section id="sec-split-data" class="level3" data-number="4.4.1"><h3 data-number="4.4.1" class="anchored" data-anchor-id="sec-split-data">
+<span class="header-section-number">4.4.1</span> How to split geostatistical data for model performance comparisons</h3>
+<p>To carry out the assessment and comparison of the predictive performance of geostatistical models using the methods illustrated in the following sections, the first crucial step is to decide which approach to use to split the data-set into a <em>training set</em> and <em>test set</em>. In the context of geostatistical analysis, the <em>training set</em> is the subset of the original data-set that is used to estimate the model parameters and then predict at the locations of the <em>test set</em>, which is used to assess how well the model can predict unseen data.</p>
+<p>When splitting geostatistical data-sets for model performance evaluation, it is essential to consider the objective of the spatial prediction. Here, we consider two main prediction objectives: 1) predicting in areas disjoint from the study area where there are no data; 2) inferring the spatial surface of disease risk within a given study area. Let us give an example to better explain the difference between these two objectives. Under objective 1), if survey data exist for a specific country, say Kenya, but not for a neighboring country, say Somalia, a model trained on Kenyan data might then be used to predict disease prevalence in Somalia. In objective 2), instead, high-resolution risk maps of a health outcome might be required within a single country. The splitting of geostatistical data for predictive performance assessment should align with the intended application of the model and reflect whether the goal is to predict in entirely disjoint areas with no data (objective 1) or to infer the spatial surface of interest within the same study area (objective 2). Below, we elaborate on suitable methods for each of these two.</p>
 <p>In the first scenario (objective 1) ), splitting the data using k-fold cross-validation with spatially coherent folds is more appropriate. These folds can be created using clustering methods such as k-means or hierarchical clustering (see <span class="citation" data-cites="yin2024">Yin et al. (<a href="references.html#ref-yin2024" role="doc-biblioref">2024</a>)</span> for review of the main clustering methods). These methods group spatial locations based on their coordinates or covariates, ensuring each fold represents a distinct spatial region. This approach mimics the challenge of predicting in disjoint areas by withholding entire spatial clusters from the training data. For instance, k-means minimizes within-cluster variance to produce compact, non-overlapping groups, while hierarchical clustering organizes data into nested clusters based on a linkage criterion like geographic distance. In the code below we show an example of the use of these methods for data splitting, using the <code>spatial_clusterin_cv</code> function from the <code>spatialsample</code> package <span class="citation" data-cites="mahoney2023">(<a href="references.html#ref-mahoney2023" role="doc-biblioref">Mahoney et al. 2023</a>)</span>.</p>
 <div class="cell">
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/spatialsample">spatialsample</a></span><span class="op">)</span></span>
@@ -901,8 +921,8 @@ Figure&nbsp;4.7: Examples un the use of spatialky regularized thinning for the s
 </div>
 <p>In the code above, we randomly selected 20 locations from the original data-set, enforcing minimum distances of 30 km and 40 km between points. The results are presented in <a href="#fig-reg-loc" class="quarto-xref">Figure&nbsp;<span>4.7</span></a>. The choice of the minimum distance for the test sample should ideally consider the spatial correlation scale (previously denoted by <span class="math inline">\(\phi\)</span>) of the spatial Gaussian process <span class="math inline">\(S(X)\)</span>. To minimize correlation within the test set, the minimum distance could be set to a value greater than <span class="math inline">\(\phi\)</span>. However, increasing the minimum distance makes it more challenging to obtain a test set of the desired sample size. Reducing correlation within the test set is important for ensuring that the assessment of predictive performance is as robust as possible.</p>
 <p>A key challenge in both approaches is the potential lack of independence between the training and test data-sets due to spatial correlation. This can lead to an overly optimistic evaluation of model performance, as the training set may already contain information that is correlated with the test set. However, if we assume that all models benefit equally from this correlation during performance evaluation, the methods we illustrate next can still provide a reliable comparison of model performance in relative terms, even if the considered performance metrics may be somewhat biased.</p>
-</section><section id="sec-anpit" class="level3" data-number="4.5.2"><h3 data-number="4.5.2" class="anchored" data-anchor-id="sec-anpit">
-<span class="header-section-number">4.5.2</span> Assessing calibration using the nonrandomized probability integral transform</h3>
+</section><section id="sec-anpit" class="level3" data-number="4.4.2"><h3 data-number="4.4.2" class="anchored" data-anchor-id="sec-anpit">
+<span class="header-section-number">4.4.2</span> Assessing calibration using the nonrandomized probability integral transform</h3>
 <p>A model is considered <em>well-calibrated</em> if its predictions adequately reflect the true uncertainty of the data. Assessment of a model’s calibration can be carried out in several ways. We can examine the agreement between the point predictions, say <span class="math inline">\(\hat{y}_i\)</span>, and the observed outcomes <span class="math inline">\(y_i\)</span>, commonly referred to as <em>accuracy</em>. The mean squared error (MSE), defined as <span class="math inline">\(\text{MSE} = \frac{1}{n} \sum_{i=1}^n (y_i - \hat{y}_i)^2\)</span>, is an example of a commonly used metric to evaluate the accuracy of a model. To characterize calibration more fully, it is also essential to quantify the spread of the predictive distributions, which also defines the <em>precision</em> of predictions. For example, prediction intervals generated from the predictive distribution for <span class="math inline">\(y_i\)</span> can help assess the precision of a geostatistical model. In summary, a well-calibrated model is both accurate and precise.</p>
 <p>Assessment of the calibration of the model should precede the assessment of sharpness, since, as we shall see in the next section, this relies on the model being well-calibrated. The probability integral transform (PIT) was originally proposed by <span class="citation" data-cites="dawid1984">Dawid (<a href="references.html#ref-dawid1984" role="doc-biblioref">1984</a>)</span> as a way to assess the calibration of a model. The PIT is based on the simple observation that if we consider a variable <span class="math inline">\(Y\)</span> and apply the transformation <span class="math inline">\(Y^* = F_{Y}(Y)\)</span>, where <span class="math inline">\(F_{Y}(\cdot)\)</span> is the cumulative density function (or cumulative distribution if <span class="math inline">\(Y\)</span> is discrete) of <span class="math inline">\(Y\)</span>, it then follows that <span class="math inline">\(Y^*\)</span> follows a uniform distribution in the unit interval. The fundamental problem and the reason why statistical modelling exists is that we do not <span class="math inline">\(F_{Y}\)</span> but we would like to propose a model <span class="math inline">\(M\)</span> that we believe adequately approximates <span class="math inline">\(F_{Y}\)</span> with <span class="math inline">\(F_{M}\)</span>. The main advantage of using the PIT is that assessment of whether <span class="math inline">\(M\)</span> is well calibrated reduces to assessing whether the transform set of data <span class="math inline">\(F_{M}(y_1), \ldots, F_{M}(y_n)\)</span> follows a uniform distribution. To illustrate this, let us a consider a simple simulated example.</p>
 <p>We first create a function that can compute the PIT.</p>
@@ -1085,9 +1105,9 @@ Figure&nbsp;4.10: Average nonrandomized Probability Integral Transform (AnPIT) a
 </div>
 <p><a href="#fig-anpit" class="quarto-xref">Figure&nbsp;<span>4.10</span></a> shows clear evidence that the Poisson model is not adequately accounting for the overdispersion of the simulated data from the Negative Binomial distribution.</p>
 <p>How can we adapt this approach to generalized linear geostatistical models (GLGMs)? The concept is straightforward, though the implementation is less so (but fortunately, we have already done this in <code>RiskMap</code>). Essentially, in all relevant equations above, we need to replace <span class="math inline">\(M\)</span> with the predictive distribution of the fitted geostatistical model.</p>
-<p>To explain further, suppose we have fitted our model using data <span class="math inline">\(Y^{(1)} = \left( y^{(1)}_{1}, \ldots, y^{(1)}_{n} \right)\)</span> (the training data-set), and we want to use another set of data <span class="math inline">\(Y^{(2)} = \left( y^{(2)}_{1}, \ldots, y^{(2)}_{m} \right)\)</span> (the test data-set) to assess calibration; the selection of <span class="math inline">\(Y^{(1)}\)</span> and <span class="math inline">\(Y^{(2)}\)</span> can be done using the methods described in <a href="#sec-split-data" class="quarto-xref"><span>Section 4.5.1</span></a>. Our model <span class="math inline">\(M\)</span> in the equations above corresponds to the distribution of <span class="math inline">\(\left[ Y^{(2)} \mid Y^{(1)} \right]\)</span> – the distribution of <span class="math inline">\(Y^{(2)}\)</span> conditioned to <span class="math inline">\(Y^{(1)}\)</span> derived from our geostatistical model. Since its derivation cannot be done analytically, we use Monte Carlo methods to approximate <span class="math inline">\(\left[ Y^{(1)} \mid Y^{(2)} \right]\)</span>. We discuss this in more detail in <a href="#sec-theory-prediction" class="quarto-xref"><span>Section 4.7</span></a>. However, the key point here is to understand why we perform this assessment and how to interpret the results. We next show the application of the AnPIT diagnostic to the example on riverblindess mapping in Liberia.</p>
-<section id="sec-liberia-anpit" class="level4" data-number="4.5.2.1"><h4 data-number="4.5.2.1" class="anchored" data-anchor-id="sec-liberia-anpit">
-<span class="header-section-number">4.5.2.1</span> Example: assessing the calibration of two geostatistical models for riverblindness mapping</h4>
+<p>To explain further, suppose we have fitted our model using data <span class="math inline">\(Y^{(1)} = \left( y^{(1)}_{1}, \ldots, y^{(1)}_{n} \right)\)</span> (the training data-set), and we want to use another set of data <span class="math inline">\(Y^{(2)} = \left( y^{(2)}_{1}, \ldots, y^{(2)}_{m} \right)\)</span> (the test data-set) to assess calibration; the selection of <span class="math inline">\(Y^{(1)}\)</span> and <span class="math inline">\(Y^{(2)}\)</span> can be done using the methods described in <a href="#sec-split-data" class="quarto-xref"><span>Section 4.4.1</span></a>. Our model <span class="math inline">\(M\)</span> in the equations above corresponds to the distribution of <span class="math inline">\(\left[ Y^{(2)} \mid Y^{(1)} \right]\)</span> – the distribution of <span class="math inline">\(Y^{(2)}\)</span> conditioned to <span class="math inline">\(Y^{(1)}\)</span> derived from our geostatistical model. Since its derivation cannot be done analytically, we use Monte Carlo methods to approximate <span class="math inline">\(\left[ Y^{(1)} \mid Y^{(2)} \right]\)</span>. We discuss this in more detail in <a href="#sec-theory-prediction" class="quarto-xref"><span>Section 4.6</span></a>. However, the key point here is to understand why we perform this assessment and how to interpret the results. We next show the application of the AnPIT diagnostic to the example on riverblindess mapping in Liberia.</p>
+<section id="sec-liberia-anpit" class="level4" data-number="4.4.2.1"><h4 data-number="4.4.2.1" class="anchored" data-anchor-id="sec-liberia-anpit">
+<span class="header-section-number">4.4.2.1</span> Example: assessing the calibration of two geostatistical models for riverblindness mapping</h4>
 <p>In our example on riverblindness mapping, we now consider two models. A mode, which we call <span class="math inline">\(M_{0}\)</span>, which is an intercept only geostatistical model, with linear predictor <span class="math display">\[
 M_{0} \: : \: \log\left\{\frac{p(x_i)}{1-p(x_i)}\right\} = \beta_0 + S(x_i) ,
 \]</span> and a geostatistical model, which we denote as <span class="math inline">\(M_{1}\)</span>, which uses a linear spline with a not in 150 meters, and has linear predictor <span class="math display">\[
@@ -1168,8 +1188,8 @@ Figure&nbsp;4.12: The average nonrandomized probability integral transform (AnPI
 </div>
 </div>
 <p>The AnPIT from <a href="#fig-anpit-clus" class="quarto-xref">Figure&nbsp;<span>4.12</span></a> show very similar results to those of <a href="#fig-anpit-reg" class="quarto-xref">Figure&nbsp;<span>4.11</span></a>, hence similar conclusions are drawn.</p>
-</section></section><section id="assessing-calibration-and-sharpness-using-continuous-ranked-probability-scores" class="level3" data-number="4.5.3"><h3 data-number="4.5.3" class="anchored" data-anchor-id="assessing-calibration-and-sharpness-using-continuous-ranked-probability-scores">
-<span class="header-section-number">4.5.3</span> Assessing calibration and sharpness using continuous ranked probability scores</h3>
+</section></section><section id="assessing-calibration-and-sharpness-using-continuous-ranked-probability-scores" class="level3" data-number="4.4.3"><h3 data-number="4.4.3" class="anchored" data-anchor-id="assessing-calibration-and-sharpness-using-continuous-ranked-probability-scores">
+<span class="header-section-number">4.4.3</span> Assessing calibration and sharpness using continuous ranked probability scores</h3>
 <p>We now consider another important aspect that helps to describe the predictive performance of a geostatistical model, namely sharpness. As the name suggests, sharpness refers to the spread of the predictive distribution. A sharp predictive distribution has a narrow spread, indicating that the model is highly confident in its predictions. Importantly, sharpness does not depend on how close predictions are to the true values (i.e., it is independent of accuracy). A model with high sharpness will produce predictions with low variance, but this sharpness is only meaningful if the model is well-calibrated, ensuring that the high confidence aligns with observed values. For example, a geostatistical model for disease prevalence mapping that predicts a very tight range of possible prevalence values for a location is producing sharp predictions. However, if the actual prevalence often falls outside this range, then the predictions may be sharp but poorly calibrated, thus limiting the value of quantifying sharpness alone.</p>
 <p>To assess predictive performance while considering both <em>sharpness</em> and <em>calibration</em>, we introduce the <em>continuous ranked probability score (CRPS)</em> <span class="citation" data-cites="gneiting2007">(<a href="references.html#ref-gneiting2007" role="doc-biblioref">Gneiting, Balabdaoui, and Raftery 2007</a>)</span> and its scaled variant, the <em>scaled CRPS (SCRPS)</em> <span class="citation" data-cites="bolin2023">(<a href="references.html#ref-bolin2023" role="doc-biblioref">Bolin and Wallin 2023</a>)</span>. The CRPS evaluates the agreement between the predicted cumulative distribution function of the model <span class="math inline">\(M\)</span>, denoted as in the previous section by <span class="math inline">\(F_M\)</span>, and the observed value <span class="math inline">\(y_i\)</span>. It is formally defined as</p>
 <p><span class="math display">\[
@@ -1194,9 +1214,9 @@ Figure&nbsp;4.12: The average nonrandomized probability integral transform (AnPI
 <p>To assess the overall performance of model <span class="math inline">\(M\)</span>, we calculate a weighted average of the scores across all test sets, where the weights are proportional to the sample size of each test set. The final score assigned to model <span class="math inline">\(M\)</span> is given by: <span id="eq-average-score"><span class="math display">\[
 \frac{1}{\sum_{i=1}^T m_i} \sum_{i=1}^{T} \sum_{j=1}^{m_i} r_{M}\left(x_{j}^{(i)}\right).  \tag{4.8}\]</span></span></p>
 <p>Models assumed to be well-calibrated and achieving a lower score based on the above expression are considered to provide sharper predictions and, consequently, better predictive performance.</p>
-<section id="example-mapping-riverblindness-in-liberia-continuing-from-sec-liberia-anpit" class="level4" data-number="4.5.3.1"><h4 data-number="4.5.3.1" class="anchored" data-anchor-id="example-mapping-riverblindness-in-liberia-continuing-from-sec-liberia-anpit">
-<span class="header-section-number">4.5.3.1</span> Example: mapping riverblindness in Liberia (continuing from <a href="#sec-liberia-anpit" class="quarto-xref"><span>Section 4.5.2.1</span></a>)</h4>
-<p>In <a href="#sec-liberia-anpit" class="quarto-xref"><span>Section 4.5.2.1</span></a>, we have assessed the calibration of models <span class="math inline">\(M_0\)</span> and <span class="math inline">\(M_0\)</span> and found these to be reasonably well calibrated models. We now compare the predictive performance of the two, using both the CRPS and SCRPS metrics introduced previously.</p>
+<section id="example-mapping-riverblindness-in-liberia-continuing-from-sec-liberia-anpit" class="level4" data-number="4.4.3.1"><h4 data-number="4.4.3.1" class="anchored" data-anchor-id="example-mapping-riverblindness-in-liberia-continuing-from-sec-liberia-anpit">
+<span class="header-section-number">4.4.3.1</span> Example: mapping riverblindness in Liberia (continuing from <a href="#sec-liberia-anpit" class="quarto-xref"><span>Section 4.4.2.1</span></a>)</h4>
+<p>In <a href="#sec-liberia-anpit" class="quarto-xref"><span>Section 4.4.2.1</span></a>, we have assessed the calibration of models <span class="math inline">\(M_0\)</span> and <span class="math inline">\(M_0\)</span> and found these to be reasonably well calibrated models. We now compare the predictive performance of the two, using both the CRPS and SCRPS metrics introduced previously.</p>
 <p>The <code>assess_pp</code> function also allows the user to compute the CRPS and SCRPS through the argument <code>which_metric</code> as shown below.</p>
 <div class="cell">
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">regularized_scores</span> <span class="op">&lt;-</span> </span>
@@ -1210,7 +1230,7 @@ Figure&nbsp;4.12: The average nonrandomized probability integral transform (AnPI
 <span>          which_metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"CRSP"</span>, <span class="st">"SCRPS"</span><span class="op">)</span>, </span>
 <span>          method <span class="op">=</span> <span class="st">"cluster"</span>, fold <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Note that that <code>assess_pp</code> can be run once in order to obtain both the AnPIT diagnostic, introduced in <a href="#sec-anpit" class="quarto-xref"><span>Section 4.5.2</span></a>; by default <code>which_metric = c("AnPIT", "CRSP", "SCRPS")</code> which computes all three diagnostic using the same test sets. The reason we have separated the AnPIT and the scores computations is only for pedagogical purposes.</p>
+<p>Note that that <code>assess_pp</code> can be run once in order to obtain both the AnPIT diagnostic, introduced in <a href="#sec-anpit" class="quarto-xref"><span>Section 4.4.2</span></a>; by default <code>which_metric = c("AnPIT", "CRSP", "SCRPS")</code> which computes all three diagnostic using the same test sets. The reason we have separated the AnPIT and the scores computations is only for pedagogical purposes.</p>
 <p>By doing a <code>summary</code> of the output in <code>regularized_scores</code> and <code>cluster_scores</code>, we obtain the average score across all test sets as defined in <a href="#eq-average-score" class="quarto-xref">Equation&nbsp;<span>4.8</span></a>.</p>
 <div class="cell">
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html">summary</a></span><span class="op">(</span><span class="va">regularized_scores</span>, view_all <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -1278,11 +1298,11 @@ Figure&nbsp;4.13: Point maps of the scores for model <span class="math inline">\
 </div>
 </div>
 <p>In the code above, we evaluated the cross-validation results generated using a clustering algorithm to split the original data-set. The map reveals that the scores across most locations are generally similar, with only three locations near the coast of Liberia showing slightly lower CRPS and SCRPS values for <span class="math inline">\(M_1\)</span>. This suggests a consistent predictive performance across the dataset, with some localized variations.</p>
-</section></section></section><section id="simulation-based-assessment-of-predictive-performance" class="level2" data-number="4.6"><h2 data-number="4.6" class="anchored" data-anchor-id="simulation-based-assessment-of-predictive-performance">
-<span class="header-section-number">4.6</span> Simulation-based assessment of predictive performance</h2>
-<p>In <a href="#sec-compare-pp" class="quarto-xref"><span>Section 4.5</span></a>, we illustrated how to evaluate predictive performance in relative terms, specifically by comparing candidate models under consideration. In this section, we demonstrate how simulation studies can be used to assess the predictive performance of a geostatistical model in predicting a spatially continuous target within a region of interest. Since a spatially continuous target cannot be directly observed, simulations provide a way to generate such targets under specified assumptions. This approach allows us to evaluate how effectively the model can recover the underlying spatial surface using suitable predictive performance metrics.</p>
-<section id="sec-sim-step1" class="level3" data-number="4.6.1"><h3 data-number="4.6.1" class="anchored" data-anchor-id="sec-sim-step1">
-<span class="header-section-number">4.6.1</span> Step 1: Define the aim of the simulation study</h3>
+</section></section></section><section id="simulation-based-assessment-of-predictive-performance" class="level2" data-number="4.5"><h2 data-number="4.5" class="anchored" data-anchor-id="simulation-based-assessment-of-predictive-performance">
+<span class="header-section-number">4.5</span> Simulation-based assessment of predictive performance</h2>
+<p>In <a href="#sec-compare-pp" class="quarto-xref"><span>Section 4.4</span></a>, we illustrated how to evaluate predictive performance in relative terms, specifically by comparing candidate models under consideration. In this section, we demonstrate how simulation studies can be used to assess the predictive performance of a geostatistical model in predicting a spatially continuous target within a region of interest. Since a spatially continuous target cannot be directly observed, simulations provide a way to generate such targets under specified assumptions. This approach allows us to evaluate how effectively the model can recover the underlying spatial surface using suitable predictive performance metrics.</p>
+<section id="sec-sim-step1" class="level3" data-number="4.5.1"><h3 data-number="4.5.1" class="anchored" data-anchor-id="sec-sim-step1">
+<span class="header-section-number">4.5.1</span> Step 1: Define the aim of the simulation study</h3>
 <p>As previously stated, one of the main reasons for carrying out a simulation study is the ability to generate spatial surfaces, which are typically unobservable in the real world. The purpose of the simulation is generally to evaluate how well a given geostatistical model can recover that surface and/or draw inferences on some of its properties.</p>
 <p>To fully understand the how to carry out a simulation study, it is essential to define its two main components: the <em>true model</em> and the <em>candidate models</em> (which can indeed include multiple options).</p>
 <p>The <strong>true model</strong> represents the underlying stochastic process that generates the data. In a simulation study, the true model is assumed to be known because it is explicitly specified by us. It serves as the benchmark against which other models are assessed.</p>
@@ -1290,8 +1310,8 @@ Figure&nbsp;4.13: Point maps of the scores for model <span class="math inline">\
 <p>It is important to highlight that the true model not only serves as a benchmark but can also be included among the candidate models. However, the true model does not always necessarily outperform other candidate models. In some cases, certain candidate models may provide better approximations of the spatial surface or its properties, particularly when the true model’s complexity is too high relative to the available sample size. Here, <em>model complexity</em> refers to the number of parameters in a model. For instance, a true geostatistical model with high complexity may include numerous covariates or a highly parameterised covariance function. When the sample size is insufficient to reliably estimate these parameters, simpler candidate models can sometimes yield better performances.</p>
 <p>Consider an extreme example where the true model is a spatial Gaussian process <span class="math inline">\(S(x)\)</span> with a scale parameter of <span class="math inline">\(\phi = 1\)</span>. If only a very small fraction of sampled locations are at distances below 1, estimating <span class="math inline">\(\phi\)</span> accurately becomes highly challenging, especially with a small sample size. In particular the sparsity of close pairs reduces the information available to estimate the spatial dependence structure, making the estimation of <span class="math inline">\(\phi\)</span> imprecise or even unreliable. In this case, a candidate model that does not attempt to explicitly estimate the spatial dependence (e.g., a model that relies solely on spatial covariates to interpolate the surface) might perform better in recovering the spatial structure. This example suggests that a simpler or alternative model can sometimes outperform the true model under specific sampling and data constraints.</p>
 <p>At this point, a natural question arises: how should we choose the true model for a simulation study? The answer depends on the specific objectives of the study and what we aim to demonstrate. We now provide an example to demonstrate this point.</p>
-<section id="example" class="level4" data-number="4.6.1.1"><h4 data-number="4.6.1.1" class="anchored" data-anchor-id="example">
-<span class="header-section-number">4.6.1.1</span> Example</h4>
+<section id="example" class="level4" data-number="4.5.1.1"><h4 data-number="4.5.1.1" class="anchored" data-anchor-id="example">
+<span class="header-section-number">4.5.1.1</span> Example</h4>
 <p>In our analysis of the river blindness dataset, we now aim to evaluate the effectiveness of using elevation as a spatial predictor. To achieve this, we conduct a simulation study to compare the performance of two geostatistical models: one that incorporates elevation as a predictor and another that excludes it. This example will be revisited throughout the steps outlined in this section on simulation. We can chose the following true model (henceforth <span class="math inline">\(M_T\)</span>) for the simulation <span id="eq-true-model-lib"><span class="math display">\[M_{T}: \:
 \log\left\{\frac{p(x_i)}{1-p(x_i)}\right\} = \beta_{0} + \beta_{1}e(x_i) + \beta_{2}\max\{e(x_i)-150, 0\} + S(x_i).
 \tag{4.9}\]</span></span> The true model, described by the equation above, assumes a nonlinear relationship with elevation based on a linear spline with a single knot at 150 meters. To simulate data from the true model, which constitutes the next step in our simulation study, we must first define the model parameter values. A reasonable approach is to use the maximum likelihood estimates obtained by fitting the binomial geostatistical model specified in <a href="#eq-true-model-lib" class="quarto-xref">Equation&nbsp;<span>4.9</span></a>. These estimates can be derived as shown below.</p>
@@ -1323,8 +1343,8 @@ $phi
 <p>A natural candidate model to evaluate the usefulness of elevation as a covariate is an intercept-only model (referred to here as <span class="math inline">\(M_C\)</span>). This model is defined as: <span class="math display">\[M_{C}: \:
 \log\left\{\frac{p(x_i)}{1-p(x_i)}\right\} = \beta_{0} + S(x_i).
 \]</span> where no covariates are included. This approach makes <span class="math inline">\(M_C\)</span> a suitable baseline model, commonly selected when the objective is to assess the contribution of covariates to spatial prediction.</p>
-</section></section><section id="step-2-simulate-the-spatial-surface-and-the-data-from-the-true-model" class="level3" data-number="4.6.2"><h3 data-number="4.6.2" class="anchored" data-anchor-id="step-2-simulate-the-spatial-surface-and-the-data-from-the-true-model">
-<span class="header-section-number">4.6.2</span> Step 2: Simulate the spatial surface and the data from the true model</h3>
+</section></section><section id="step-2-simulate-the-spatial-surface-and-the-data-from-the-true-model" class="level3" data-number="4.5.2"><h3 data-number="4.5.2" class="anchored" data-anchor-id="step-2-simulate-the-spatial-surface-and-the-data-from-the-true-model">
+<span class="header-section-number">4.5.2</span> Step 2: Simulate the spatial surface and the data from the true model</h3>
 <p>In <a href="03_model-fitting.html#sec-bootstrap" class="quarto-xref"><span>Section 3.3.3</span></a>, we have shown how to simulate from a geostatistical model, when the goal is simulate data at the observed locations. When we want to simulate a spatial surface, a similar approach can be used. First of all, we need to generate a regular grid, say <span class="math inline">\(\tilde{X}\)</span>, covering the study region of interest, say <span class="math inline">\(A\)</span>. Based on the notation used so far, we use <span class="math inline">\(X\)</span> to denote the set of observed locations which are used to simulate the outcome data <span class="math inline">\(Y\)</span>. Finally, we use <span class="math inline">\(X_{+} = (X, \tilde{X})\)</span> to denote the full set of locations both on the grid and at the data points. We can then proceed through the following steps to simultaneously simulate values of the surface of interest over <span class="math inline">\(\tilde{X}\)</span> and <span class="math inline">\(X\)</span>.</p>
 <ol type="1">
 <li><p>Compute the covariance matrix <span class="math inline">\(\Sigma_{+}\)</span> using the combined set of locations <span class="math inline">\(X_{+}\)</span>.</p></li>
@@ -1334,8 +1354,8 @@ $phi
 <li><p>Only for locations of the data <span class="math inline">\(X\)</span>, perform the steps 5A to 7A as explained in <a href="03_model-fitting.html#sec-bootstrap" class="quarto-xref"><span>Section 3.3.3</span></a>, to simulate the data <span class="math inline">\(Y\)</span>.</p></li>
 </ol>
 <p>The function <code>surf_sim</code> in <code>RiskMap</code> can be used to carry out all these steps automatically as shown next.</p>
-<section id="example-1" class="level4" data-number="4.6.2.1"><h4 data-number="4.6.2.1" class="anchored" data-anchor-id="example-1">
-<span class="header-section-number">4.6.2.1</span> Example</h4>
+<section id="example-1" class="level4" data-number="4.5.2.1"><h4 data-number="4.5.2.1" class="anchored" data-anchor-id="example-1">
+<span class="header-section-number">4.5.2.1</span> Example</h4>
 <p>Following the steps previously outlined, we first create a grid within the boundaries of Liberia and extract the values of elevation on the grid from a raster.</p>
 <div class="cell">
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wmgeolab/rgeoboundaries">rgeoboundaries</a></span><span class="op">)</span></span>
@@ -1383,8 +1403,8 @@ $phi
 Figure&nbsp;4.14: Simulated surface for the linear predictor, with locations of the simulated data noted by solid black points.
 </figcaption></figure>
 </div>
-</section></section><section id="sec-sim-step3" class="level3" data-number="4.6.3"><h3 data-number="4.6.3" class="anchored" data-anchor-id="sec-sim-step3">
-<span class="header-section-number">4.6.3</span> Step 3: Fit the candidate models to the simulated data and predict the target</h3>
+</section></section><section id="sec-sim-step3" class="level3" data-number="4.5.3"><h3 data-number="4.5.3" class="anchored" data-anchor-id="sec-sim-step3">
+<span class="header-section-number">4.5.3</span> Step 3: Fit the candidate models to the simulated data and predict the target</h3>
 <p>To summarize, the results obtained from Step 1 and Step 2 are as follows:</p>
 <ol type="1">
 <li>Simulated values for the linear predictor of the true model (<span class="math inline">\(M_T\)</span>) over a grid covering the study area.</li>
@@ -1392,11 +1412,11 @@ Figure&nbsp;4.14: Simulated surface for the linear predictor, with locations of 
 <li>Simulated realizations of the data at the data locations.</li>
 </ol>
 <p>Next, we use the third output listed above to fit the candidate models (<span class="math inline">\(M_C\)</span>) and make predictions over the grid. Note that each of the outputs above has been generated <span class="math inline">\(B\)</span> times, which denotes the number of simulations.</p>
-<p>Using the notation introduced in <a href="#sec-spat-cont-target" class="quarto-xref"><span>Section 4.3</span></a>, let <span class="math inline">\(T(x)\)</span> denote the spatially continuous target. When the predictive target is at the areal level, the necessary adjustments to Step 3 and Step 4 will be detailed in <a href="#sec-sim-assessment" class="quarto-xref"><span>Section 4.6.5</span></a>.</p>
+<p>Using the notation introduced in <a href="#sec-spat-cont-target" class="quarto-xref"><span>Section 4.2</span></a>, let <span class="math inline">\(T(x)\)</span> denote the spatially continuous target. When the predictive target is at the areal level, the necessary adjustments to Step 3 and Step 4 will be detailed in <a href="#sec-sim-assessment" class="quarto-xref"><span>Section 4.5.5</span></a>.</p>
 <p>The outputs generated in these steps include predictive samples of the target over the grid, represented by <span class="math inline">\(T_{(j)}^{(h)}(\tilde{x})\)</span>, where: <span class="math inline">\(j\)</span> is the index of the <span class="math inline">\(j\)</span>-th simulated data-set, for <span class="math inline">\(j = 1, \ldots, B\)</span>; <span class="math inline">\(h\)</span> is the index of the Monte Carlo samples, for <span class="math inline">\(h = 1, \ldots, N\)</span>, generated by the Monte Carlo Markov Chain (MCMC) algorithm for a given data-set <span class="math inline">\(j\)</span>.</p>
 <p>An example in R for Step 3 will be provided in the next section, where we shall use the function <code>assess_sim</code>, from the <code>RiskMap</code> package, which combines Step 3 and Step 4 into a single step.</p>
-</section><section id="step-4-summarize-the-results-using-a-pre-defined-objective-function" class="level3" data-number="4.6.4"><h3 data-number="4.6.4" class="anchored" data-anchor-id="step-4-summarize-the-results-using-a-pre-defined-objective-function">
-<span class="header-section-number">4.6.4</span> Step 4: Summarize the results using a pre-defined objective function</h3>
+</section><section id="step-4-summarize-the-results-using-a-pre-defined-objective-function" class="level3" data-number="4.5.4"><h3 data-number="4.5.4" class="anchored" data-anchor-id="step-4-summarize-the-results-using-a-pre-defined-objective-function">
+<span class="header-section-number">4.5.4</span> Step 4: Summarize the results using a pre-defined objective function</h3>
 <p>In this final step, we compare the predictions of the target <span class="math inline">\(T(x)\)</span> against its true values, originally simulated in Step 1. To do this, we need a metric to summarize the results across all <span class="math inline">\(B\)</span> simulations for each candidate model <span class="math inline">\(M_C\)</span>.</p>
 <p>One approach is to use the predictive mean from <span class="math inline">\(M_C\)</span> in each simulation and evaluate how it differs from <span class="math inline">\(T(x)\)</span>. A natural choice for this comparison is the mean squared error (MSE), defined as:</p>
 <p><span id="eq-mse"><span class="math display">\[
@@ -1411,8 +1431,8 @@ Figure&nbsp;4.14: Simulated surface for the linear predictor, with locations of 
 <p><span class="math display">\[
 \text{median}\left(\left|T(\tilde{x}_i) - T^*_{C}(\tilde{x}_i)\right|\right),
 \]</span> where <span class="math inline">\(T^*_{C}(\tilde{x}_i)\)</span> is the median across all <span class="math inline">\(N\)</span> the Monte Carlo samples <span class="math inline">\(T_{(j)}^{(h)}(\tilde{x})\)</span>.</p>
-<section id="example-2" class="level4" data-number="4.6.4.1"><h4 data-number="4.6.4.1" class="anchored" data-anchor-id="example-2">
-<span class="header-section-number">4.6.4.1</span> Example</h4>
+<section id="example-2" class="level4" data-number="4.5.4.1"><h4 data-number="4.5.4.1" class="anchored" data-anchor-id="example-2">
+<span class="header-section-number">4.5.4.1</span> Example</h4>
 <p>Using the output from the <code>surf_sim</code> function, named <code>lib_surf_sim</code>, we can use as the input to the function <code>assess_sim</code> which performs Step 3 and Step 4, previously outlined.</p>
 <div class="cell">
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">res_sim_grid</span> <span class="op">&lt;-</span> <span class="fu">assess_sim</span><span class="op">(</span><span class="va">lib_surf_sim</span>,</span>
@@ -1440,12 +1460,12 @@ M_C   M_C 0.004390553 0.0008564500</code></pre>
 </div>
 <p>The results reported here present the average and standard deviation across 200 simulations for the models <span class="math inline">\(M_C\)</span> and <span class="math inline">\(M_T\)</span>. The differences between the two models are negligible, indicating that the point predictions generated by <span class="math inline">\(M_C\)</span> and <span class="math inline">\(M_T\)</span> perform similarly in recovering the true prevalence surface for river blindness in Liberia.</p>
 <p>This result should not be surprising, as estimating regression relationships with prevalence data can be challenging, potentially limiting their predictive advantage. However, incorporating covariates enhances model interpretability, allowing us to understand why the model makes certain predictions in specific areas, which an intercept-only model cannot provide. Thus, even if the model with covariates does not achieve the best predictive performance, we may still choose to retain the covariates, in this case elevation, for their interpretative value.</p>
-</section></section><section id="sec-sim-assessment" class="level3" data-number="4.6.5"><h3 data-number="4.6.5" class="anchored" data-anchor-id="sec-sim-assessment">
-<span class="header-section-number">4.6.5</span> Assessessment of threshold-based classification of spatial units using geostatistical models</h3>
-<p>In this section, we address the specific problem of evaluating how effectively a geostatistical model classifies areal units into predefined categories of a disease indicator, such as prevalence. This issue is particularly relevant when dealing with areal-level targets (<a href="#sec-areal-target" class="quarto-xref"><span>Section 4.4</span></a>) as opposed to spatially continuous targets (<a href="#sec-spat-cont-target" class="quarto-xref"><span>Section 4.3</span></a>). This prediction problem arises when policy decisions regarding interventions are often based on the classification of the areal-level target into predefined categories at the level of administrative regions; see, for example, <span class="citation" data-cites="johnson2021">Johnson et al. (<a href="references.html#ref-johnson2021" role="doc-biblioref">2021</a>)</span> and <span class="citation" data-cites="puranik2024">Puranik et al. (<a href="references.html#ref-puranik2024" role="doc-biblioref">2024</a>)</span>.</p>
-<p>To formalize this problem mathematically, let <span class="math inline">\(\mathcal{M}_i\)</span> represent the true value of the areal-level target (e.g., the average prevalence over a district), and let <span class="math inline">\(\hat{\mathcal{M}}_{C,i}\)</span> denote the corresponding prediction produced by the candidate model <span class="math inline">\(M_C\)</span>. Note that <span class="math inline">\(\mathcal{M}_i\)</span> can be easily calculated in Step 1 during simulations from the true model (<a href="#sec-sim-step1" class="quarto-xref"><span>Section 4.6.1</span></a>).</p>
+</section></section><section id="sec-sim-assessment" class="level3" data-number="4.5.5"><h3 data-number="4.5.5" class="anchored" data-anchor-id="sec-sim-assessment">
+<span class="header-section-number">4.5.5</span> Assessessment of threshold-based classification of spatial units using geostatistical models</h3>
+<p>In this section, we address the specific problem of evaluating how effectively a geostatistical model classifies areal units into predefined categories of a disease indicator, such as prevalence. This issue is particularly relevant when dealing with areal-level targets (<a href="#sec-areal-target" class="quarto-xref"><span>Section 4.3</span></a>) as opposed to spatially continuous targets (<a href="#sec-spat-cont-target" class="quarto-xref"><span>Section 4.2</span></a>). This prediction problem arises when policy decisions regarding interventions are often based on the classification of the areal-level target into predefined categories at the level of administrative regions; see, for example, <span class="citation" data-cites="johnson2021">Johnson et al. (<a href="references.html#ref-johnson2021" role="doc-biblioref">2021</a>)</span> and <span class="citation" data-cites="puranik2024">Puranik et al. (<a href="references.html#ref-puranik2024" role="doc-biblioref">2024</a>)</span>.</p>
+<p>To formalize this problem mathematically, let <span class="math inline">\(\mathcal{M}_i\)</span> represent the true value of the areal-level target (e.g., the average prevalence over a district), and let <span class="math inline">\(\hat{\mathcal{M}}_{C,i}\)</span> denote the corresponding prediction produced by the candidate model <span class="math inline">\(M_C\)</span>. Note that <span class="math inline">\(\mathcal{M}_i\)</span> can be easily calculated in Step 1 during simulations from the true model (<a href="#sec-sim-step1" class="quarto-xref"><span>Section 4.5.1</span></a>).</p>
 <p>Now, consider that the target <span class="math inline">\(\mathcal{M}_i\)</span> is categorized into predefined classes, which are typically thresholds or ranges of the disease indicator (such as values that define low, medium, and high levels). Denote the true membership class of areal unit <span class="math inline">\(i\)</span> by <span class="math inline">\(\mathcal{D}_i\)</span>, which is determined based on <span class="math inline">\(\mathcal{M}_i\)</span>, and the predicted membership class by <span class="math inline">\(\hat{\mathcal{D}}_{C,i}\)</span>, determined based on <span class="math inline">\(\hat{\mathcal{M}}_{C,i}\)</span>. The goal is to assess the overall quality of the classification, which involves evaluating how well the predicted classes <span class="math inline">\(\hat{\mathcal{D}}_{C,i}\)</span> agree with the true classes <span class="math inline">\(\mathcal{C}_i\)</span> across all areal units and simulations. This assessment provides insight into the model’s ability to accurately classify regions according to the chosen disease indicator and thus guide effective policy decisions.</p>
-<p>The required changes to Step 3 (<a href="#sec-sim-step3" class="quarto-xref"><span>Section 4.6.3</span></a>) consist of simply carrying the predictions over the areal units as explained in <a href="#sec-areal-target" class="quarto-xref"><span>Section 4.4</span></a>.</p>
+<p>The required changes to Step 3 (<a href="#sec-sim-step3" class="quarto-xref"><span>Section 4.5.3</span></a>) consist of simply carrying the predictions over the areal units as explained in <a href="#sec-areal-target" class="quarto-xref"><span>Section 4.3</span></a>.</p>
 <p>For Step 4, which concerns how we summarize the agreement between the classification generated by <span class="math inline">\(M_C\)</span> and the true classes <span class="math inline">\(\mathcal{D}_i\)</span>, we can proceed as follows. First, we distinguish between indicators that can be computed for a given region and those that summarize performance across all regions.</p>
 <p>Assessing classification performance can be approached similarly to evaluating a diagnostic test. Here, true positives, true negatives, false positives, and false negatives are defined at the level of individual spatial units that subdivide the study area. Hence, key indicators include:</p>
 <ol type="1">
@@ -1475,8 +1495,8 @@ M_C   M_C 0.004390553 0.0008564500</code></pre>
 <li><p>NPV is most relevant when it is critical to trust negative predictions, i.e., ensuring that regions predicted as low-prevalence are indeed low-prevalence. NPV is particularly important in low-prevalence settings, where a high proportion of predicted negatives are true negatives.</p></li>
 </ul>
 <p>Ultimately, the selection of indicators should result from a dialogue between statisticians, epidemiologists, and policy makers, ensuring alignment with the specific priorities and policy decisions being informed by the model’s classifications.</p>
-<section id="example-3" class="level4" data-number="4.6.5.1"><h4 data-number="4.6.5.1" class="anchored" data-anchor-id="example-3">
-<span class="header-section-number">4.6.5.1</span> Example</h4>
+<section id="example-3" class="level4" data-number="4.5.5.1"><h4 data-number="4.5.5.1" class="anchored" data-anchor-id="example-3">
+<span class="header-section-number">4.5.5.1</span> Example</h4>
 <p>Using the same models, <span class="math inline">\(M_T\)</span> and <span class="math inline">\(M_C\)</span>, from the river blindness example in Liberia, we now compare their performance in classifying admin level 1 regions into two prevalence categories, <span class="math inline">\((0, 0.2)\)</span> and $(0.2, 1) $. The assessment is conducted using <code>assess_sim</code>, where the prevalence surface is first aggregated at the areal level before classification.</p>
 <div class="cell">
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Admin level 1 shape files</span></span>
@@ -1527,10 +1547,10 @@ Mean: 0.868, 95% CI: [0.600, 1.000]</code></pre>
 </div>
 </div>
 <p>In this example, the performance of models <span class="math inline">\(M_T\)</span>​ and <span class="math inline">\(M_C\)</span>​ is comparable across all considered indicators. This similarity arises for the same reasons previously discussed examining the quality of prevalence surface predictions.</p>
-</section></section></section><section id="sec-theory-prediction" class="level2" data-number="4.7"><h2 data-number="4.7" class="anchored" data-anchor-id="sec-theory-prediction">
-<span class="header-section-number">4.7</span> Theory</h2>
-<section id="sec-pred-distr-theory" class="level3" data-number="4.7.1"><h3 data-number="4.7.1" class="anchored" data-anchor-id="sec-pred-distr-theory">
-<span class="header-section-number">4.7.1</span> Expression of the predictive distribution for a linear geostatistical model</h3>
+</section></section></section><section id="sec-theory-prediction" class="level2" data-number="4.6"><h2 data-number="4.6" class="anchored" data-anchor-id="sec-theory-prediction">
+<span class="header-section-number">4.6</span> Theory</h2>
+<section id="sec-pred-distr-theory" class="level3" data-number="4.6.1"><h3 data-number="4.6.1" class="anchored" data-anchor-id="sec-pred-distr-theory">
+<span class="header-section-number">4.6.1</span> Expression of the predictive distribution for a linear geostatistical model</h3>
 <p>In this section, we consider the simple case of a linear geostatistical model with a single observation per location.</p>
 <p>Let <span class="math inline">\(Y = (Y_1, \ldots, Y_n)^\top\)</span> be the vector of data associated with spatial locations <span class="math inline">\(x_1, \ldots, x_n\)</span>. The model assumes that:</p>
 <p><span class="math display">\[\begin{equation}
@@ -1553,8 +1573,8 @@ E[W(T^*) | Y] &amp;\approx  \frac{1}{B} \sum_{J=1}^B W^{*}_{(j)}), \\
 \text{Var}[W(T^*) | Y] &amp;\approx \frac{1}{B-1} \sum_{j=1}^B \left( W^{*}_{(j)} - E[W(T^*)] \right)^2.
 \end{align}\]</span></p>
 <p>For more detailed explanations on this we refer you to Chapter 6 of <span class="citation" data-cites="diggle2007book">P. Diggle and Ribeiro (<a href="references.html#ref-diggle2007book" role="doc-biblioref">2007</a>)</span>.</p>
-</section><section id="a-brief-overview-of-scoring-rules" class="level3" data-number="4.7.2"><h3 data-number="4.7.2" class="anchored" data-anchor-id="a-brief-overview-of-scoring-rules">
-<span class="header-section-number">4.7.2</span> A brief overview of scoring rules</h3>
+</section><section id="a-brief-overview-of-scoring-rules" class="level3" data-number="4.6.2"><h3 data-number="4.6.2" class="anchored" data-anchor-id="a-brief-overview-of-scoring-rules">
+<span class="header-section-number">4.6.2</span> A brief overview of scoring rules</h3>
 <p>We now provide an overview of the theoretical framework of <em>scoring rules</em>, of which the continuous ranked probability score (CRPS) and its scaled variant (SCRPS), previously presented, are an example. Scoring rules are a tool used in the evaluation of probabilistic forecasts. As shown for CRPS and SCRPS, scoring rules are designed to measure how well a predictive distribution aligns with observed outcomes, balancing both <em>calibration</em> and <em>sharpness</em>.</p>
 <p>In general, a scoring rule is a function <span class="math inline">\(G(F, y)\)</span> that assigns a numerical score to a predictive distribution <span class="math inline">\(F\)</span> and an observed outcome <span class="math inline">\(y\)</span>. Lower scores typically indicate better predictive performance, as they reflect a closer match between the predicted distribution and the observed value.</p>
 <p>A central concept in the theory of scoring rules is that of <em>proper scoring rules</em>. A scoring rule is said to be <em>proper</em> if it favours honest predictions or, in other words, if the expected score is minimized when the predictive distribution <span class="math inline">\(F\)</span> matches the true data-generating distribution <span class="math inline">\(F^*\)</span>. More formally, a scoring rule <span class="math inline">\(G\)</span> is proper if, for all distributions <span class="math inline">\(F\)</span> and <span class="math inline">\(F^*\)</span>, we have: <span class="math display">\[
@@ -1579,8 +1599,8 @@ E[G(F, Y)] = \underbrace{\text{Uncertainty}}_{\text{inherent in data}} - \underb
 <p>This decomposition highlights an important trade-off: improving sharpness without compromising calibration is the hallmark of a good probabilistic model. A model that produces overly sharp forecasts may suffer from poor calibration, while a model that is perfectly calibrated but overly diffuse lacks resolution.</p>
 <p>As we have shown in this chapter, scoring rules are particularly appropriate in cross-validation frameworks, where the goal is to evaluate how well a model predicts future data realizations. When instead conducting simulation studies, we generate data from a known simulated true surface which becomes our benchmark. Hence, in simulation studies, we do not perform cross-validation but, for a given simulation, we compare the model predictions against the true surface. In such cases, scoring rules are not used because they are designed to assess predictive performance based on observed data, where both calibration and sharpness are critical considerations. Hence, in simulation studies, prediction performance metrics, such as bias, mean squared error (MSE), or other distance-based metrics that directly quantify the deviation from the known truth can be used to quantify the predictive performance of a model.</p>
 <p>For a more detailed explanation of scoring rules, <span class="citation" data-cites="gneiting2007">Gneiting, Balabdaoui, and Raftery (<a href="references.html#ref-gneiting2007" role="doc-biblioref">2007</a>)</span> is a recommended read.</p>
-</section></section><section id="summary" class="level2" data-number="4.8"><h2 data-number="4.8" class="anchored" data-anchor-id="summary">
-<span class="header-section-number">4.8</span> Summary</h2>
+</section></section><section id="summary" class="level2" data-number="4.7"><h2 data-number="4.7" class="anchored" data-anchor-id="summary">
+<span class="header-section-number">4.7</span> Summary</h2>
 <p>In this chapter, we have demonstrated how geostatistical models can be used to draw predictive inference for targets that are spatially continuous (e.g., a prevalence surface within a study region) and aggregated at the areal level (e.g., the average disease prevalence in a district). The fundamental concept underpinning geostatistical prediction is that of the <strong>predictive distribution</strong>, which we define as the distribution of the target <span class="math inline">\(T(x)\)</span> conditioned on the data <span class="math inline">\(y\)</span>. This distribution is the key element that enables the derivation and computation of point predictions, predictive intervals and the probability that the target falls within a pre-specified interval or above/below a given threshold.</p>
 <p>To assess the predictive performance of a geostatistical model, we have considered two complementary approaches: <strong>cross-validation</strong> and <strong>simulation studies</strong>.</p>
 <p>In the cross-validation framework, the concepts of <strong>calibration</strong> and <strong>sharpness</strong> are introduced to evaluate the quality of spatial predictions. Calibration refers to the agreement between the predicted probability of an event occurring and its actual observed frequency. Sharpness, on the other hand, quantifies the concentration of the predictive distribution around its point estimate. However, sharper predictions are not necessarily better; they must be well-calibrated to be meaningful. Thus, it is appropriate to discuss sharpness only in the context of well calibrated models.</p>
@@ -1641,8 +1661,8 @@ Table&nbsp;4.2: Summary of the different diagnostic tools and metrics, that are 
 </div>
 </figure>
 </div>
-</section><section id="faqs" class="level2" data-number="4.9"><h2 data-number="4.9" class="anchored" data-anchor-id="faqs">
-<span class="header-section-number">4.9</span> FAQs</h2>
+</section><section id="faqs" class="level2" data-number="4.8"><h2 data-number="4.8" class="anchored" data-anchor-id="faqs">
+<span class="header-section-number">4.8</span> FAQs</h2>
 <ul>
 <li><em>What should be the spatial resolution of the grid used for prediction?</em></li>
 </ul>
@@ -1662,9 +1682,9 @@ Table&nbsp;4.2: Summary of the different diagnostic tools and metrics, that are 
 <ul>
 <li><em>In my model I have some covariates that are attached to the individual (e.g.&nbsp;age, gender, occupation, etc.). How do I specify them when doing prediction?</em></li>
 </ul>
-<p>The answer to this question is given in <a href="#sec-non-spar-covariates" class="quarto-xref"><span>Section 4.3.2</span></a>.</p>
-</section><section id="review-questions" class="level2" data-number="4.10"><h2 data-number="4.10" class="anchored" data-anchor-id="review-questions">
-<span class="header-section-number">4.10</span> Review questions</h2>
+<p>The answer to this question is given in <a href="#sec-non-spar-covariates" class="quarto-xref"><span>Section 4.2.2</span></a>.</p>
+</section><section id="review-questions" class="level2" data-number="4.9"><h2 data-number="4.9" class="anchored" data-anchor-id="review-questions">
+<span class="header-section-number">4.9</span> Review questions</h2>
 <ul>
 <li>What are the steps that needs to taken when performing spatial prediction?</li>
 <li>Define the predictive distribution of a predictive target and explain how this is used to answer a research question.</li>
@@ -1674,18 +1694,18 @@ Table&nbsp;4.2: Summary of the different diagnostic tools and metrics, that are 
 <li>Explain how calibration can be assessed using graphical tools, by distinguishing between continuous and count outcomes.</li>
 <li>Give examples of metrics that can be used to evaluate calibration and sharpness.</li>
 <li>Explain how simulation studies can be carried to assess the predictive performance of geostatistical models and how this differ from cross-validation.</li>
-</ul></section><section id="exercises" class="level2" data-number="4.11"><h2 data-number="4.11" class="anchored" data-anchor-id="exercises">
-<span class="header-section-number">4.11</span> Exercises</h2>
+</ul></section><section id="exercises" class="level2" data-number="4.10"><h2 data-number="4.10" class="anchored" data-anchor-id="exercises">
+<span class="header-section-number">4.10</span> Exercises</h2>
 <ol type="1">
-<li><p>Using the code from <a href="#sec-compare-pp" class="quarto-xref"><span>Section 4.5</span></a>, redraw the plot of <a href="#fig-anpit" class="quarto-xref">Figure&nbsp;<span>4.10</span></a> by choosing different values for the dispersion parameter of the Negative Binomial distribution. What happens when <span class="math inline">\(\alpha\)</span> is close to 0 and why?</p></li>
-<li><p>Consider the example in <a href="#sec-liberia-anpit" class="quarto-xref"><span>Section 4.5.2.1</span></a>. Fit a third model, that extends <span class="math inline">\(M1\)</span> by adding a nugget effect, hence <span class="math display">\[
+<li><p>Using the code from <a href="#sec-compare-pp" class="quarto-xref"><span>Section 4.4</span></a>, redraw the plot of <a href="#fig-anpit" class="quarto-xref">Figure&nbsp;<span>4.10</span></a> by choosing different values for the dispersion parameter of the Negative Binomial distribution. What happens when <span class="math inline">\(\alpha\)</span> is close to 0 and why?</p></li>
+<li><p>Consider the example in <a href="#sec-liberia-anpit" class="quarto-xref"><span>Section 4.4.2.1</span></a>. Fit a third model, that extends <span class="math inline">\(M1\)</span> by adding a nugget effect, hence <span class="math display">\[
 M_{2} \: : \: \log\left\{\frac{p(x_i)}{1-p(x_i)}\right\} = \beta_0 + \beta_{1}e(x_i) + \beta_{2}\max\{e(x_i) - 150, 0\} + S(x_i) + Z_i.
 \]</span> Generate the AnPIT plot for <span class="math inline">\(M_2\)</span> and compare it to those of <span class="math inline">\(M_0\)</span> and <span class="math inline">\(M_1\)</span>. Make sure to apply the function <code>assess_pp</code> to all three models so that the same test sets are used. Is <span class="math inline">\(M_2\)</span> showing a better calibration? Why?</p></li>
 <li><p>In the analysis of the <em>Anopheles gambiae</em> moqsuitoes data, consider two models. One that uses elavation, with linear predictor <span class="math display">\[
 M_1\: : \: \log\{\lambda(x_i)\} = \beta_0 + \beta_1 e(x_i) + S(x_i)
 \]</span> where <span class="math inline">\(e(x)\)</span> is the elevation in meters at location <span class="math inline">\(x\)</span> and <span class="math inline">\(S(x_i)\)</span> is a stationary and isotropic Gaussian process with variance <span class="math inline">\(\sigma^2\)</span> and exponential correlation function <span class="math inline">\(\rho(u) = \exp\{-u/\phi\}, \phi&gt;0\)</span>. Consider also an intercept only model <span class="math display">\[
 M_0\: : \: \log\{\lambda(x_i)\} = \beta_0 +  S(x_i).
-\]</span> After fitting both models to the data, assess if they are well calibrated models using the average nonrandomized probability integral transform (AnPIT). Assuming both models are well-calibrated, compare the predictive performance using continuous ranked probability score (CRPS) and the scaled CRPS. In doing this, use different sampling schemes to split the data, as illustrated in <a href="#sec-split-data" class="quarto-xref"><span>Section 4.5.1</span></a>, and assess if and how the adopted approach to split the data affects the results.</p></li>
+\]</span> After fitting both models to the data, assess if they are well calibrated models using the average nonrandomized probability integral transform (AnPIT). Assuming both models are well-calibrated, compare the predictive performance using continuous ranked probability score (CRPS) and the scaled CRPS. In doing this, use different sampling schemes to split the data, as illustrated in <a href="#sec-split-data" class="quarto-xref"><span>Section 4.4.1</span></a>, and assess if and how the adopted approach to split the data affects the results.</p></li>
 <li><p>Consider the Liberia data-set on riverblindess. Carry out a simulation study where the objective is to assess the impact of mispecifying non-linear relationships between elevation and prevalence. Consider <a href="#eq-true-model-lib" class="quarto-xref">Equation&nbsp;<span>4.9</span></a> as the true model and a model that specifies the relationship as linear on the logit scale as the candidate model, hence <span class="math display">\[M_{C}: \:
 \log\left\{\frac{p(x_i)}{1-p(x_i)}\right\} = \beta_{0} + \beta_{1}e(x_i) + S(x_i).
 \]</span> Carry out 200 iterations in the simulation and define a suitable metric of predictive performance to compare the two models. Provide a clear answer on the impact of assuming a linear relationship with elevation when this is not valid.</p></li>
@@ -1803,6 +1823,9 @@ Geyer, Charles J. 1994. <span>“Likelihood and Exponential Families.”</span> 
 </div>
 <div id="ref-ghanaDHS2014" class="csl-entry" role="listitem">
 Ghana Statistical Service, Ghana Health Service, and ICF International. 2015. <em>Ghana Demographic and Health Survey 2014</em>. Rockville, Maryland, USA: Ghana Statistical Service, Ghana Health Service,; ICF International. <a href="https://dhsprogram.com/publications/publication-FR307-DHS-Final-Reports.cfm">https://dhsprogram.com/publications/publication-FR307-DHS-Final-Reports.cfm</a>.
+</div>
+<div id="ref-giorgi2017" class="csl-entry" role="listitem">
+Giorgi, Emanuele, and Peter J. Diggle. 2017. <span>“PrevMap: An r Package for Prevalence Mapping.”</span> <em>Journal of Statistical Software</em> 78 (8): 1–29. <a href="https://doi.org/10.18637/jss.v078.i08">https://doi.org/10.18637/jss.v078.i08</a>.
 </div>
 <div id="ref-gneiting2007" class="csl-entry" role="listitem">
 Gneiting, Tilmann, Fadoua Balabdaoui, and Adrian E Raftery. 2007. <span>“Probabilistic Forecasts, Calibration and Sharpness.”</span> <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em> 69 (2): 243–68.
@@ -1943,241 +1966,243 @@ Zhang, Hao. 2002. <span>“On Estimation and Prediction for Spatial Generalized 
 Zouré, Honorat GM, Mounkaila Noma, Afework H Tekle, Uche V Amazigo, Peter J Diggle, Emanuele Giorgi, and Jan HF Remme. 2014. <span>“Geographic Distribution of Onchocerciasis in the 20 Participating Countries of the African Programme for Onchocerciasis Control: (2) Pre-Control Endemicity Levels and Estimated Number Infected.”</span> <em>Parasites &amp; Vectors</em> 7 (1): 326–26.
 </div>
 </div>
-</section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
-<ol>
-<li id="fn1"><p>Here, we are overlooking the fact that when <span class="math inline">\(T(x)\)</span> is a linear transformation of <span class="math inline">\(S(x)\)</span> and the the model fitted to the data is a linear geostatistical model, then we can derive any summary of the predictive distribution analytically, without the need of carrying out any simulation. Although this may displease some of our fellow statisticians who care about computational efficiency, for pedagogical reasons, here we have chosen to explain only the Monte Carlo based approach, which works in all scenarios.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>The convex hull of a set of spatial locations is the smallest possible shape (usually a polygon) that completely encloses all the points, such that if you take any two points inside the shape, the straight line connecting them is also entirely inside the shape. In simple terms, it can be thought of as stretching a rubber band around the outermost points in a set, and the shape the rubber band forms is the convex hull.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
-      }
-    }
-    return false;
-  }
-  const onCopySuccess = function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
-      }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  }
-  const getTextToCopy = function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-    text: getTextToCopy
-  });
-  clipboard.on('success', onCopySuccess);
-  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-      text: getTextToCopy,
-      container: window.document.getElementById('quarto-embedded-source-code-modal')
-    });
-    clipboardModal.on('success', onCopySuccess);
-  }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-    var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-        // undo the damage that might have been done by quarto-nav.js in the case of
-        // links that we want to consider external
-        if (link.dataset.originalHref !== undefined) {
-          link.href = link.dataset.originalHref;
-        }
-      }
-    }
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-    const config = {
-      allowHTML: true,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start',
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
     };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      if (note) {
-        return note.innerHTML;
-      } else {
-        return "";
-      }
-    });
-  }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
         }
       }
+      return false;
     }
-    stripColumnClz(note)
-    if (id === null || id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
-          } else {
-            container.appendChild(child.cloneNode(true));
-            break;
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
           }
         }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(container);
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
         }
-        return container.innerHTML
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
       } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(note);
-      }
-      if (note.classList.contains("callout")) {
-        return note.outerHTML;
-      } else {
-        return note.innerHTML;
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
       }
     }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
           }
         } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
+            const note = htmlDoc.querySelector('main.content');
             if (note !== null) {
-              const html = processXRef(id, note);
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -2185,185 +2210,161 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             instance.show();
           });
         }
-      } else {
-        // See if we can fetch a full url (with no hash to target)
-        // This is a special case and we should probably do some content thinning / targeting
-        fetch(url)
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.querySelector('main.content');
-          if (note !== null) {
-            // This should only happen for chapter cross references
-            // (since there is no id in the URL)
-            // remove the first header
-            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-              note.children[0].remove();
-            }
-            const html = processXRef(null, note);
-            instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
-      }
-    }, function(instance) {
-    });
-  }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            div.style.left = 0;
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
-    }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
-          }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
+      }, function(instance) {
       });
     }
-  }
-});
-</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./03_model-fitting.html" class="pagination-link" aria-label="Model formulation and parameter estimation">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Model formulation and parameter estimation</span></span>
       </a>          

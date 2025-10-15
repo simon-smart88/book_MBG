@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>1&nbsp; Introduction – Model-based geostatistics for global public health using R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./02_handling-spatial-data.html" rel="next">
+<link href="./author.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-425560e6e27c88e19529b7c03591d40d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-21c7f0257b9bb094a624d430cf8b6a6a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+</head>
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01_intro.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Model-based geostatistics for global public health using R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Author</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_handling-spatial-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Handling of spatial data in R</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_model-fitting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Model formulation and parameter estimation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_geostatistical-prediction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Geostatistical prediction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_case-studies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Case studies</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Contents</h2>
+   
+  <ul>
+<li><a href="#objectives-of-this-book" id="toc-objectives-of-this-book" class="nav-link active" data-scroll-target="#objectives-of-this-book"><span class="header-section-number">1.1</span> Objectives of this book</a></li>
+  <li>
+<a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites"><span class="header-section-number">1.2</span> Prerequisites</a>
+  <ul class="collapse">
+<li><a href="#topics-in-probability" id="toc-topics-in-probability" class="nav-link" data-scroll-target="#topics-in-probability"><span class="header-section-number">1.2.1</span> Topics in probability</a></li>
+  <li><a href="#topics-in-statistics" id="toc-topics-in-statistics" class="nav-link" data-scroll-target="#topics-in-statistics"><span class="header-section-number">1.2.2</span> Topics in statistics</a></li>
+  <li><a href="#topics-in-r-programming" id="toc-topics-in-r-programming" class="nav-link" data-scroll-target="#topics-in-r-programming"><span class="header-section-number">1.2.3</span> Topics in R programming</a></li>
+  </ul>
+</li>
+  <li><a href="#obtaining-and-running-the-r-packages" id="toc-obtaining-and-running-the-r-packages" class="nav-link" data-scroll-target="#obtaining-and-running-the-r-packages"><span class="header-section-number">1.3</span> Obtaining and running the R packages</a></li>
+  <li>
+<a href="#sec-examples-ch1" id="toc-sec-examples-ch1" class="nav-link" data-scroll-target="#sec-examples-ch1"><span class="header-section-number">1.4</span> Data-sets used in the book</a>
+  <ul class="collapse">
+<li><a href="#lead-concentration-in-galicia" id="toc-lead-concentration-in-galicia" class="nav-link" data-scroll-target="#lead-concentration-in-galicia"><span class="header-section-number">1.4.1</span> Lead concentration in Galicia</a></li>
+  <li><a href="#sec-rb-ch1" id="toc-sec-rb-ch1" class="nav-link" data-scroll-target="#sec-rb-ch1"><span class="header-section-number">1.4.2</span> River-blindness in Liberia</a></li>
+  <li><a href="#sec-malaria-ch1" id="toc-sec-malaria-ch1" class="nav-link" data-scroll-target="#sec-malaria-ch1"><span class="header-section-number">1.4.3</span> Malaria in the Western Kenyan Highlands</a></li>
+  <li><a href="#sec-mosq-data-ch1" id="toc-sec-mosq-data-ch1" class="nav-link" data-scroll-target="#sec-mosq-data-ch1"><span class="header-section-number">1.4.4</span> <em>Anopheles gambiae</em> mosquitoes in Southern Cameroon</a></li>
+  <li><a href="#sec-italy-sim-data-ch1" id="toc-sec-italy-sim-data-ch1" class="nav-link" data-scroll-target="#sec-italy-sim-data-ch1"><span class="header-section-number">1.4.5</span> Simulated-dataset</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-geostat-models" id="toc-sec-geostat-models" class="nav-link" data-scroll-target="#sec-geostat-models"><span class="header-section-number">1.5</span> Geostatistical problems and geostatistical models</a>
+  <ul class="collapse">
+<li><a href="#sec-matern-correlation" id="toc-sec-matern-correlation" class="nav-link" data-scroll-target="#sec-matern-correlation"><span class="header-section-number">1.5.1</span> The Matern family of correlation functions</a></li>
+  </ul>
+</li>
+  <li><a href="#sec-workflow" id="toc-sec-workflow" class="nav-link" data-scroll-target="#sec-workflow"><span class="header-section-number">1.6</span> Workflow of a statistical analysis and structure of the book</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span>
+</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>The purpose of this book is to demonstrate how to conduct model-based geostatistical analysis of public health data using the <code>RiskMap</code> R package. In this introductory chapter, we outline the prerequisites for using the book, its learning objectives, and the required software. We then provide a brief overview of the class of models that will be covered and the real-world examples that will be used to illustrate the methods and software.</p>
+<section id="objectives-of-this-book" class="level2" data-number="1.1"><h2 data-number="1.1" class="anchored" data-anchor-id="objectives-of-this-book">
+<span class="header-section-number">1.1</span> Objectives of this book</h2>
+<p>The overall aim of this book is to equip you with the skills needed to perform geostatistical analyses of public health data within the R software environment. As you progress through the material, you will learn how to explore geostatistical datasets using graphical procedures and summary statistics, to formulate and fit geostatistical models by maximum likelihood estimation, to generate predictions of health outcomes at different spatial scales, to visualize and interpret the resulting outputs, to model relationships between spatially referenced risk factors and health outcomes, and to evaluate model assumptions while assessing predictive performance. Although the emphasis is on public health, the statistical concepts and software tools presented here are broadly applicable to geostatistical data from many other scientific fields.</p>
+</section><section id="prerequisites" class="level2" data-number="1.2"><h2 data-number="1.2" class="anchored" data-anchor-id="prerequisites">
+<span class="header-section-number">1.2</span> Prerequisites</h2>
+<p>To make the most of this book, readers are expected to have prior knowledge of three areas: probability, statistics, and R programming. The following sections describe the essential background in each area.</p>
+<section id="topics-in-probability" class="level3" data-number="1.2.1"><h3 data-number="1.2.1" class="anchored" data-anchor-id="topics-in-probability">
+<span class="header-section-number">1.2.1</span> Topics in probability</h3>
+<p>A working knowledge of probability is important to understand the material covered in this book. You should already be familiar with the definition and properties of continuous and discrete distributions, with the use of means, variances and skewness to describe their properties, and with the concepts of stochastic dependence and correlation, including the distinction between marginal and conditional distributions. It is also important to understand the properties of the Gaussian, Binomial and Poisson distributions, and to be aware of the definition and key properties of the multivariate Gaussian distribution. A clear introduction to these topics, with worked examples, can be found in <span class="citation" data-cites="ross2013">Ross (<a href="references.html#ref-ross2013" role="doc-biblioref">2013</a>)</span>.</p>
+</section><section id="topics-in-statistics" class="level3" data-number="1.2.2"><h3 data-number="1.2.2" class="anchored" data-anchor-id="topics-in-statistics">
+<span class="header-section-number">1.2.2</span> Topics in statistics</h3>
+<p>Statistical modelling provides the theoretical foundation for this book, which relies heavily on likelihood-based inference and, in particular, maximum likelihood estimation. You should therefore be comfortable with the use of point and interval estimation within this framework. Because the geostatistical modelling approach builds directly on Generalized Linear Models (GLMs), prior knowledge of GLMs is essential. We recommend reviewing the theory and applications of linear regression for continuous outcomes, Binomial regression and Poisson regression for count data. This book will build on those foundations with geostatistical models for continuously measured outcomes and counts. A comprehensive overview of GLMs and their implementation in R is given in <span class="citation" data-cites="dobson2008">Dobson and Barnett (<a href="references.html#ref-dobson2008" role="doc-biblioref">2008</a>)</span>. For further background on likelihood-based inference, see chapters 1, 2 and 4 of <span class="citation" data-cites="pawitan2001">Pawitan (<a href="references.html#ref-pawitan2001" role="doc-biblioref">2001</a>)</span>.</p>
+</section><section id="topics-in-r-programming" class="level3" data-number="1.2.3"><h3 data-number="1.2.3" class="anchored" data-anchor-id="topics-in-r-programming">
+<span class="header-section-number">1.2.3</span> Topics in R programming</h3>
+<p>Although advanced programming skills are not required, a working knowledge of R is necessary. You should already be able to create and manipulate vectors and matrices, use logical and character variables, work with lists and data frames, import data into R, and produce basic plots. A wide range of freely available material covers these topics; a useful starting point is <em>An Introduction to R</em>, available at <a href="https://cran.r-project.org/manuals.html">https://cran.r-project.org/manuals.html</a>.</p>
+</section></section><section id="obtaining-and-running-the-r-packages" class="level2" data-number="1.3"><h2 data-number="1.3" class="anchored" data-anchor-id="obtaining-and-running-the-r-packages">
+<span class="header-section-number">1.3</span> Obtaining and running the R packages</h2>
+<p>It is advised that you obtain the latest 64-bit version of R in order to run the R code of this book. To install R, go to the R website, where you can download the installer packages for Windows and Mac, and find instructions for Linux, using binary files.</p>
+<ul>
+<li><a href="https://cran.r-project.org/bin/windows/base/">Windows</a></li>
+<li><a href="https://cran.r-project.org/bin/macosx">Mac</a></li>
+<li><a href="https://cran.r-project.org/bin/linux">Linux</a></li>
+</ul>
+<p>The list of the R packages used in this book is provided in <a href="#tbl-packages" class="quarto-xref">Table&nbsp;<span>1.1</span></a>.</p>
+<div id="tbl-packages" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-packages-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1.1: List of the R packages that will be used in the book with a description of their use in the data analysis. The packages marked by (E) are essential for the geostatistical analysis. Those instead marked by (R) are recommended and are especially useful to be able to recreate the plots generated in the later chapters.
+</figcaption><div aria-describedby="tbl-packages-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 79%">
+</colgroup>
+<thead><tr class="header">
+<th>R packages</th>
+<th>Used for</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>
+<code>RiskMap</code> (E)</td>
+<td>Estimation of geostatistical models and spatial prediction</td>
+</tr>
+<tr class="even">
+<td>
+<code>sf</code> (E)</td>
+<td>Handling of spatial data in R</td>
+</tr>
+<tr class="odd">
+<td>
+<code>terra</code> (E)</td>
+<td>Handling of raster files in R</td>
+</tr>
+<tr class="even">
+<td>
+<code>ggplot2</code> (E)</td>
+<td>Creating maps and exploratory plots</td>
+</tr>
+<tr class="odd">
+<td>
+<code>dplyr</code> (E)</td>
+<td>Data wrangling and manipulation</td>
+</tr>
+<tr class="even">
+<td>
+<code>tidyr</code> (E)</td>
+<td>Reshaping and tidying data</td>
+</tr>
+<tr class="odd">
+<td>
+<code>rgeoboundaries</code> (R)</td>
+<td>Accessing global administrative boundary datasets from GeoBoundaries</td>
+</tr>
+<tr class="even">
+<td>
+<code>gridExtra</code> (R)</td>
+<td>Arranging multiple plots and tables in a grid layout</td>
+</tr>
+<tr class="odd">
+<td>
+<code>patchwork</code> (R)</td>
+<td>Combining multiple ggplot2 plots into a single coherent display</td>
+</tr>
+<tr class="even">
+<td>
+<code>factoextra</code> (R)</td>
+<td>Extracting and visualizing multivariate analysis results</td>
+</tr>
+<tr class="odd">
+<td>
+<code>scales</code> (R)</td>
+<td>Controlling axis transformations, breaks, and labels in ggplot2 graphics</td>
+</tr>
+<tr class="even">
+<td>
+<code>crsuggest</code> (R)</td>
+<td>Guessing coordinate reference systems when unknown</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>When running the code examples in this book, you may occasionally encounter error messages indicating that a function cannot be found. This usually happens when the corresponding R package has not been loaded. To avoid such issues, we recommend always loading all the packages listed in <a href="#tbl-packages" class="quarto-xref">Table&nbsp;<span>1.1</span></a> before running the code.</p>
+</div>
+</div>
+<p>To install packages in R for the first time, you can use the command <code>install.packages</code> in the R console. For example, to install the stable CRAN release of the <code>RiskMap</code> package, run:</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"RiskMap"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Alternatively, you can install the development version of <code>RiskMap</code> from GitHub, which is updated more frequently but should be considered a testing version. This requires the <code>remotes</code> package:</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"giorgistat/RiskMap"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="sec-examples-ch1" class="level2" data-number="1.4"><h2 data-number="1.4" class="anchored" data-anchor-id="sec-examples-ch1">
+<span class="header-section-number">1.4</span> Data-sets used in the book</h2>
+<p>In this book, we use data available from the <code>RiskMap</code> package. These data-sets are grouped into two categories: <em>examples</em>, which are used to demonstrate the application of R functions and modelling steps, and <em>case studies</em>, which are analysed in greater depth to illustrate the use of complete geostatistical workflows. In this introductory chapter, we focus on presenting the <em>example</em> data-sets, while leaving the detailed presentation and analysis of the <em>case study</em> data-sets to <a href="05_case-studies.html" class="quarto-xref"><span>Chapter 5</span></a>.</p>
+<p>Each of the data-sets, whether <em>example</em> or <em>case-study</em>, can be loaded directly from the <code>RiskMap</code> package using the command:</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">NAME_OF_THE_DATASET</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>where <code>NAME_OF_THE_DATASET</code> should be replaced with the name of one of the data-sets listed in <a href="#tbl-data-sets" class="quarto-xref">Table&nbsp;<span>1.2</span></a>.</p>
+<div id="tbl-data-sets" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-data-sets-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1.2: List of data-sets available from the <code>RiskMap</code> package. Data-sets listed as “Example” are used throughout the book to illustrate the use of R functions. Data-sets listed as “Case study” are analysed in <a href="05_case-studies.html" class="quarto-xref"><span>Chapter 5</span></a>.
+</figcaption><div aria-describedby="tbl-data-sets-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 36%">
+<col style="width: 29%">
+<col style="width: 33%">
+</colgroup>
+<thead><tr class="header">
+<th>Names of the data-set</th>
+<th>Short description</th>
+<th>Used in this book as</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>galicia</code></td>
+<td>Lead concentration measured from moss samples collected in Galicia, Northern Spain</td>
+<td>Example</td>
+</tr>
+<tr class="even">
+<td><code>liberia</code></td>
+<td>Prevalence data on river blindness from Liberia</td>
+<td>Example</td>
+</tr>
+<tr class="odd">
+<td><code>malkenya</code></td>
+<td>Malaria prevalence data from a community and school survey conducted in Western Kenya</td>
+<td>Example</td>
+</tr>
+<tr class="even">
+<td><code>italy_sim</code></td>
+<td>Simulated geostatistical data within the Italian national boundaries</td>
+<td>Example</td>
+</tr>
+<tr class="odd">
+<td><code>malnutrition</code></td>
+<td>Data on stunting among children in Ghana</td>
+<td>Case study</td>
+</tr>
+<tr class="even">
+<td><code>infect_sma</code></td>
+<td>West Nile virus infection prevalence in <em>Culex pipiens</em> mosquitoes from the Sacramento Metropolitan Area, USA</td>
+<td>Case study</td>
+</tr>
+<tr class="odd">
+<td><code>abund_sma</code></td>
+<td>Abundance of <em>Culex pipiens</em> mosquitoes from the Sacramento Metropolitan Area, USA</td>
+<td>Case study</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<section id="lead-concentration-in-galicia" class="level3" data-number="1.4.1"><h3 data-number="1.4.1" class="anchored" data-anchor-id="lead-concentration-in-galicia">
+<span class="header-section-number">1.4.1</span> Lead concentration in Galicia</h3>
+<div id="fig-galicia-ch1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-galicia-ch1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<iframe src="figures/galicia_ch1.html" width="100%" height="400px" data-external="1">
+</iframe>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-galicia-ch1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.1: Data on the measured lead concentration (in micrograms per gram dry weight) in moss samples collected in Galicia, North-West of Spain.
+</figcaption></figure>
+</div>
+<p>Lead is a heavy metal that, at high concentrations, can cause chronic damage to living organisms over prolonged periods. For this reason, its distribution and sources require regular monitoring. A common approach is to measure lead concentrations in plants, which act as bioindicators of environmental contamination. The data considered here (<a href="#fig-galicia-ch1" class="quarto-xref">Figure&nbsp;<span>1.1</span></a>) consist of measurements from 132 moss samples collected in the year 2000 in and around Galicia, a region in north-western Spain. One of the main objectives of the survey was to map the spatial distribution of lead concentration in order to identify potential sources of contamination; for further details, see <span class="citation" data-cites="fernandez2000">Fernández, Rey, and Carballeira (<a href="references.html#ref-fernandez2000" role="doc-biblioref">2000</a>)</span>.</p>
+<p>Geostatistical modelling provides a framework for predicting lead concentrations across Galicia and for distinguishing between random variation, for instance due to measurement error, and genuine spatial variation, which is the principal focus of analysis.</p>
+<p>This dataset will be used throughout the book to illustrate the spatial analysis of continuously measured variables using linear geostatistical models.</p>
+</section><section id="sec-rb-ch1" class="level3" data-number="1.4.2"><h3 data-number="1.4.2" class="anchored" data-anchor-id="sec-rb-ch1">
+<span class="header-section-number">1.4.2</span> River-blindness in Liberia</h3>
+<div id="fig-liberia-ch1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-liberia-ch1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<iframe src="figures/liberia_ch1.html" width="100%" height="400px" data-external="1">
+</iframe>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-liberia-ch1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.2: River-blindness data from a cross-sectional survey carried out in Liberia.
+</figcaption></figure>
+</div>
+<p>In low-resource settings, where disease registries are often absent, cross-sectional surveys provide a critical tool for estimating disease burden in the population of interest. The data considered in this example (<a href="#fig-liberia-ch1" class="quarto-xref">Figure&nbsp;<span>1.2</span></a>) were collected as part of the Rapid Epidemiological Mapping of Onchocerciasis (REMO), an Africa-wide initiative conducted in 2011 across 20 countries <span class="citation" data-cites="zoure2014">(<a href="references.html#ref-zoure2014" role="doc-biblioref">Zouré et al. 2014</a>)</span>. The purpose of REMO was to identify areas where river blindness (onchocerciasis)—a parasitic disease transmitted by black flies that breed along fast-flowing rivers—remains a public health problem. Of particular concern are communities with prevalence above 20%, where urgent treatment is required.</p>
+<p>In this book, we use the data collected in Liberia to model nodule prevalence, an indicator derived from a cheaper alternative diagnostic technique for river blindness. Through this dataset, we demonstrate how to formulate and fit Binomial geostatistical models and how these can be applied to predict prevalence across a region of interest.</p>
+</section><section id="sec-malaria-ch1" class="level3" data-number="1.4.3"><h3 data-number="1.4.3" class="anchored" data-anchor-id="sec-malaria-ch1">
+<span class="header-section-number">1.4.3</span> Malaria in the Western Kenyan Highlands</h3>
+<div id="fig-malkenya-ch1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-malkenya-ch1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<iframe src="figures/malkenya_ch1.html" width="100%" height="400px" data-external="1">
+</iframe>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-malkenya-ch1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.3: Malaria prevalence data from a cross-sectional survey carried out in Nyanza Province, in the Western Highlands of Kenya.
+</figcaption></figure>
+</div>
+<p>Malaria is among the deadliest infectious diseases affecting populations in tropical and subtropical regions. It is caused by parasites of the genus <em>Plasmodium</em>, transmitted through the bite of infected female <em>Anopheles</em> mosquitoes. In the following chapters, we analyse a dataset (<a href="#fig-malkenya-ch1" class="quarto-xref">Figure&nbsp;<span>1.3</span></a>) from a cross-sectional community survey conducted in July 2010 in Nyanza Province, in the western highlands of Kenya <span class="citation" data-cites="stevenson2013">(<a href="references.html#ref-stevenson2013" role="doc-biblioref">Stevenson 2013</a>)</span>.</p>
+<p>What distinguishes this dataset from the other examples is that it contains both individual- and household-level information. The primary outcome is the result of a rapid diagnostic test for malaria. In this book, we show how to incorporate the hierarchical structure of the data together with the binary nature of the outcome at each stage of the geostatistical analysis.</p>
+</section><section id="sec-mosq-data-ch1" class="level3" data-number="1.4.4"><h3 data-number="1.4.4" class="anchored" data-anchor-id="sec-mosq-data-ch1">
+<span class="header-section-number">1.4.4</span> <em>Anopheles gambiae</em> mosquitoes in Southern Cameroon</h3>
+<div id="fig-anopheles-ch1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-anopheles-ch1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<iframe src="figures/anopheles_ch1.html" width="100%" height="400px" data-external="1">
+</iframe>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-anopheles-ch1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.4: Map of the collected number of <em>Anopheles gambiae</em> mosquitoes in an area of Southern Cameroon.
+</figcaption></figure>
+</div>
+<p>In studies of vector-borne and zoonotic diseases, understanding the vector distribution can help to better guide the decision-making process for the implementation, monitoring and evaluation of control programmes. <em>Anopheles gambiae</em> mosquitoes are one of the main vectors for malaria transmission in sub-Saharan Africa. Their distribution over space is affected by several environmental and climatic factors, including temperature, humidity and vegetation.</p>
+<p>The data-set on mosquitoes (<a href="#fig-anopheles-ch1" class="quarto-xref">Figure&nbsp;<span>1.4</span></a>) that we will use in the book consists of a sub-set taken from a larger database <span class="citation" data-cites="fossog2015">(<a href="references.html#ref-fossog2015" role="doc-biblioref">Tene Fossog et al. 2015</a>)</span>. This was assembled in order to understand how the environment affects the distribution of different species of <em>Anopheles</em> mosquitoes in sub-Saharan Africa. This example data-set will be used to illustrate the application of Poisson geostatistical models for mapping mosquitoes abundance.</p>
+</section><section id="sec-italy-sim-data-ch1" class="level3" data-number="1.4.5"><h3 data-number="1.4.5" class="anchored" data-anchor-id="sec-italy-sim-data-ch1">
+<span class="header-section-number">1.4.5</span> Simulated-dataset</h3>
+<div id="fig-italy-sim-ch1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-italy-sim-ch1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<iframe src="figures/italy_sim_ch1.html" width="100%" height="400px" data-external="1">
+</iframe>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-italy-sim-ch1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.5: Map of the locations of the simulated data-set generated over Italy for a continuous outcome.
+</figcaption></figure>
+</div>
+<p>The data-set reported in <a href="#fig-italy-sim-ch1" class="quarto-xref">Figure&nbsp;<span>1.5</span></a> was generated using a geostatistical model, with the addition of unstructured random effects at provincial and regional level. More details on how this data-set was generated will be provided in <a href="03_model-fitting.html#sec-linear-model" class="quarto-xref"><span>Section 3.2</span></a>. Whilst this data-set does not have any scientific relevance like the other data-sets used in this book, it will serve us to illustrate some of the more advanced features of the <code>RiskMap</code> package that enable the inclusion of random effects, in addition to the latent Gaussian process that is common to all geostatistical models. The skills you will acquire through the analysis of this data-set will be useful for the analysis of data-sets presented as case studies in <a href="05_case-studies.html" class="quarto-xref"><span>Chapter 5</span></a>.</p>
+</section></section><section id="sec-geostat-models" class="level2" data-number="1.5"><h2 data-number="1.5" class="anchored" data-anchor-id="sec-geostat-models">
+<span class="header-section-number">1.5</span> Geostatistical problems and geostatistical models</h2>
+<p>What the examples of the previous section have in common is that, in each case, the goal of the statistical analysis is to draw inferences on an unobserved spatially continuous surface using data collected from a finite set of locations. The lead concentration in Galicia, the prevalence for river-blindness in Liberia and the abundance of <em>A. gambiae</em> mosquitoes in Cameroon can all be represented as spatially continuous processes that originate from the combined effects of environmental factors. We denote this class of inferential problems as <em>geostatistical problems</em> for which a solution can be found through the development and application of suitable <em>geostatistical models</em>, which are the subject of this book.</p>
+<p>As one can soon realize, geostatistical problems are not unique to global health but arise in many other fields of science, including economics, physics, biology, geology and others. It thus comes to no surprise that geostatistics was initially developed in the South African mining industry in the 1950s <span class="citation" data-cites="krige1951">(<a href="references.html#ref-krige1951" role="doc-biblioref">Krige 1951</a>)</span>. This was then further developed as a self-contained discipline by Georges Matheron and other researchers at Fontainebleau, in France <span class="citation" data-cites="matheron1963 chilesdelfiner2016">(<a href="references.html#ref-matheron1963" role="doc-biblioref">Matheron 1963</a>; <a href="references.html#ref-chilesdelfiner2016" role="doc-biblioref">Chilès and Delfiner 2016</a>)</span>. In <span class="citation" data-cites="watson1971">Watson (<a href="references.html#ref-watson1971" role="doc-biblioref">1971</a>)</span> and <span class="citation" data-cites="watson1972">Watson (<a href="references.html#ref-watson1972" role="doc-biblioref">1972</a>)</span> a first connection is drawn between geostatistics and the prediction of stochastic processes. However, it is only with <span class="citation" data-cites="ripley1981">Ripley (<a href="references.html#ref-ripley1981" role="doc-biblioref">1981</a>)</span> and then <span class="citation" data-cites="cressie1991">N. A. C. Cressie (<a href="references.html#ref-cressie1991" role="doc-biblioref">1991</a>)</span> that geostatistics is explicitly brought into a classical statistical framework for the analysis of spatially referenced data. <span class="citation" data-cites="diggle1998">P. J. Diggle, Tawn, and Moyeed (<a href="references.html#ref-diggle1998" role="doc-biblioref">1998</a>)</span> coined the term <em>model-based geostastics</em> and introduced this as belonging to the general class of generalized linear mixed models <span class="citation" data-cites="breslow1993">(<a href="references.html#ref-breslow1993" role="doc-biblioref">Breslow and Clayton 1993</a>)</span>, while emphasizing the use of likelihood-based methods of inference. As in <span class="citation" data-cites="diggle1998">P. J. Diggle, Tawn, and Moyeed (<a href="references.html#ref-diggle1998" role="doc-biblioref">1998</a>)</span>, also in this book, we advocate the application of model-based geostistical models as a class of parametric statistical models on which inference can be carried out using either maximum likelihood estimation or Bayesian methods.</p>
+<p>More precisely, our attention will be directed at the class of <em>generalized linear geostatistical models</em>, or GLGM. To formally specify this, we first define the random variables <span class="math inline">\(S\)</span>, a spatial stochastic process, and the random variable <span class="math inline">\(Y= (Y_1, \ldots, Y_n)\)</span> which correspond to the outcome observed at a set of locations <span class="math inline">\(X = (x_1, \ldots, x_n)\)</span>. Let us use <span class="math inline">\([A]\)</span> to denote “the distribution of the random variable <span class="math inline">\(A\)</span>”. To formulate a GLGM, we should then specify the joint distribution of <span class="math inline">\(S\)</span> and <span class="math inline">\(Y\)</span>, which we write as</p>
+<p><span id="eq-glgm-joint-ch1"><span class="math display">\[
+[Y, S] = [S] [Y | S].
+\tag{1.1}\]</span></span></p>
+<p>On the right-hand side of the equation above, we have factorized the joint distribution of <span class="math inline">\(Y\)</span> and <span class="math inline">\(S\)</span>, as the product between the marginal distribution of <span class="math inline">\(S\)</span> and the conditional distribution of <span class="math inline">\(Y\)</span> given <span class="math inline">\(S\)</span>. Hence, the formulation of a GLGM can be break down into the tasks of formulating <span class="math inline">\([S]\)</span> and <span class="math inline">\([Y | S]\)</span>.</p>
+<p>In defining <span class="math inline">\([S]\)</span>, throughout the book, we shall assume that this is a zero-mean stationary and isotropic Gaussian process. In other words, these assumptions impose that the joint distribution of <span class="math inline">\(S(X) = (S(x_1),\ldots,S(x_n))\)</span>, i.e.&nbsp;the process <span class="math inline">\(S\)</span> at the sampled locations <span class="math inline">\(x_1, \ldots, x_n\)</span>, is invariant with respect to rotations and translations of the locations <span class="math inline">\(X\)</span>. In practical terms, the main implication of this is that, for any pair of locations <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span> the correlation function <span class="math inline">\(\rho(\cdot)\)</span> between <span class="math inline">\(S(x_i)\)</span> and <span class="math inline">\(S(x_j)\)</span> is purely a function of the Euclidean distance, <span class="math inline">\(u_{ij}\)</span>, between <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span>, i.e.&nbsp;<span id="eq-correlation-ch1"><span class="math display">\[
+{\rm cov}\{S(x_i), S(x_j)\} = \sigma^2\rho(u_{ij}),
+\tag{1.2}\]</span></span></p>
+<p>where <span class="math inline">\(\sigma^2\)</span> is the variance of <span class="math inline">\(S(x)\)</span> for all <span class="math inline">\(x\)</span>. Below we provide more details on the type of covariance functions that we consider in this book. Furthermore, the fact that we assume the process <span class="math inline">\(S\)</span> to have mean zero is because this process acts as a residual term in our modelling of <span class="math inline">\(Y\)</span>. This aspect will be reiterated several times in the following chapters, as it as important implications for the interpretation of the other components of a geostatistical model, as well understanding the results of the analysis.</p>
+<p>Finally, we model <span class="math inline">\([Y | S]\)</span>, i.e.&nbsp;the distribution of <span class="math inline">\(Y\)</span> given <span class="math inline">\(S\)</span>, as a set of mutually independent distributions which belong the exponential family, as defined in classical generalized linear modelling framework <span class="citation" data-cites="nelder1972">(<a href="references.html#ref-nelder1972" role="doc-biblioref">Nelder and Wedderburn 1972</a>)</span>. It then follows that, we can write <span class="math inline">\([Y | S]\)</span> as</p>
+<p><span id="eq-glm-ch1"><span class="math display">\[
+[Y | S] = \prod_{i=1}^n [Y_i | S(x_i)].
+\tag{1.3}\]</span></span></p>
+<p>The final step then consists of specifying a distribution for <span class="math inline">\([Y_i | S(x_i)]\)</span>. <a href="#tbl-glm" class="quarto-xref">Table&nbsp;<span>1.3</span></a> gives the range, mean and variance of the three specifications for $[Y_i | S(x_i)]$$ which we will consider in this book. In <a href="#tbl-glm" class="quarto-xref">Table&nbsp;<span>1.3</span></a>, the <em>canonical function</em>, say <span class="math inline">\(g(\cdot)\)</span>, denotes the natural transformation of the mean component <span class="math inline">\(\mu_i\)</span> that allows us to introduce both covariates and the spatial process <span class="math inline">\(S(x_i)\)</span> into the model so as to explain the variation in <span class="math inline">\(\mu_i\)</span> as</p>
+<p><span id="eq-linear-predictor-ch1"><span class="math display">\[
+g(\mu_i) = d(x_i)^\top \beta + S(x_i).
+\tag{1.4}\]</span></span></p>
+<p>where <span class="math inline">\(d(x_i)\)</span> is a vector of spatially referenced covariates with associated regression coefficients <span class="math inline">\(\beta\)</span>. Finally, the quantity <span class="math inline">\(m_i\)</span>, which appears in the formulation of the Binomial and Poisson distributions, is an offset quantity and is used to account for the number of <em>tests</em> or the population size at a given location <span class="math inline">\(x_i\)</span>.</p>
+<div id="tbl-glm" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-glm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1.3: Type of outcomes <span class="math inline">\(Y_{i}\)</span> considered in this book.
+</figcaption><div aria-describedby="tbl-glm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead><tr class="header">
+<th>Distribution</th>
+<th>Range of <span class="math inline">\(Y_i\)</span>
+</th>
+<th>Mean of <span class="math inline">\([Y_i | S(x_i)]\)</span>
+</th>
+<th>Variance of <span class="math inline">\([Y_i | S(x_i)]\)</span>
+</th>
+<th>Canonical link</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Gaussian</td>
+<td><span class="math inline">\((-\infty, +\infty)\)</span></td>
+<td><span class="math inline">\(\mu_i\)</span></td>
+<td><span class="math inline">\(\tau^2\)</span></td>
+<td><span class="math inline">\(g(\mu_i) = \mu_i\)</span></td>
+</tr>
+<tr class="even">
+<td>Binomial</td>
+<td><span class="math inline">\(1,\dots,m_i\)</span></td>
+<td><span class="math inline">\(m_i\mu_i\)</span></td>
+<td><span class="math inline">\(m_i\mu_i(1-\mu_i)\)</span></td>
+<td><span class="math inline">\(g(\mu_i) = \log\{ \mu_i/(1-\mu_i) \}\)</span></td>
+</tr>
+<tr class="odd">
+<td>Poisson</td>
+<td><span class="math inline">\(1,2,\ldots,\infty\)</span></td>
+<td><span class="math inline">\(m_i\mu_i\)</span></td>
+<td><span class="math inline">\(m_i\mu_i\)</span></td>
+<td><span class="math inline">\(g(\mu_i) = \log\{ \mu_i \}\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Based on the formulation in (<a href="#eq-linear-predictor-ch1" class="quarto-xref"><span>1.4</span></a>), we can see that <span class="math inline">\(S(x_i)\)</span> quantifies residual spatial effects on <span class="math inline">\(\mu_i\)</span> that have not been accounted for by the covariates <span class="math inline">\(d(x_i)\)</span>. In an ideal scenario, the covariates <span class="math inline">\(d(x_i)\)</span> should explain all the spatial variation without the need for <span class="math inline">\(S(x_i)\)</span>. Although this is often unrealistic, in practice we may be able to explain most of the variation in <span class="math inline">\(\mu_i\)</span> through <span class="math inline">\(d(x_i)\)</span> and, hence, reduce <span class="math inline">\(S(x_i)\)</span> to a negligible component. In Chapter 2, we will show how a thorough exploratory analysis can help to understand whether we have come close to that ideal scenario or, if instead, we need the use of GLGM to model the data.</p>
+<p>The model described in (<a href="#eq-linear-predictor-ch1" class="quarto-xref"><span>1.4</span></a>) can be seen as the most basic GLGM that can be used for a geostatistical analysis. As we will see in the analysis of some of the examples extensions of this model will be required to accommodate the intrinsic non-spatial random variation of the data which is not captured by the covariates.</p>
+<p>The types of problems that statistical models are applied to can be distinguished into three main categories: prediction problems; explanatory problems; problems of hypothesis testing. Most of the times, geostatistical problems tend to fall under the first category, where the goal is make predictive inferences on the process <span class="math inline">\(S(x)\)</span> at location <span class="math inline">\(x\)</span>, which is usually outside of the set of sampled locations. However, as we will illustrate in the later chapters, geostatistical models play an important role also in the other two types of problems. In particular, we will show that spatial correlation can have a substantial impact on the point estimates and standard errors for <span class="math inline">\(\beta\)</span>. Hence, if the goal of the analysis is to explain the relationship between a covariate <span class="math inline">\(d(x)\)</span> with the mean component <span class="math inline">\(\mu\)</span>.</p>
+<section id="sec-matern-correlation" class="level3" data-number="1.5.1"><h3 data-number="1.5.1" class="anchored" data-anchor-id="sec-matern-correlation">
+<span class="header-section-number">1.5.1</span> The Matern family of correlation functions</h3>
+<p>Throughout the book, we shall consider the <span class="citation" data-cites="matern2013">Matern (<a href="references.html#ref-matern2013" role="doc-biblioref">2013</a>)</span> family of correlation functions to model the spatial correlation of the Gaussian process <span class="math inline">\(S(x)\)</span>. This is defined as <span id="eq-matern"><span class="math display">\[
+\rho(u;\phi,\kappa) =\{2^{\kappa-1} \Gamma(\kappa)\}^{-1} (u/\phi)^\kappa K_\kappa(u/\phi),
+\tag{1.5}\]</span></span> where <span class="math inline">\(\phi&gt;0\)</span> and <span class="math inline">\(\kappa&gt;0\)</span> are parameters and <span class="math inline">\(K_\kappa(\cdot)\)</span> is the modified Bessel function of the third kind of order <span class="math inline">\(\kappa\)</span>. The parameters <span class="math inline">\(\phi\)</span> and <span class="math inline">\(\kappa\)</span> regulate how fast the spatial correlation decays to zero for increasing distance and the smoothness of the process, respectively. A special case of Matern family of correlation functions, which is obtained when <span class="math inline">\(\kappa=0.5\)</span>, will be of particular relevance to the applications considered in this book. This is the exponential correlation function which we write as <span id="eq-exp"><span class="math display">\[
+\rho(u;\phi) = \exp\{-u/\phi\}.
+\tag{1.6}\]</span></span></p>
+<p>Another special case, which we don’t consider in this book but has often been used in machine learning applications, is the Gaussian correlation function obtained as a limiting case for <span class="math inline">\(\kappa \to +\infty\)</span> the possible smoothest process arising from the Matern family.</p>
+<p>To better understand how <span class="math inline">\(\phi\)</span> and <span class="math inline">\(\kappa\)</span> affect the spatial correlation and the pattern of the spatial surface, we now consider some examples.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-matern-func" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-matern-func-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="01_intro_files/figure-html/fig-matern-func-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-matern-func-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.6: Examples of stationary and isotropic Matern correlation functions. Panel (a) shows three different correlations functions that have the same smothness parameter of <span class="math inline">\(\kappa=0.5\)</span>, while varying the scale parameter <span class="math inline">\(\phi\)</span> over <span class="math inline">\({0.05, 0.1, 0.2}\)</span>. In panel (b) the scale of the spatial correlation <span class="math inline">\(\phi\)</span> is chosen so that each of the three functions reaches 0.05 at distance 0.3 (as also shown by the horizontal and vertical black dashed segments).
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-matern-func" class="quarto-xref">Figure&nbsp;<span>1.6</span></a> shows six different Matern correlation functions. In panel (a), we have kept <span class="math inline">\(\kappa\)</span> fixed to 0.5 and varied <span class="math inline">\(\phi\)</span> over the values 0.05, 0.1 and 0.2. As expected, for larger values of <span class="math inline">\(\phi\)</span> the correlation function has a slower decay to zero. Panels (a) to (c), in <a href="#fig-matern-sim" class="quarto-xref">Figure&nbsp;<span>1.7</span></a>, show three realizations of a Gaussian process from each of these correlation functions. The mean of the Gaussian process was set to zero and variance to 1. We can observe that spatial correlations with larger scales are associated with longer spatial trends, whilst smaller scales exhibit a patchier pattern. This is because, as <span class="math inline">\(\phi\)</span> takes values that are closer to zero, the spatial surface will tend to show a less structured pattern and will revert towards its zero mean more rapidly. In our examples in the book, we will often use the so called <em>practical range</em> to interpret our estimates for <span class="math inline">\(\phi\)</span>. The practical range is defined as the distance at which spatial correlation reaches 0.05, hence one can interpret this as the distance beyond which observations can be considered approximately independent. In the case of the exponential correlation function, the practical range is <span class="math inline">\(\log(20) \times \phi \approx 3 \phi\)</span>.</p>
+<p>Finally, let us consider the correlation functions, shown in the panel (b) of <a href="#fig-matern-func" class="quarto-xref">Figure&nbsp;<span>1.6</span></a>. Here, we have varied <span class="math inline">\(\kappa\)</span> over the values 0.5, 1.5 and 2.5, whilst <span class="math inline">\(\phi\)</span> has been fixed in order to force all three correlation functions to reach 0.05 for distance 0.3. In this way, we can better observe the effect of different values of <span class="math inline">\(\kappa\)</span> on the spatial surface for process that have approximately the same range for the spatial correlation. In <a href="#fig-matern-sim" class="quarto-xref">Figure&nbsp;<span>1.7</span></a>, we observe three realizations from these correlation functions. We observe that the differences between the different surfaces are determined by the small spatial scale behavior; <span class="math inline">\(\kappa = 0.5\)</span> correspond to a rougher and less regular spatial pattern, whilst <span class="math inline">\(\kappa=2.5\)</span> shows the smoothest surface among the three processes considered. These properties of the spatial surface are related to the so called differentiability of the the Guassian process, which determines its local behavior. If you are interested in delving into these theoretical aspects, we suggest reading Chapter 2 of <span class="citation" data-cites="stein1999">Stein (<a href="references.html#ref-stein1999" role="doc-biblioref">1999</a>)</span>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-matern-sim" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-matern-sim-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="01_intro_files/figure-html/fig-matern-sim-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-matern-sim-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.7: Simulated spatial surface using the three correltion functions shown in <a href="#fig-matern-func" class="quarto-xref">Figure&nbsp;<span>1.6</span></a>. Panels (a), (b) and (c) correspond to the correlation functions from panel (a) in <a href="#fig-matern-func" class="quarto-xref">Figure&nbsp;<span>1.6</span></a> and in order these are: <span class="math inline">\(\phi = 0.05\)</span> and <span class="math inline">\(\kappa=0.5\)</span>; (b) <span class="math inline">\(\phi=0.1\)</span> and <span class="math inline">\(\kappa=0.5\)</span>; (c) <span class="math inline">\(\phi=0.2\)</span> and <span class="math inline">\(\kappa=0.5\)</span>. Panels (c), (d) and (e) correspond to the correlation functions from panel (b) in <a href="#fig-matern-func" class="quarto-xref">Figure&nbsp;<span>1.6</span></a> and in order these are: <span class="math inline">\(\phi = 0.1\)</span> and <span class="math inline">\(\kappa=0.5\)</span>; (b) <span class="math inline">\(\phi=0.063\)</span> and <span class="math inline">\(\kappa=1.5\)</span>; (c) <span class="math inline">\(\phi=0.051\)</span> and <span class="math inline">\(\kappa=2.5\)</span>.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>The flexibility provided by the Matern correlation function in capturing different forms of spatial correlations has made it one of, if not the most widely used correlation function in model-based geostatistics <span class="citation" data-cites="stein1999">(<a href="references.html#ref-stein1999" role="doc-biblioref">Stein 1999</a>)</span>. For this reason, in this book we will consider the Matern correlation function. We will consider estimation issues related to the Matern correlation in <a href="03_model-fitting.html" class="quarto-xref"><span>Chapter 3</span></a>.</p>
+</section></section><section id="sec-workflow" class="level2" data-number="1.6"><h2 data-number="1.6" class="anchored" data-anchor-id="sec-workflow">
+<span class="header-section-number">1.6</span> Workflow of a statistical analysis and structure of the book</h2>
+<div id="fig-stages" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-stages-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/workflow_diagram.png" class="img-fluid quarto-figure quarto-figure-center figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stages-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.8: Stages of a statistical analysis
+</figcaption></figure>
+</div>
+<p><a href="#fig-stages" class="quarto-xref">Figure&nbsp;<span>1.8</span></a> illustrates the stages involved in carrying out a geostatistical analysis of the examples introduced in <a href="#sec-examples-ch1" class="quarto-xref"><span>Section 1.4</span></a>. The process begins with exploratory data analysis, which is essential for understanding the empirical associations between risk factors and the health outcome of interest. In our case, this stage also helps justify the use of geostatistical models by questioning the assumptions underlying standard generalized linear models. The insights gained from this initial step guide the formulation of a suitable statistical model, whose parameters are then estimated using likelihood-based methods. This approach provides measures of uncertainty not only for the regression coefficients but also for the parameters that define the structure of spatial correlation in the data.</p>
+<p>Once estimation has been carried out, the next step is model validation, where diagnostic tools are used to assess whether the fitted model can be trusted to represent the observed variation in the outcome. If the diagnostics indicate a poor fit, the process returns to the formulation stage in order to address the shortcomings revealed by the validation. If no evidence against the model is found, we move on to spatial prediction. At this stage, defining appropriate predictive targets is crucial, as they ensure that the analysis provides meaningful answers to the original research questions and supports decision making. An equally important step is the evaluation of predictive performance. In geostatistical applications, this is particularly challenging because of the spatially sparse nature of the data. Cross-validation offers a practical approach, but its design and interpretation depend on the ultimate goal of the analysis—for example, whether the aim is to draw predictive inferences within the study region or to extend inference beyond the sampled area. In addition, simulation studies provide a powerful complementary tool, allowing us to assess how a model is expected to perform “on average,” with the expectation that the results from a given analysis will not deviate substantially from this average behaviour.</p>
+<p>In the remainder of this book, each chapter focuses on one or more of these stages as shown in <a href="#fig-stages" class="quarto-xref">Figure&nbsp;<span>1.8</span></a>. <a href="02_handling-spatial-data.html" class="quarto-xref"><span>Chapter 2</span></a> introduces methods for working with spatial data in R, with a focus on raster and vector formats, including points and polygons. The skills developed in this chapter are applied throughout the book and are especially important in <a href="04_geostatistical-prediction.html" class="quarto-xref"><span>Chapter 4</span></a> and <a href="05_case-studies.html" class="quarto-xref"><span>Chapter 5</span></a>, where predictive maps of health outcomes are generated. <a href="03_model-fitting.html" class="quarto-xref"><span>Chapter 3</span></a> then describes the process of model formulation and estimation, showing how exploratory analyses inform the choice of model and how maximum likelihood methods can be used for parameter estimation. <a href="04_geostatistical-prediction.html" class="quarto-xref"><span>Chapter 4</span></a> builds on this by demonstrating how fitted models can be used for spatial prediction on both continuous and aggregated scales, and how predictive performance can be assessed to identify the most suitable model. Finally, <a href="05_case-studies.html" class="quarto-xref"><span>Chapter 5</span></a> presents complete applications of all methods to three datasets, summarizing the full geostatistical workflow and illustrating additional features of the <code>RiskMap</code> R package not covered in earlier chapters.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-amazigo2008" class="csl-entry" role="listitem">
+Amazigo, U. 2008. <span>“The African Programme for Onchocerciasis Control (APOC).”</span> <em>Ann Trop Med Parasitol</em> 102 (Suppl 1): 19–22. <a href="https://doi.org/10.1179/136485908X337436">https://doi.org/10.1179/136485908X337436</a>.
+</div>
+<div id="ref-bates2015" class="csl-entry" role="listitem">
+Bates, Douglas, Martin Mächler, Ben Bolker, and Steve Walker. 2015. <span>“Fitting Linear Mixed-Effects Models Using <span class="nocase">lme4</span>.”</span> <em>Journal of Statistical Software</em> 67 (1): 1–48. <a href="https://doi.org/10.18637/jss.v067.i01">https://doi.org/10.18637/jss.v067.i01</a>.
+</div>
+<div id="ref-bhattachan2023drought" class="csl-entry" role="listitem">
+Bhattachan, Abhinav, Rachel Barrios, Laura Harrington, Valerie A. Paz-Soldan, and A. Marm Kilpatrick. 2023. <span>“Drought-Associated Reductions in Urban Mosquito Abundance During California’s Historic Drought.”</span> <em>Science of The Total Environment</em> 891: 164519. <a href="https://doi.org/10.1016/j.scitotenv.2023.164519">https://doi.org/10.1016/j.scitotenv.2023.164519</a>.
+</div>
+<div id="ref-bishop2006" class="csl-entry" role="listitem">
+Bishop, Christopher M. 2006. <em>Pattern Recognition and Machine Learning</em>. Springer.
+</div>
+<div id="ref-bolin2023" class="csl-entry" role="listitem">
+Bolin, David, and Jonas Wallin. 2023. <span>“<span class="nocase">Local scale invariance and robustness of proper scoring rules</span>.”</span> <em>Statistical Science</em> 38 (1): 140–59. <a href="https://doi.org/10.1214/22-STS864">https://doi.org/10.1214/22-STS864</a>.
+</div>
+<div id="ref-bolling2009vi" class="csl-entry" role="listitem">
+Bolling, Bethany G., Christopher M. Barker, Chester G. Moore, W. John Pape, and Lars Eisen. 2009. <span>“Seasonal Patterns for Entomological Measures of Risk for Exposure to <em>Culex</em> Vectors and West Nile Virus in Relation to Human Disease Cases in Northeastern Colorado.”</span> <em>Journal of Medical Entomology</em> 46 (6): 1519–31. <a href="https://doi.org/10.1603/033.046.0641">https://doi.org/10.1603/033.046.0641</a>.
+</div>
+<div id="ref-bowman1997" class="csl-entry" role="listitem">
+Bowman, A. W. 1997. <em>Applied Smoothing Techniques for Data Analysis : The Kernel Approach with s-Plus Illustrations</em>. Oxford Statistical Science Series ; 18. Oxford : New York: Clarendon Press ; Oxford University Press.
+</div>
+<div id="ref-breslow1993" class="csl-entry" role="listitem">
+Breslow, N. E., and D. G. Clayton. 1993. <span>“Approximate Inference in Generalized Linear Mixed Models.”</span> <em>Journal of the American Statistical Association</em> 88: 9–25.
+</div>
+<div id="ref-brooks2011handbook" class="csl-entry" role="listitem">
+Brooks, Steve, Andrew Gelman, Galin L. Jones, and Xiao-Li Meng. 2011. <em>Handbook of Markov Chain Monte Carlo</em>. CRC Press.
+</div>
+<div id="ref-cdph2025response" class="csl-entry" role="listitem">
+California Department of Public Health. 2025. <span>“California Mosquito-Borne Virus Surveillance and Response Plan.”</span> Online.
+</div>
+<div id="ref-cdc_wnv_guidelines_2024" class="csl-entry" role="listitem">
+Centers for Disease Control and Prevention. 2024. <span>“West Nile Virus Surveillance and Control Guidelines.”</span> CDC guidance. <a href="https://www.cdc.gov/west-nile-virus/php/surveillance-and-control-guidelines/index.html">https://www.cdc.gov/west-nile-virus/php/surveillance-and-control-guidelines/index.html</a>.
+</div>
+<div id="ref-chilesdelfiner2016" class="csl-entry" role="listitem">
+Chilès, J-P, and P. Delfiner. 2016. <em>Geostatistics (Second Edition)</em>. Hoboken: Wiley.
+</div>
+<div id="ref-christensen2006" class="csl-entry" role="listitem">
+Christensen, OF, GO Roberts, and M Sköld. 2006. <span>“Robust Markov Chain Monte Carlo Methods for Spatial Generalized Linear Mixed Models.”</span> <em>Journal of Computational and Graphical Statistics</em> 15 (1): 1–17.
+</div>
+<div id="ref-christensen2004" class="csl-entry" role="listitem">
+Christensen, Ole F. 2004. <span>“Monte Carlo Maximum Likelihood in Model-Based Geostatistics.”</span> <em>Journal of Computational and Graphical Statistics</em> 13 (3): 702–18.
+</div>
+<div id="ref-cityofboulder_wnv_vectorindex_2025" class="csl-entry" role="listitem">
+City of Boulder. 2025. <span>“West Nile Virus — Estimating Risk to People: The Vector Index.”</span> <a href="https://bouldercolorado.gov/west-nile-virus">https://bouldercolorado.gov/west-nile-virus</a>.
+</div>
+<div id="ref-fortcollins_wnv_program_manual_2014" class="csl-entry" role="listitem">
+City of Fort Collins. 2014. <span>“West Nile Virus Program Manual.”</span> City of Fort Collins. <a href="https://www.fcgov.com/westnile/pdf/wnv_program_manual.pdf">https://www.fcgov.com/westnile/pdf/wnv_program_manual.pdf</a>.
+</div>
+<div id="ref-fortcollins_localdata_vi_2025" class="csl-entry" role="listitem">
+———. 2025. <span>“Local Data — West Nile Virus.”</span> <a href="https://www.fcgov.com/westnile/local-data">https://www.fcgov.com/westnile/local-data</a>.
+</div>
+<div id="ref-cowles1996markov" class="csl-entry" role="listitem">
+Cowles, Mary Kathryn, and Bradley P. Carlin. 1996. <span>“Markov Chain Monte Carlo Convergence Diagnostics: A Comparative Review.”</span> <em>Journal of the American Statistical Association</em> 91 (434): 883–904.
+</div>
+<div id="ref-cressie1991" class="csl-entry" role="listitem">
+Cressie, N. A. C. 1991. <em>Statistics for Spatial Data</em>. New York: Wiley.
+</div>
+<div id="ref-cressie1985" class="csl-entry" role="listitem">
+Cressie, Noel. 1985. <span>“Fitting Variogram Models by Weighted Least Squares.”</span> <em>Mathematical Geology</em> 17 (5): 563–86.
+</div>
+<div id="ref-czado2009" class="csl-entry" role="listitem">
+Czado, Claudia, Tilmann Gneiting, and Leonhard Held. 2009. <span>“<span class="nocase">Predictive Model Assessment for Count Data</span>.”</span> <em>Biometrics</em> 65 (4): 1254–61. <a href="https://doi.org/10.1111/j.1541-0420.2009.01191.x">https://doi.org/10.1111/j.1541-0420.2009.01191.x</a>.
+</div>
+<div id="ref-dawid1984" class="csl-entry" role="listitem">
+Dawid, A. P. 1984. <span>“Statistical Theory: The Prequential Approach.”</span> <em>Journal of the Royal Statistical Society: Series A (General)</em> 147 (2): 278–92.
+</div>
+<div id="ref-diggleBook2019" class="csl-entry" role="listitem">
+Diggle, P J, and E Giorgi. 2019. <em>Model-Based Geostatistics for Global Public Health : Methods and Applications.</em> Chapman and Hall/CRC Interdisciplinary Statistics Ser. Milton: Chapman; Hall/CRC.
+</div>
+<div id="ref-diggle1998" class="csl-entry" role="listitem">
+Diggle, P. J., J. A. Tawn, and R. A. Moyeed. 1998. <span>“Model-Based Geostatistics.”</span> <em>Journal of the Royal Statistical Society: Series C (Applied Statistics)</em> 47 (3): 299–350. <a href="https://doi.org/10.1111/1467-9876.00113">https://doi.org/10.1111/1467-9876.00113</a>.
+</div>
+<div id="ref-diggle2007book" class="csl-entry" role="listitem">
+Diggle, Peter, and Paulo Justiniano Ribeiro. 2007. <em>Model-Based Geostatistics</em>. Springer Series in Statistics. Springer.
+</div>
+<div id="ref-dobson2008" class="csl-entry" role="listitem">
+Dobson, A. J., and A. Barnett. 2008. <em>An Introduction to Generalized Linear Models</em>. Third. Chapman; Hall/CRC.
+</div>
+<div id="ref-efron1979" class="csl-entry" role="listitem">
+Efron, Bradley. 1979. <span>“Bootstrap Methods: Another Look at the Jackknife.”</span> <em>The Annals of Statistics</em> 7 (1): 1–26.
+</div>
+<div id="ref-evans2021" class="csl-entry" role="listitem">
+Evans, Jeffrey S., and Melanie A. Murphy. 2021. <em>spatialEco</em>. <a href="https://github.com/jeffreyevans/spatialEco">https://github.com/jeffreyevans/spatialEco</a>.
+</div>
+<div id="ref-fernandez2000" class="csl-entry" role="listitem">
+Fernández, J. A, A Rey, and A Carballeira. 2000. <span>“An Extended Study of Heavy Metal Deposition in Galicia (NW Spain) Based on Moss Analysis.”</span> <em>Science of The Total Environment</em> 254 (1): 31–44. <a href="https://doi.org/10.1016/S0048-9697(00)00431-9">https://doi.org/10.1016/S0048-9697(00)00431-9</a>.
+</div>
+<div id="ref-gelman2013bayesian" class="csl-entry" role="listitem">
+Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed. CRC Press.
+</div>
+<div id="ref-gelman1992inference" class="csl-entry" role="listitem">
+Gelman, Andrew, and Donald B Rubin. 1992. <span>“Inference from Iterative Simulation Using Multiple Sequences.”</span> <em>Statistical Science</em> 7 (4): 457–72.
+</div>
+<div id="ref-geweke1992evaluating" class="csl-entry" role="listitem">
+Geweke, John. 1992. <span>“Evaluating the Accuracy of Sampling‐based Approaches to the Calculation of Posterior Moments.”</span> Edited by Jose M. Bernardo, James O. Berger, A. Philip Dawid, and Adrian F. M. Smith, 169–93.
+</div>
+<div id="ref-geyer1991" class="csl-entry" role="listitem">
+Geyer, Charles J. 1991. <span>“Markov Chain Monte Carlo Maximum Likelihood.”</span> <em>Journal of Computational and Graphical Statistics</em> 1 (4): 39–55.
+</div>
+<div id="ref-geyer1994" class="csl-entry" role="listitem">
+Geyer, Charles J. 1994. <span>“Likelihood and Exponential Families.”</span> <em>Department of Statistics, University of Minnesota</em>.
+</div>
+<div id="ref-geyer1996" class="csl-entry" role="listitem">
+———. 1996. <span>“Markov Chain Monte Carlo Maximum Likelihood.”</span> <em>Department of Statistics, University of Minnesota</em>.
+</div>
+<div id="ref-geyer2019handbook" class="csl-entry" role="listitem">
+———. 2019. <span>“Monte Carlo Methods in MCMC.”</span> In <em>Handbook of MCMC</em>, edited by Steve Brooks, Andrew Gelman, Galin L. Jones, and Xiao-Li Meng, 3–48. CRC Press.
+</div>
+<div id="ref-ghanaDHS2014" class="csl-entry" role="listitem">
+Ghana Statistical Service, Ghana Health Service, and ICF International. 2015. <em>Ghana Demographic and Health Survey 2014</em>. Rockville, Maryland, USA: Ghana Statistical Service, Ghana Health Service,; ICF International. <a href="https://dhsprogram.com/publications/publication-FR307-DHS-Final-Reports.cfm">https://dhsprogram.com/publications/publication-FR307-DHS-Final-Reports.cfm</a>.
+</div>
+<div id="ref-giorgi2017" class="csl-entry" role="listitem">
+Giorgi, Emanuele, and Peter J. Diggle. 2017. <span>“PrevMap: An r Package for Prevalence Mapping.”</span> <em>Journal of Statistical Software</em> 78 (8): 1–29. <a href="https://doi.org/10.18637/jss.v078.i08">https://doi.org/10.18637/jss.v078.i08</a>.
+</div>
+<div id="ref-gneiting2007" class="csl-entry" role="listitem">
+Gneiting, Tilmann, Fadoua Balabdaoui, and Adrian E Raftery. 2007. <span>“Probabilistic Forecasts, Calibration and Sharpness.”</span> <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em> 69 (2): 243–68.
+</div>
+<div id="ref-gneiting2007jasa" class="csl-entry" role="listitem">
+Gneiting, Tilmann, and Adrian E Raftery. 2007. <span>“Strictly Proper Scoring Rules, Prediction, and Estimation.”</span> <em>Journal of the American Statistical Association</em> 102 (477): 359–78. <a href="https://doi.org/10.1198/016214506000001437">https://doi.org/10.1198/016214506000001437</a>.
+</div>
+<div id="ref-harrell2015" class="csl-entry" role="listitem">
+Harrell, Frank E. 2015. <em>Regression Modeling Strategies</em>. 2nd ed. New York: Springer.
+</div>
+<div id="ref-hastie2001" class="csl-entry" role="listitem">
+Hastie, Trevor, Robert Tibshirani, and Jerome Friedman. 2001. <em>The Elements of Statistical Learning</em>. Springer Series in Statistics. New York, NY, USA: Springer New York Inc.
+</div>
+<div id="ref-hastings1970monte" class="csl-entry" role="listitem">
+Hastings, W. K. 1970. <span>“Monte Carlo Sampling Methods Using Markov Chains and Their Applications.”</span> <em>Biometrika</em> 57 (1): 97–109.
+</div>
+<div id="ref-johnson2021" class="csl-entry" role="listitem">
+Johnson, Olatunji, Claudio Fronterre, Benjamin Amoah, Antonio Montresor, Emanuele Giorgi, Nicholas Midzi, Masceline Jenipher Mutsaka-Makuvaza, et al. 2021. <span>“Model-Based Geostatistical Methods Enable Efficient Design and Analysis of Prevalence Surveys for Soil-Transmitted Helminth Infection and Other Neglected Tropical Diseases.”</span> <em>Clinical Infectious Diseases</em> 72 (Supplement_3): S172–79. <a href="https://doi.org/10.1093/cid/ciab192">https://doi.org/10.1093/cid/ciab192</a>.
+</div>
+<div id="ref-jones2011vi" class="csl-entry" role="listitem">
+Jones, Roderick C., Kingsley N. Weaver, Shamika Smith, Claudia Blanco, Cristina Flores, Kevin Gibbs, Daniel Markowski, and John-Paul Mutebi. 2011. <span>“Use of the Vector Index and Geographic Information System to Prospectively Inform West Nile Virus Interventions.”</span> <em>Journal of the American Mosquito Control Association</em> 27 (3): 315–19. <a href="https://doi.org/10.2987/10-6098.1">https://doi.org/10.2987/10-6098.1</a>.
+</div>
+<div id="ref-gates2020" class="csl-entry" role="listitem">
+Katz, Elizabeth, and Bill &amp; Melinda Gates Foundation. 2020. <span>“Gender and Malaria Evidence Reivew.”</span> Bill &amp; Melinda Gates Foundation. <a href="https://www.gatesgenderequalitytoolbox.org/wp-content/uploads/BMGF_Malaria-Review_FC.pdf">https://www.gatesgenderequalitytoolbox.org/wp-content/uploads/BMGF_Malaria-Review_FC.pdf</a>.
+</div>
+<div id="ref-kilpatrick2013predicting" class="csl-entry" role="listitem">
+Kilpatrick, A. Marm, and W. John Pape. 2013. <span>“Predicting Human West Nile Virus Infections with Mosquito Surveillance Data.”</span> <em>American Journal of Epidemiology</em> 178 (5): 829–35. <a href="https://doi.org/10.1093/aje/kwt046">https://doi.org/10.1093/aje/kwt046</a>.
+</div>
+<div id="ref-kramer2007wnv" class="csl-entry" role="listitem">
+Kramer, Laura D., Jun Li, and Pei-Yong Shi. 2007. <span>“West Nile Virus.”</span> <em>The Lancet Neurology</em> 6 (2): 171–81. <a href="https://doi.org/10.1016/S1474-4422(07)70030-3">https://doi.org/10.1016/S1474-4422(07)70030-3</a>.
+</div>
+<div id="ref-krige1951" class="csl-entry" role="listitem">
+Krige, D. G. 1951. <span>“A Statistical Approach to Some Basic Mine Valuation Problems on the Witwatersrand.”</span> <em>Journal of the Chemical, Metallurgical and Mining Society of South Africa</em> 52: 119–39.
+</div>
+<div id="ref-kyomuhangi2021" class="csl-entry" role="listitem">
+Kyomuhangi, Irene, Tarekegn A. Abeku, Matthew J. Kirby, Gezahegn Tesfaye, and Emanuele Giorgi. 2021. <span>“Understanding the Effects of Dichotomization of Continuous Outcomes on Geostatistical Inference.”</span> <em>Spatial Statistics</em> 42: 100424. https://doi.org/<a href="https://doi.org/10.1016/j.spasta.2020.100424">https://doi.org/10.1016/j.spasta.2020.100424</a>.
+</div>
+<div id="ref-Lovelace2020-iq" class="csl-entry" role="listitem">
+Lovelace, Robin, Jakub Nowosad, and Jannes Muenchow. 2020. <em>Geocomputation with <span>R</span></em>. London, England: CRC Press. <a href="https://r.geocompx.org/">https://r.geocompx.org/</a>.
+</div>
+<div id="ref-malariaAtlas" class="csl-entry" role="listitem">
+Lucas, Tim C. D., Anita K. Nandi, Rosalind E. Howes, Daniel J. Weiss, Ewan Cameron, Nick Golding, and Peter W. Gething. 2020. <span>“malariaAtlas: An r Interface to Global Malariometric Data Hosted by the Malaria Atlas Project.”</span> <em>Wellcome Open Research</em> 5: 74. <a href="https://doi.org/10.12688/wellcomeopenres.15987.1">https://doi.org/10.12688/wellcomeopenres.15987.1</a>.
+</div>
+<div id="ref-mahoney2023" class="csl-entry" role="listitem">
+Mahoney, Michael J, Lucas K Johnson, Julia Silge, Hannah Frick, Max Kuhn, and Colin M Beier. 2023. <span>“Assessing the Performance of Spatial Cross-Validation Approaches for Models of Spatially Structured Data.”</span> <a href="https://doi.org/10.48550/arXiv.2303.07334">https://doi.org/10.48550/arXiv.2303.07334</a>.
+</div>
+<div id="ref-matern2013" class="csl-entry" role="listitem">
+Matern, B. 2013. <em>Spatial Variation</em>. Lecture Notes in Statistics. Springer New York. <a href="https://books.google.co.uk/books?id=HrbSBwAAQBAJ">https://books.google.co.uk/books?id=HrbSBwAAQBAJ</a>.
+</div>
+<div id="ref-matheron1963" class="csl-entry" role="listitem">
+Matheron, G. 1963. <span>“Principles of Geostatistics.”</span> <em>Economic Geology</em> 58: 1246–66.
+</div>
+<div id="ref-metropolis1953equation" class="csl-entry" role="listitem">
+Metropolis, Nicholas, Arianna W. Rosenbluth, Marshall N. Rosenbluth, Augusta H. Teller, and Edward Teller. 1953. <span>“Equation of State Calculations by Fast Computing Machines.”</span> <em>The Journal of Chemical Physics</em> 21 (6): 1087–92.
+</div>
+<div id="ref-neal2003" class="csl-entry" role="listitem">
+Neal, Radford M. 2003. <span>“Slice Sampling.”</span> <em>The Annals of Statistics</em> 31 (3): 705–67.
+</div>
+<div id="ref-nelder1972" class="csl-entry" role="listitem">
+Nelder, J. A., and R. W. M. Wedderburn. 1972. <span>“Generalized Linear Models.”</span> <em>Journal of the Royal Statistical Society A</em> 135: 370–84.
+</div>
+<div id="ref-who_underweight2024" class="csl-entry" role="listitem">
+Organization, World Health. 2024. <span>“Indicator Metadata Registry: Child Malnutrition—Underweight Among Children Under Five Years of Age (Weight-for-Age &lt;-2 SD).”</span> <a href="https://www.who.int/data/gho/indicator-metadata-registry/imr-details/27" class="uri">https://www.who.int/data/gho/indicator-metadata-registry/imr-details/27</a>.
+</div>
+<div id="ref-pawitan2001" class="csl-entry" role="listitem">
+Pawitan, Yudi. 2001. <em>In All Likelihood : Statistical Modelling and Inference Using Likelihood</em>. Oxford ; New York: Clarendon Press : Oxford University Press.
+</div>
+<div id="ref-petersen2013wnv" class="csl-entry" role="listitem">
+Petersen, Lyle R., Aaron C. Brault, and Roger S. Nasci. 2013. <span>“West Nile Virus: Review of the Literature.”</span> <em>JAMA</em> 310 (3): 308–15. <a href="https://doi.org/10.1001/jama.2013.8042">https://doi.org/10.1001/jama.2013.8042</a>.
+</div>
+<div id="ref-puranik2024" class="csl-entry" role="listitem">
+Puranik, Amitha, Peter J. Diggle, Maurice R. Odiere, Katherine Gass, Stella Kepha, Collins Okoyo, Charles Mwandawiro, et al. 2024. <span>“Understanding the Impact of Covariates on the Classification of Implementation Units for Soil-Transmitted Helminths Control: A Case Study from Kenya.”</span> <em>BMC Medical Research Methodology</em> 24 (1): 294. <a href="https://doi.org/10.1186/s12874-024-02420-1">https://doi.org/10.1186/s12874-024-02420-1</a>.
+</div>
+<div id="ref-ripley1981" class="csl-entry" role="listitem">
+Ripley, B. D. 1981. <em>Spatial Statistics</em>. New York: Wiley.
+</div>
+<div id="ref-robert2004" class="csl-entry" role="listitem">
+Robert, Christian P, and George Casella. 2004. <em>Monte Carlo Statistical Methods</em>. 2nd ed. Springer.
+</div>
+<div id="ref-roberts1996exponential" class="csl-entry" role="listitem">
+Roberts, Gareth O., and Richard L. Tweedie. 1996. <span>“Exponential Convergence of Langevin Distributions and Their Discrete Approximations.”</span> <em>Bernoulli</em> 2 (4): 341–63.
+</div>
+<div id="ref-ross2013" class="csl-entry" role="listitem">
+Ross, Sheldon. 2013. <em>First Course in Probability, a.</em> 9th ed. Harlow: Pearson Education UK.
+</div>
+<div id="ref-rossky1978brownian" class="csl-entry" role="listitem">
+Rossky, Peter J., J. D. Doll, and Harold L. Friedman. 1978. <span>“Brownian Dynamics as Smart Monte Carlo Simulation.”</span> <em>The Journal of Chemical Physics</em> 69 (10): 4628–33.
+</div>
+<div id="ref-rue2009" class="csl-entry" role="listitem">
+Rue, H., S. Martino, and N. Chopin. 2009. <span>“Approximate Bayesian Inference for Latent Gaussian Models by Using Integrated Nested Laplace Approximations.”</span> <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em> 71 (2): 319–92. <a href="https://doi.org/10.1111/j.1467-9868.2008.00700.x">https://doi.org/10.1111/j.1467-9868.2008.00700.x</a>.
+</div>
+<div id="ref-sacramento2018annual" class="csl-entry" role="listitem">
+Sacramento-Yolo Mosquito and Vector Control District. 2018. <span>“2018 Annual Report.”</span> Online.
+</div>
+<div id="ref-shmueli2010" class="csl-entry" role="listitem">
+Shmueli, Galit. 2010. <span>“To Explain or to Predict?”</span> <em>Statistical Science</em> 25 (3): 289–310.
+</div>
+<div id="ref-smith2007" class="csl-entry" role="listitem">
+Smith, David L, Carlos A Guerra, Robert W Snow, and Simon I Hay. 2007. <span>“Standardizing Estimates of the Plasmodium Falciparum Parasite Rate.”</span> <em>Malaria Journal</em> 6 (1): 131–31.
+</div>
+<div id="ref-stein1999" class="csl-entry" role="listitem">
+Stein, Michael L. 1999. <em>Interpolation of Spatial Data Some Theory for Kriging</em>. 1st ed. 1999. Springer Series in Statistics. New York, NY: Springer New York : Imprint: Springer.
+</div>
+<div id="ref-stevenson2013" class="csl-entry" role="listitem">
+Stevenson, Gillian H. AND Gitonga, Jennifer C. AND Stresman. 2013. <span>“Reliability of School Surveys in Estimating Geographic Variation in Malaria Transmission in the Western Kenyan Highlands.”</span> <em>PLOS ONE</em> 8 (10). <a href="https://doi.org/10.1371/journal.pone.0077641">https://doi.org/10.1371/journal.pone.0077641</a>.
+</div>
+<div id="ref-fossog2015" class="csl-entry" role="listitem">
+Tene Fossog, Billy, Diego Ayala, Pelayo Acevedo, Pierre Kengne, Ignacio Ngomo Abeso Mebuy, Boris Makanga, Julie Magnus, et al. 2015. <span>“Habitat Segregation and Ecological Character Displacement in Cryptic African Malaria Mosquitoes.”</span> <em>Evolutionary Applications</em> 8 (4): 326–45. <a href="https://doi.org/10.1111/eva.12242">https://doi.org/10.1111/eva.12242</a>.
+</div>
+<div id="ref-tobler1970" class="csl-entry" role="listitem">
+Tobler, W. R. 1970. <span>“A Computer Movie Simulating Urban Growth in the Detroit Region.”</span> <em>Economic Geography</em> 46: 234–40.
+</div>
+<div id="ref-sdg2201meta2025" class="csl-entry" role="listitem">
+United Nations Statistics Division, World Health Organization, and UNICEF. 2025. <span>“SDG Indicator 2.2.1 Metadata: Prevalence of Stunting (Height-for-Age &lt;-2 SD) Among Children Under Five Years of Age.”</span> <a href="https://unstats.un.org/sdgs/metadata/files/Metadata-02-02-01.pdf" class="uri">https://unstats.un.org/sdgs/metadata/files/Metadata-02-02-01.pdf</a>.
+</div>
+<div id="ref-watson1971" class="csl-entry" role="listitem">
+Watson, G. S. 1971. <span>“Trend -Surface Analysis.”</span> <em>Mathematical Geology</em> 3: 215–26.
+</div>
+<div id="ref-watson1972" class="csl-entry" role="listitem">
+———. 1972. <span>“Trend Surface Analysis and Spatial Correlation.”</span> <em>Geological Society of America Special Paper</em> 146: 39–46.
+</div>
+<div id="ref-weisberg2014" class="csl-entry" role="listitem">
+Weisberg, Sanford. 2014. <em>Applied Linear Regression</em>. Fourth. Hoboken <span>NJ</span>: Wiley. <a href="http://z.umn.edu/alr4ed">http://z.umn.edu/alr4ed</a>.
+</div>
+<div id="ref-who2006" class="csl-entry" role="listitem">
+WHO. 2006. <span>“WHO Child Growth Standards: Length/Height-for-Age, Weight-for-Age, Weight-for-Length, Weight-for-Height and Body Mass Index-for-Age: Methods and Development.”</span> Geneva: WHO. <a href="https://www.who.int/publications/i/item/924154693X">https://www.who.int/publications/i/item/924154693X</a>.
+</div>
+<div id="ref-yin2024" class="csl-entry" role="listitem">
+Yin, Hui, Yutong Wang, Yuxin Wang, Zihan Li, Yujie Li, and Yuxin Wang. 2024. <span>“A Rapid Review of Clustering Algorithms.”</span> <em>arXiv Preprint arXiv:2401.07389</em>.
+</div>
+<div id="ref-zhang2002" class="csl-entry" role="listitem">
+Zhang, Hao. 2002. <span>“On Estimation and Prediction for Spatial Generalized Linear Mixed Models.”</span> <em>Biometrics</em> 58 (1): 129–36.
+</div>
+<div id="ref-zhang2004" class="csl-entry" role="listitem">
+———. 2004. <span>“Inconsistent Estimation and Asymptotically Equal Interpolations in Model-Based Geostatistics.”</span> <em>Journal of the American Statistical Association</em> 99 (465): 250–61.
+</div>
+<div id="ref-zoure2014" class="csl-entry" role="listitem">
+Zouré, Honorat GM, Mounkaila Noma, Afework H Tekle, Uche V Amazigo, Peter J Diggle, Emanuele Giorgi, and Jan HF Remme. 2014. <span>“Geographic Distribution of Onchocerciasis in the 20 Participating Countries of the African Programme for Onchocerciasis Control: (2) Pre-Control Endemicity Levels and Estimated Number Infected.”</span> <em>Parasites &amp; Vectors</em> 7 (1): 326–26.
+</div>
+</div>
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./author.html" class="pagination-link" aria-label="Author">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Author</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./02_handling-spatial-data.html" class="pagination-link" aria-label="Handling of spatial data in R">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Handling of spatial data in R</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

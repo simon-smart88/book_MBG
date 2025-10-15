@@ -13,9 +13,6 @@ fig-height: 4
 fig-width: 6
 appendix-style: plain
 
-website:
-  site-url: https://www.mbgr.org 
-
 bibliography: references.bib
 nocite: |
   @*
@@ -37,7 +34,6 @@ book:
     - 04_geostatistical-prediction.qmd
     - 05_case-studies.qmd
     - references.qmd
-    - appendix.qmd
 
 
   

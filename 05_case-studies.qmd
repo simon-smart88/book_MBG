@@ -102,6 +102,8 @@ simulate_random_effects <- function(model, nsim = 1000, grid_range = c(-10, 10),
 ```
 
 # Case studies {#sec-case-studies}
+In this chapter, we bring together the concepts introduced in the previous chapters, ranging from exploratory analysis to spatial prediction, through a series of case studies. Each case study provides a complete workflow, showing how the different stages of a geostatistical analysis fit together in practice. Some of these case studies are designed primarily to consolidate earlier material, while others also introduce new concepts and additional functionalities of the `RiskMap` package that extend beyond the basics. 
+
 
 ## Mapping stunting and underwieght risk in Ghana {#sec-ghana}
 

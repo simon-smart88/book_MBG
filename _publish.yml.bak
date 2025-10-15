@@ -1,0 +1,4 @@
+- source: project
+  quarto-pub:
+    - id: 76768f0c-fdc0-4c1b-9ecc-45baa205ccf8
+      url: https://giorgistat.quarto.pub/mbgr
