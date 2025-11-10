@@ -1,4 +1,4 @@
-# Author {#author .unnumbered}
+# Authors {#author .unnumbered}
 
 **Emanuele Giorgi** is Professor of Statistical Science in the Department of Applied Health Sciences at the University of Birmingham, which he joined in October 2025. He was previously Associate Professor in Biostatistics at Lancaster University, where he also completed his PhD in Statistics in and Epidemiology, in 2015, under the supervision of Prof. Peter Diggle. His research focuses on the development and application of geostatistical models, with a particular emphasis on tropical disease mapping. His work has appeared both in methodological statistical journals and in applied global health journals, making a substantial contribution to the epidemiology of neglected tropical diseases. In 2018, Prof. Giorgi received the Royal Statistical Society Research Prize in recognition for his published contribution at the interface of statistics and epidemiology. Since 2021, he has co-led the World Health Organization Collaborating Centre on Geostatistical Methods for Neglected Tropical Diseases Research together with Dr. Claudio Fronterre.
 
@@ -14,11 +14,10 @@ and support public health decision-making in low-resource settings. He leads and
 collaborates on several international initiatives funded by the Gates Foundation, 
 the Task Force for Global Health, and the U.S. National Institutes of Health, 
 contributing to evidence-based strategies for the control and elimination of 
-neglected tropical diseases. Dr. Fronterre is also deeply engaged in teaching 
-and capacity building. He has designed and delivered postgraduate courses and 
-international training workshops on spatial and spatio-temporal modelling for 
-public health, aiming to make advanced statistical methods accessible and 
-practically useful to diverse audiences.
+neglected tropical diseases. 
+
+Both authors are deeply engaged in teaching 
+and capacity building. They have designed and delivered postgraduate courses and international training workshops on spatial and spatio-temporal modelling for public health, aiming to make advanced statistical methods accessible and practically useful to diverse audiences.
 
 \newpage
 
