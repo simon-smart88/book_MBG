@@ -292,7 +292,7 @@ window.Quarto = {
 <p>Statistical modelling provides the theoretical foundation for this book, which relies heavily on likelihood-based inference and, in particular, maximum likelihood estimation. You should therefore be comfortable with the use of point and interval estimation within this framework. Because the geostatistical modelling approach builds directly on Generalized Linear Models (GLMs), prior knowledge of GLMs is essential. We recommend reviewing the theory and applications of linear regression for continuous outcomes, Binomial regression and Poisson regression for count data. This book will build on those foundations with geostatistical models for continuously measured outcomes and counts. A comprehensive overview of GLMs and their implementation in R is given in <span class="citation" data-cites="dobson2008">Dobson and Barnett (<a href="references.html#ref-dobson2008" role="doc-biblioref">2008</a>)</span>. For further background on likelihood-based inference, see chapters 1, 2 and 4 of <span class="citation" data-cites="pawitan2001">Pawitan (<a href="references.html#ref-pawitan2001" role="doc-biblioref">2001</a>)</span>.</p>
 </section><section id="topics-in-r-programming" class="level3" data-number="1.2.3"><h3 data-number="1.2.3" class="anchored" data-anchor-id="topics-in-r-programming">
 <span class="header-section-number">1.2.3</span> Topics in R programming</h3>
-<p>Although advanced programming skills are not required, a working knowledge of R is necessary. You should already be able to create and manipulate vectors and matrices, use logical and character variables, work with lists and data frames, import data into R, and produce basic plots. A wide range of freely available material covers these topics; a useful starting point is <em>An Introduction to R</em>, available at <a href="https://cran.r-project.org/manuals.html">https://cran.r-project.org/manuals.html</a>.</p>
+<p>Although advanced programming skills are not required, a working knowledge of R is necessary. You should already be able to create and manipulate vectors and matrices, use logical and character variables, work with lists and data frames, import data into R, and produce basic plots. A wide range of freely available material covers these topics; a useful starting point is <em>An Introduction to R</em>, available at <a href="https://cran.r-project.org/manuals.html" class="uri">https://cran.r-project.org/manuals.html</a>.</p>
 </section></section><section id="obtaining-and-running-the-r-packages" class="level2" data-number="1.3"><h2 data-number="1.3" class="anchored" data-anchor-id="obtaining-and-running-the-r-packages">
 <span class="header-section-number">1.3</span> Obtaining and running the R packages</h2>
 <p>It is advised that you obtain the latest 64-bit version of R in order to run the R code of this book. To install R, go to the R website, where you can download the installer packages for Windows and Mac, and find instructions for Linux, using binary files.</p>
@@ -308,8 +308,8 @@ Table&nbsp;1.1: List of the R packages that will be used in the book with a desc
 </figcaption><div aria-describedby="tbl-packages-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
 <colgroup>
-<col style="width: 20%">
-<col style="width: 79%">
+<col style="width: 23%">
+<col style="width: 76%">
 </colgroup>
 <thead><tr class="header">
 <th>R packages</th>
@@ -322,56 +322,60 @@ Table&nbsp;1.1: List of the R packages that will be used in the book with a desc
 <td>Estimation of geostatistical models and spatial prediction</td>
 </tr>
 <tr class="even">
+<td><code>lme4</code></td>
+<td>Estimation of generalized linear mixed models</td>
+</tr>
+<tr class="odd">
 <td>
 <code>sf</code> (E)</td>
 <td>Handling of spatial data in R</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>
 <code>terra</code> (E)</td>
 <td>Handling of raster files in R</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>
 <code>ggplot2</code> (E)</td>
 <td>Creating maps and exploratory plots</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>
 <code>dplyr</code> (E)</td>
 <td>Data wrangling and manipulation</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>
 <code>tidyr</code> (E)</td>
 <td>Reshaping and tidying data</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>
 <code>rgeoboundaries</code> (R)</td>
 <td>Accessing global administrative boundary datasets from GeoBoundaries</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>
 <code>gridExtra</code> (R)</td>
 <td>Arranging multiple plots and tables in a grid layout</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>
 <code>patchwork</code> (R)</td>
 <td>Combining multiple ggplot2 plots into a single coherent display</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>
 <code>factoextra</code> (R)</td>
 <td>Extracting and visualizing multivariate analysis results</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>
 <code>scales</code> (R)</td>
 <td>Controlling axis transformations, breaks, and labels in ggplot2 graphics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>
 <code>crsuggest</code> (R)</td>
 <td>Guessing coordinate reference systems when unknown</td>
@@ -417,7 +421,7 @@ Table&nbsp;1.2: List of data-sets available from the <code>RiskMap</code> packag
 </figcaption><div aria-describedby="tbl-data-sets-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
 <colgroup>
-<col style="width: 36%">
+<col style="width: 37%">
 <col style="width: 29%">
 <col style="width: 33%">
 </colgroup>
@@ -565,7 +569,7 @@ S = (S(x_1), \ldots, S(x_n))
 <p><span id="eq-glm-ch1"><span class="math display">\[
 [Y | S] = \prod_{i=1}^n [Y_i | S(x_i)].
 \tag{1.3}\]</span></span></p>
-<p>The final step then consists of specifying a distribution for <span class="math inline">\([Y_i | S(x_i)]\)</span>. <a href="#tbl-glm" class="quarto-xref">Table&nbsp;<span>1.3</span></a> gives the range, mean and variance of the three specifications for <span class="math inline">\([Y_i | S(x_i)]\)</span> which we will consider in this book. In <a href="#tbl-glm" class="quarto-xref">Table&nbsp;<span>1.3</span></a>, the <em>canonical function</em>, say <span class="math inline">\(g(\cdot)\)</span>, denotes the natural transformation of the mean component <span class="math inline">\(\mu_i\)</span> that allows us to introduce both covariates and the spatial process <span class="math inline">\(S(x_i)\)</span> into the model so as to explain the variation in <span class="math inline">\(\mu_i\)</span> as</p>
+<p>The final step then consists of specifying a distribution for <span class="math inline">\([Y_i | S(x_i)]\)</span>. <a href="#tbl-glm" class="quarto-xref">Table&nbsp;<span>1.3</span></a> gives the range, mean and variance of the three specifications for $[Y_i | S(x_i)]$$ which we will consider in this book. In <a href="#tbl-glm" class="quarto-xref">Table&nbsp;<span>1.3</span></a>, the <em>canonical function</em>, say <span class="math inline">\(g(\cdot)\)</span>, denotes the natural transformation of the mean component <span class="math inline">\(\mu_i\)</span> that allows us to introduce both covariates and the spatial process <span class="math inline">\(S(x_i)\)</span> into the model so as to explain the variation in <span class="math inline">\(\mu_i\)</span> as</p>
 <p><span id="eq-linear-predictor-ch1"><span class="math display">\[
 g(\mu_i) = d(x_i)^\top \beta + S(x_i).
 \tag{1.4}\]</span></span></p>
