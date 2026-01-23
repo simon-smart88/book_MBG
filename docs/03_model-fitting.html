@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>3&nbsp; Model formulation and parameter estimation – Model-based geostatistics for global public health using R</title>
 <style>
@@ -18,9 +18,8 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -31,7 +30,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -83,16 +82,15 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./04_geostatistical-prediction.html" rel="next">
 <link href="./02_handling-spatial-data.html" rel="prev">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-425560e6e27c88e19529b7c03591d40d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-9e1f2a4632985dffc2c80318c992baf5.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-21c7f0257b9bb094a624d430cf8b6a6a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-72bcd2ed1e9c3b17607b2ab6e4cfcaa3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -146,7 +144,7 @@ window.Quarto = {
 };
 </script>
 </head>
-<body class="nav-sidebar floating quarto-light">
+<body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
@@ -318,17 +316,17 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<p>This chapter introduces the process of moving from exploratory analysis to the formal specification of statistical models, through to parameter estimation and interpretation of results. We outline the main steps involved, highlight the role of covariates, and present simple approaches for exploring and modelling non-linear relationships. We then turn to the assessment of residual spatial correlation, which motivates the use of geostatistical models, and describe how maximum likelihood methods can be applied for their estimation.</p>
+<p>This chapter introduces the process of moving from exploratory analysis to the formal specification of statistical models, through to parameter estimation and interpretation of results. We first outline the main steps involved, highlight the role of covariates, and present simple approaches for exploring and modelling non-linear relationships. We then turn to the assessment of residual spatial correlation, which motivates the use of geostatistical models, and describe how maximum likelihood methods can be applied for their estimation.</p>
 </section><section id="exploratory-analysis" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="exploratory-analysis">
 <span class="header-section-number">3.1</span> Exploratory analysis</h2>
-<p>As illustrated in <a href="01_intro.html#fig-stages" class="quarto-xref">Figure&nbsp;<span>1.8</span></a>, exploratory analysis is the first step in any statistical analysis. This stage is crucial for guiding how covariates should be incorporated into the model and for assessing whether the remaining unexplained variation exhibits spatial correlation. In the case of count data, this stage also involves examining the presence of <em>overdispersion</em>, a phenomenon that often arises when important covariates are omitted or when there is unaccounted heterogeneity in the data. In the following sections, we explain what overdispersion is in more detail and why checking for its presence is an essential prerequisite before fitting geostatistical models to count data.</p>
+<p>As illustrated in <span class="quarto-unresolved-ref">?fig-stages</span>, exploratory analysis is the first step in any statistical analysis. This stage is crucial for guiding how covariates should be incorporated into the model and for assessing whether the remaining unexplained variation exhibits spatial correlation. In the case of count data, this stage also involves examining the presence of <em>overdispersion</em>, a phenomenon that often arises when important covariates are omitted or when there is unaccounted heterogeneity in the data. In the following sections, we explain what overdispersion is in more detail and why checking for its presence is an essential prerequisite before fitting geostatistical models to count data.</p>
 <section id="sec-expl-assoc" class="level3" data-number="3.1.1"><h3 data-number="3.1.1" class="anchored" data-anchor-id="sec-expl-assoc">
 <span class="header-section-number">3.1.1</span> Exploring associations with risk factors using count data</h3>
 <p>Assessment of the association between the health outcome of interest and non-categorical (i.e.&nbsp;continuous) risk factors can be carried out using graphical tools, such as scatter plots. The graphical inspection of the empirical association between the outcome and the covariates is especially useful to identify non-linear patterns in the relationship which should then be accounted for in the model formulation.</p>
 <p>In this section, we focus on the case where the observed outcome is a count, which requires a different treatment from continuously measured outcomes. The latter have been extensively discussed in the statistical literature and are covered in most standard textbooks (see, for example, Chapter 1 of <span class="citation" data-cites="weisberg2014">Weisberg (<a href="references.html#ref-weisberg2014" role="doc-biblioref">2014</a>)</span>).</p>
 <section id="sec-agg-count-exp" class="level4" data-number="3.1.1.1"><h4 data-number="3.1.1.1" class="anchored" data-anchor-id="sec-agg-count-exp">
 <span class="header-section-number">3.1.1.1</span> When the outcome is an aggregated count</h4>
-<p>Let us first consider the example of the river-blindness data in Liberia (<a href="01_intro.html#sec-rb-ch1" class="quarto-xref"><span>Section 1.4.2</span></a>), and examine the association between prevalence and elevation. We first generate a plot of the prevalence against the measured elevation at each of the sample locations</p>
+<p>Let us first consider the example of the river-blindness data in Liberia (<span class="quarto-unresolved-ref">?sec-rb-ch1</span>), and examine the association between prevalence and elevation. We first generate a plot of the prevalence against the measured elevation at each of the sample locations</p>
 <div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">liberia</span><span class="op">$</span><span class="va">prev</span> <span class="op">&lt;-</span> <span class="va">liberia</span><span class="op">$</span><span class="va">npos</span><span class="op">/</span><span class="va">liberia</span><span class="op">$</span><span class="va">ntest</span></span>
 <span></span>
@@ -345,7 +343,7 @@ Figure&nbsp;3.1: Scatter plot of the empirical prevalence for river-blindess aga
 </div>
 </div>
 </div>
-<p>The plot shown in <a href="#fig-prev-elev-liberia" class="quarto-xref">Figure&nbsp;<span>3.1</span></a> shows that, as elevation increases from 0 to around 150 meters, prevalence rapidly increases to around 0.25 and, for larger values in elevation than 150 meters, the relationship levels off. How can we account for this in a regression model? To answer this question rigorously, the plot in <a href="#fig-prev-elev-liberia" class="quarto-xref">Figure&nbsp;<span>3.1</span></a> cannot be used. This is because, when the modelled outcome is a bounded Binomial count, regression relationships are usually specified on the logit-transformed prevalence (log-odds) scale; see <a href="01_intro.html#tbl-glm" class="quarto-xref">Table&nbsp;<span>1.3</span></a> in Section <a href="01_intro.html#sec-geostat-models" class="quarto-xref"><span>Section 1.5</span></a>. To explore regression relationships in the case of prevalence data, it is convenient to use the so-called empirical logit in place of the empirical prevalence. The empirical logit is defined as</p>
+<p>The plot shown in <a href="#fig-prev-elev-liberia" class="quarto-xref">Figure&nbsp;<span>3.1</span></a> shows that, as elevation increases from 0 to around 150 meters, prevalence rapidly increases to around 0.25 and, for larger values in elevation than 150 meters, the relationship levels off. How can we account for this in a regression model? To answer this question rigorously, the plot in <a href="#fig-prev-elev-liberia" class="quarto-xref">Figure&nbsp;<span>3.1</span></a> cannot be used. This is because, when the modelled outcome is a bounded Binomial count, regression relationships are usually specified on the logit-transformed prevalence (log-odds) scale; see <span class="quarto-unresolved-ref">?tbl-glm</span> in Section <span class="quarto-unresolved-ref">?sec-geostat-models</span>. To explore regression relationships in the case of prevalence data, it is convenient to use the so-called empirical logit in place of the empirical prevalence. The empirical logit is defined as</p>
 <p><span id="eq-empirical-logit"><span class="math display">\[
 l_{i} = \log\left\{\frac{y_i + 1/2}{n_i - y_i + 1/2}\right\}
 \tag{3.1}\]</span></span></p>
@@ -380,15 +378,15 @@ Figure&nbsp;3.2: Scatter plot of the empirical prevalence for river-blindess aga
 </div>
 </div>
 </div>
-<p><a href="#fig-elogit-elev-liberia" class="quarto-xref">Figure&nbsp;<span>3.2</span></a> shows the scatter plot of the empirical logit against elevation. In this plot, we have also added three lines though the <code>stat_smooth</code> from the <code>ggplot2</code> package. Using this function, we first pass the term <code>gam</code> to <code>method</code> to add a penalized smoothing spline <span class="citation" data-cites="hastie2001">(<a href="references.html#ref-hastie2001" role="doc-biblioref">Hastie, Tibshirani, and Friedman 2001</a>)</span>, represented by the blue solid line. The smoothing spline allows us to better discern the type of relationship and how to best capture it using a standard regression approach. As we can see from <a href="#fig-elogit-elev-liberia" class="quarto-xref">Figure&nbsp;<span>3.2</span></a>, the smoothing spline corroborates our initial observation of a positive relationship up to about 150 meters, followed by a plateau.</p>
-<p>To capture this non-linear relationship, we can use the two following approaches. The first is based on a simple log-transformation of elevation and is represented in <a href="#fig-elogit-elev-liberia" class="quarto-xref">Figure&nbsp;<span>3.2</span></a> by the green line. If were to express this relationship using a standard Binomial regression model, this would take the form <span id="eq-log-elev-glm"><span class="math display">\[
+<p><a href="#fig-elogit-elev-liberia" class="quarto-xref">Figure&nbsp;<span>3.2</span></a> shows the scatter plot of the empirical logit against elevation. In this plot, we have also added three lines through the <code>stat_smooth</code> function from the <code>ggplot2</code> package. Using this function, we first pass the term <code>gam</code> to <code>method</code> to add a penalized smoothing spline <span class="citation" data-cites="hastie2001">(<a href="references.html#ref-hastie2001" role="doc-biblioref">Hastie, Tibshirani, and Friedman 2001</a>)</span>, represented by the blue solid line. The smoothing spline allows us to better discern the type of relationship and how to best capture it using a standard regression approach. As we can see from <a href="#fig-elogit-elev-liberia" class="quarto-xref">Figure&nbsp;<span>3.2</span></a>, the smoothing spline corroborates our initial observation of a positive relationship up to about 150 meters, followed by a plateau.</p>
+<p>To capture this non-linear relationship, we can use the two following approaches. The first is based on a simple log-transformation of elevation and is represented in <a href="#fig-elogit-elev-liberia" class="quarto-xref">Figure&nbsp;<span>3.2</span></a> by the green line. If we were to express this relationship using a standard Binomial regression model, this would take the form <span id="eq-log-elev-glm"><span class="math display">\[
 \log\left\{\frac{p(x_i)}{1-p(x_i)}\right\} = \beta_0 + \beta_1 \log\{e(x_i)\}
 \tag{3.2}\]</span></span> where <span class="math inline">\(p(x_i)\)</span> and <span class="math inline">\(e(x_i)\)</span> are the river-blindness prevalence and elevation at sampled location <span class="math inline">\(x_i\)</span>, respectively.</p>
 <p>Alternatively, the non-linear effect of elevation on prevalence could be captured using a linear spline. Put in simple terms, we want to fit a linear regression model that allows for a change in slope above 150 meters. Formally, this is expressed in a Binomial regression model as <span id="eq-lspline-elev-glm"><span class="math display">\[
 \log\left\{\frac{p(x_i)}{1-p(x_i)}\right\} = \beta_0 + \beta_1 e(x_i) + \beta_{2} \max\{e(x_i)-150, 0\}.
 \tag{3.3}\]</span></span> Based on the equation above, the effect of elevation below 150 meters is quantified by the parameter <span class="math inline">\(\beta_1\)</span>. Above 150 meters, instead, the effect of elevation becomes <span class="math inline">\(\beta_1 + \beta_2\)</span>. Note that the function <code>pmax</code> (and not the standard base function <code>max</code>) should be used in R when the computation of the maximum between a scalar value and each of the components of a numeric vector is required.</p>
 <p>Before proceeding further, it is important to explain the differences between the use of the logarithmic transformation (<a href="#eq-log-elev-glm" class="quarto-xref">Equation&nbsp;<span>3.2</span></a>) and the linear spline (<a href="#eq-lspline-elev-glm" class="quarto-xref">Equation&nbsp;<span>3.3</span></a>). We observe that both curves provide a similar fit to the data, with larger differences observed for larger values in elevation, where the log-transformed elevation models yield larger values for the predicted prevalence. This also suggests that if we were to extrapolate the predictions beyond 600 meters in elevation the implied pattern by the model with the log-transformed elevation would predict an increasingly larger elevation, which is unrealistic, since the fly that transmits the disease cannot breed at those altitudes. The linear spline model instead would generate predictions that would be very similar to those observed between 150 and 600 meters. From this point of view, the linear spline model would thus have more scientific validity than the other model. However, which of the two approaches should be chosen to model the effect of elevation is a question that closely depends on the research question to be addressed.</p>
-<p>If the interest of the study was in better understanding the association between elevation and prevalence, the linear spline model does not only provide a more credible explanation but also its regression parameters can be more easily interpreted. In fact, for a unit increase in elevation, the multiplicative change in the odds for river-blindness is <span class="math inline">\(\exp\{\beta_1\}\)</span>, if elevation is below 150 meters, and <span class="math inline">\(\exp\{\beta_1+\beta_2\}\)</span>, if elevation is above 150 meters. When instead we use the log-transformed elevation, the interpretation of <span class="math inline">\(\beta_1\)</span> in <a href="#eq-log-elev-glm" class="quarto-xref">Equation&nbsp;<span>3.2</span></a> is slightly more complicated, as it is based on the multiplicative increase in elevation by the same amount given by the base of the algorithm, which is about <span class="math inline">\(e \approx 2.718\)</span>. To avoid this, one could rescale the regression coefficient as, for example, <span class="math inline">\(\beta_1/\log_{2}(e)\)</span> which would be interpreted as the multiplicative change in the odds for river-blindness for a doubling in elevation. However, a doubling in elevation is less meaningful when considering larger values of elevation.</p>
+<p>If the interest of the study was in better understanding the association between elevation and prevalence, the linear spline model does not only provide a more credible explanation but also its regression parameters can be more easily interpreted. In fact, for a unit increase in elevation, the multiplicative change in the odds for river-blindness is <span class="math inline">\(\exp\{\beta_1\}\)</span>, if elevation is below 150 meters, and <span class="math inline">\(\exp\{\beta_1+\beta_2\}\)</span>, if elevation is above 150 meters. When instead we use the log-transformed elevation, the interpretation of <span class="math inline">\(\beta_1\)</span> in <a href="#eq-log-elev-glm" class="quarto-xref">Equation&nbsp;<span>3.2</span></a> is more complicated, as it is based on the multiplicative increase in elevation by the same amount given by the base of the algorithm, which is about <span class="math inline">\(e \approx 2.718\)</span>. To avoid this, one could rescale the regression coefficient as, for example, <span class="math inline">\(\beta_1/\log_{2}(e)\)</span> which would be interpreted as the multiplicative change in the odds for river-blindness for a doubling in elevation. However, a doubling in elevation is less meaningful when considering larger values of elevation.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -403,7 +401,7 @@ Note
 </div>
 </div>
 <p>When the goal of statistical analysis is instead in developing a predictive model for the outcome of interest, the explanatory power and interpretability of the model may be of less concern. For this reason, the model with the log-transformed model could be preferred over the model with the linear spline, if it is shown to yield more predictive power. We will come back to this point again in <a href="04_geostatistical-prediction.html" class="quarto-xref"><span>Chapter 4</span></a>, where we will show how to assess and compare the predictive performance of different geostatistical models.</p>
-<p>The other type of aggregated count data that we consider are unbounded counts. The Anopheles mosquitoes data-set (<a href="01_intro.html#sec-mosq-data-ch1" class="quarto-xref"><span>Section 1.4.4</span></a>) is an example of this, since there is no upper limit to the number of mosquitoes that can be trapped at a location. Let us consider the covariate represented by elevation. In this case, the simplest model that can be used to analyse the data is a Poisson regression, where the linear predictor is defined as the log of the mean number of mosquitoes (<a href="01_intro.html#tbl-glm" class="quarto-xref">Table&nbsp;<span>1.3</span></a>). Hence, exploratory plots for the association with covariates should be generated using the log transformed counts of mosquitoes. In this instance, to avoid taking the log of zero, we can add 1 to the reported counts, if required. The variable of the <code>An.gambiae</code> in the <code>anopheles</code> data-set does not contain any 0, hence we simply apply the log transformation without adding 1.</p>
+<p>The other type of aggregated count data that we consider are unbounded counts. The Anopheles mosquitoes data-set (<span class="quarto-unresolved-ref">?sec-mosq-data-ch1</span>) is an example of this, since there is no upper limit to the number of mosquitoes that can be trapped at a location. Let us consider the covariate represented by elevation. In this case, the simplest model that can be used to analyse the data is a Poisson regression, where the linear predictor is defined as the log of the mean number of mosquitoes (<span class="quarto-unresolved-ref">?tbl-glm</span>). Hence, exploratory plots for the association with covariates should be generated using the log transformed counts of mosquitoes. In this instance, to avoid taking the log of zero, we can add 1 to the reported counts, if required. The variable of the <code>An.gambiae</code> in the <code>anopheles</code> data-set does not contain any 0, hence we simply apply the log transformation without adding 1.</p>
 <div class="cell">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">anopheles</span><span class="op">$</span><span class="va">log_counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">anopheles</span><span class="op">$</span><span class="va">An.gambiae</span><span class="op">)</span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="va">anopheles</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">elevation</span>, y <span class="op">=</span> <span class="va">log_counts</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -425,7 +423,7 @@ Figure&nbsp;3.3: Scatter plot of the log transformed number of <em>Anopheles gam
 <p>The scatter plot in <a href="#fig-logcounts-elev-mosq" class="quarto-xref">Figure&nbsp;<span>3.3</span></a> shows a weak negative association, with the average number of mosquitoes tending to decrease as elevation increases. In this case, assuming a linear effect of elevation on the log of the expected mosquito count appears reasonable.</p>
 </section><section id="sec-indiv-expl-analysis" class="level4" data-number="3.1.1.2"><h4 data-number="3.1.1.2" class="anchored" data-anchor-id="sec-indiv-expl-analysis">
 <span class="header-section-number">3.1.1.2</span> When the outcome is an individual-level binary indicator</h4>
-<p>We now consider the malaria data from Kenya (<a href="01_intro.html#sec-malaria-ch1" class="quarto-xref"><span>Section 1.4.3</span></a>) where the main outcome is the result from a rapid diagnostic test (RDT) for malaria from individuals within households. In this case, because the outcome only takes two values, 1 for a positive RDT test result and 0 otherwise, the direct application of the empirical logit from <a href="#eq-empirical-logit" class="quarto-xref">Equation&nbsp;<span>3.1</span></a> would not help us to generate informative scatter plots. Throughout the book, we will consider the data from the community survey only, hence we work with a subset of the data which we shall name <code>malkenya_comm</code></p>
+<p>We now consider the malaria data from Kenya (<span class="quarto-unresolved-ref">?sec-malaria-ch1</span>) where the main outcome is the result from a rapid diagnostic test (RDT) for malaria from individuals within households. In this case, because the outcome only takes two values, 1 for a positive RDT test result and 0 otherwise, the direct application of the empirical logit from <a href="#eq-empirical-logit" class="quarto-xref">Equation&nbsp;<span>3.1</span></a> would not help us to generate informative scatter plots. Throughout the book, we will consider the data from the community survey only, hence we work with a subset of the data which we shall name <code>malkenya_comm</code></p>
 <div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">malkenya_comm</span> <span class="op">&lt;-</span> <span class="va">malkenya</span><span class="op">[</span><span class="va">malkenya</span><span class="op">$</span><span class="va">Survey</span><span class="op">==</span><span class="st">"community"</span>, <span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -436,7 +434,7 @@ Figure&nbsp;3.3: Scatter plot of the log transformed number of <em>Anopheles gam
 <span>                            breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">15</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">50</span>, <span class="fl">100</span><span class="op">)</span>,</span>
 <span>                            include.lowest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Using the <code>cut</code> function, we first split age (in years) into classes through the argument <code>breaks</code>. The classification of age into <span class="math inline">\([0,5]\)</span>, <span class="math inline">\((5, 10]\)</span> and <span class="math inline">\((10, 15]\)</span> is common in many malaria epidemiology studies, as children are one of the groups at highest risk of malaria. The choice of the other classes of age reflects instead is made to balance the number of observations falling in each of the classes.</p>
+<p>Using the <code>cut</code> function, we first split age (in years) into classes through the argument <code>breaks</code>. The classification of age into <span class="math inline">\([0,5]\)</span>, <span class="math inline">\((5, 10]\)</span> and <span class="math inline">\((10, 15]\)</span> is common in many malaria epidemiology studies. For older ages, there is no strong requirement for a particular classification, and alternative groupings are equally plausible; the categories used here are intended purely for illustration.</p>
 <div class="cell">
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Computation of the empirical logit by age groups and gender</span></span>
 <span><span class="va">age_class_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">RDT</span> <span class="op">~</span> <span class="va">Age_class</span> <span class="op">+</span> <span class="va">Gender</span>, </span>
@@ -536,7 +534,7 @@ Figure&nbsp;3.4: Plot of the empirical logit against age, for males and females.
 </div>
 </div>
 </div>
-<p>To carry out the likelihood ratio test to assess the null hypothesis that <span class="math inline">\(\beta_{1}^*=\beta_{2}^*=\beta_{3}^*=0\)</span>, we first fit the simplified nested model under this null hypothesis. The likelihood ratio test can then be carried out using the <code>anova</code> command as shown. The p-value indicates that we do not find evidence against the null hypothesis, hence in our analysis of the data we might favour the simplified model that does not assume an interaction between the two genders. However, it is important to note that the likelihood used here comes from a standard Binomial model that does not account for residual spatial correlation. As will be shown later in the book, ignoring such correlation typically leads to underestimated standard errors and, consequently, p-values that are smaller than they should be. The resulting p-values from the likelihood ratio test may therefore be unreliable. Nonetheless, these exploratory analyses remain useful for identifying patterns that may or may not persist once a more flexible model is fitted. In practice, if an interaction appears weak or non-significant at this stage, one would expect even less evidence for it under a model that captures additional variability. Conversely, when certain relationships are scientifically plausible - such as age-specific differences between genders - it may still be appropriate to retain them regardless of their statistical significance.</p>
+<p>To carry out the likelihood ratio test to assess the null hypothesis that <span class="math inline">\(\beta_{1}^*=\beta_{2}^*=\beta_{3}^*=0\)</span>, we first fit the simplified nested model under this null hypothesis. The likelihood ratio test can then be carried out using the <code>anova</code> command as shown. The p-value indicates that we do not find evidence against the null hypothesis, hence in our analysis of the data we might favour the simplified model that does not assume an interaction between the two genders. However, it is important to note that the likelihood used here comes from a standard Binomial model that does not account for residual spatial correlation. As will be shown later in the book, ignoring such correlation typically leads to underestimated standard errors for the regression coefficients and, consequently, p-values that are smaller than they should be. The resulting p-values from the likelihood ratio test may therefore be unreliable. Nonetheless, these exploratory analyses remain useful for identifying patterns that may or may not persist once a more flexible model is fitted. In practice, if an interaction appears weak or non-significant at this stage, one would expect even less evidence for it under a model that captures additional variability. Conversely, when certain relationships are scientifically plausible - such as age-specific differences between genders - it may still be appropriate to retain them regardless of their statistical significance.</p>
 <p>The approach just illustrated, can also be applied to explore the association with other continuous variables that are a property of the household and not of the individual. Let us, for example, consider the variable <code>elevation</code> from the <code>malkenya</code> data-set.</p>
 <div class="cell">
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">malkenya_comm</span><span class="op">$</span><span class="va">elevation_class</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span><span class="op">(</span><span class="va">malkenya_comm</span><span class="op">$</span><span class="va">elevation</span>,</span>
@@ -575,13 +573,13 @@ Figure&nbsp;3.5: Plot of the empirical logit against elevation measured in meter
 </div>
 </div>
 <p>The resulting plot in <a href="#fig-elogit-elev-malkenya" class="quarto-xref">Figure&nbsp;<span>3.5</span></a> shows an approximately linear relationship with decreasing values of the empirical logit for increasing elevation. This is expected because the cooler environment at higher altitudes is less favourable to the development of the overall mosquito life cycle.</p>
-<p>An alternative approach to generate a scatter plot for assessing the association between elevation and the empirical logit would be to aggregate the data at household level, rather than using classes of elevation. However, this approach does not work as the one illustrated above when only one individual is sampled for each household. In the case of the <code>malkenya</code> data, the great majority of the households only include one individual making this second approach less useful than the one illustrated.</p>
+<p>An alternative approach to generate a scatter plot for assessing the association between elevation and the empirical logit would be to aggregate the data at household level, rather than using classes of elevation. However, this approach cannot be applied when only one individual is sampled for each household. In the case of the <code>malkenya</code> data, the great majority of the households only include one individual making this second approach less useful than the one illustrated.</p>
 <p>Other more sophisticated approaches for the exploration of the associations between covariates and binary outcomes are available. For example, the use of the empirical logit could be avoided by using non-parametric regression methods for Binomial outcomes <span class="citation" data-cites="bowman1997">(<a href="references.html#ref-bowman1997" role="doc-biblioref">Bowman 1997</a>)</span>, also implemented in <code>sm</code> package in R. Our view is that a careful exploratory analysis based on simpler methods, such as those illustrated above, can be equally effective to inform the model formulation.</p>
 </section></section><section id="sec-overdispersion" class="level3" data-number="3.1.2"><h3 data-number="3.1.2" class="anchored" data-anchor-id="sec-overdispersion">
 <span class="header-section-number">3.1.2</span> Exploring overdispersion in count data</h3>
 <p>One of the main advantages in the use of covariates is the ability to attribute part of the variation of the outcome to a set of measured variables and, hence, reduce the uncertainty of our inferences. However, it is almost always the case that the finite number of covariates at our disposal is not enough to fully explain the variation in the outcome. The existence of unmeasured covariates that are related to the modelled outcome give rise to the so-called residual variation. In a standard linear regression model the extent to which we are able to account for important covariates is directly linked to the size of the variance of the residuals. In the case of count data, instead, this link is less well defined and one of the main consequences of the omission of covariates, which we address in this chapter, is <em>overdispersion</em>.</p>
 <p>Overdispersion occurs when the variability of the data is larger than that implied by the generalized linear model (GLM) fitted to them. For example, if we consider the Binomial distribution, the presence of overdispersion implies that <span class="math inline">\(V(Y_i) &gt; n_i \mu_{i}(1-\mu_i)\)</span>, where we recall that <span class="math inline">\(n_i\)</span> is the Binomial denominator and <span class="math inline">\(mu_i\)</span> is the probability of “success” for each of the <span class="math inline">\(n_i\)</span> Bernoulli trials; for a Poisson distribution with <span class="math inline">\(E(Y_i) = \mu_i\)</span>, instead, overdispersion implies that <span class="math inline">\(V(Y_i) &gt; \mu_{i}\)</span>.</p>
-<p>Assessment of the overdispersion for count data can be carried out in different ways depending on the goal of the statistical analysis. Since the focus of this book is to illustrate how to formulate and apply geostatistical models, the most natural approach to assess overdispersion is through the use of generalized linear mixed models (GLMMs). The class of GLMMs that we consider in this and the next section are obtained by replacing the spatial Gaussian process <span class="math inline">\(S(x_i)\)</span> in introduced in <a href="01_intro.html#eq-linear-predictor-ch1" class="quarto-xref">Equation&nbsp;<span>1.4</span></a> with a set of mutually independent random effects, which we denote as <span class="math inline">\(Z_i\)</span>, and thus write <span id="eq-linear-predictor-glmms-ch2"><span class="math display">\[
+<p>Assessment of the overdispersion for count data can be carried out in different ways depending on the goal of the statistical analysis. Since the focus of this book is to illustrate how to formulate and apply geostatistical models, the most natural approach to assess overdispersion is through the use of generalized linear mixed models (GLMMs). The class of GLMMs that we consider in this and the next section are obtained by replacing the spatial Gaussian process <span class="math inline">\(S(x_i)\)</span> in introduced in <span class="quarto-unresolved-ref">?eq-linear-predictor-ch1</span> with a set of mutually independent random effects, which we denote as <span class="math inline">\(Z_i\)</span>, and thus write <span id="eq-linear-predictor-glmms-ch2"><span class="math display">\[
 g(\mu_i) = d(x_i)^\top \beta + Z_i.
 \tag{3.7}\]</span></span> The model above accounts for the overdispersion in the data through <span class="math inline">\(Z_i\)</span> whose variance can be interpreted as an indicator of the amount of overdispersion. To show this, we carry out a small simulation as follows. For simplicity, we consider the Binomial mixed model with an intercept only, hence <span id="eq-bin-glmm-example"><span class="math display">\[
 \log\left\{\frac{\mu_i}{1-\mu_i}\right\} = \beta_0 + Z_i
@@ -675,7 +673,7 @@ Figure&nbsp;3.6: Plot of the variances of the standard Binomial model and the Bi
 </div>
 </div>
 <p><a href="#fig-var-bin-glmm" class="quarto-xref">Figure&nbsp;<span>3.6</span></a> shows the results of the simulation. In this figure, the red line corresponds to the variance of a standard Binomial model, obtained by setting <span class="math inline">\(Z_i=0\)</span> and computed as <span class="math inline">\(n_i \mu_i (1-\mu_i)\)</span> with <span class="math inline">\(\mu_i = \exp\{\beta_0\}/(1+\exp\{\beta_0\})\)</span>. As expected, this plot shows that the variance of the simulated counts from the mixed model in <a href="#eq-bin-glmm-example" class="quarto-xref">Equation&nbsp;<span>3.8</span></a> exhibit a larger variance than would be expected under the standard Binomial model. It also indicates that the chosen value for the variance of <span class="math inline">\(Z_i\)</span> of <span class="math inline">\(\tau^2 = 0.1\)</span> corresponds to a significant amount of dispersion. One way to relate <span class="math inline">\(\tau^2\)</span> to the amount of overdispersion is by considering that, following from the properties of a univariate Gaussian distribution, <em>a priori</em> the <span class="math inline">\(Z_i\)</span> will take values between <span class="math inline">\(-1.96 \sqrt{\tau^2}\)</span> and <span class="math inline">\(+1.96 \sqrt{\tau^2}\)</span> with approximately 95<span class="math inline">\(\%\)</span> probability. That implies that <span class="math inline">\(\exp\{Z_i\}\)</span>, which expresses the effect of the random effects on the odds ratios, will be with 95<span class="math inline">\(\%\)</span> probability between <span class="math inline">\(\exp\{-1.96 \sqrt{\tau^2}\}\)</span> and <span class="math inline">\(\exp\{+1.96 \sqrt{\tau^2}\}\)</span>. By replacing <span class="math inline">\(\tau^2\)</span> with the chosen values for the simulation, those two become about 0.54 and 1.86, meaning that with the <span class="math inline">\(Z_i\)</span> with <span class="math inline">\(95\%\)</span> probability will have a multiplicative effect on the odds ratios between <span class="math inline">\(0.54\)</span> and <span class="math inline">\(1.86\)</span>.</p>
-<p>We encourage you to do Exercise 1 and Exercise 2 at the end of this chapter, to further explore how generalized linear mixed models can be used as a tool to account for overdispersion.</p>
+<p>To consolidate the concepts introduced so far, we encourage you to complete Exercises 1 and 2 at the end of this chapter, which further explore the use of generalized linear mixed models as a tool for accounting for overdispersion.</p>
 <section id="maximum-likelihood-estimation-of-generalized-linear-mixed-models-for-count-data" class="level4" data-number="3.1.2.1"><h4 data-number="3.1.2.1" class="anchored" data-anchor-id="maximum-likelihood-estimation-of-generalized-linear-mixed-models-for-count-data">
 <span class="header-section-number">3.1.2.1</span> Maximum likelihood estimation of generalized linear mixed models for count data</h4>
 <p>We now illustrate how to fit a generalized linear mixed, using the <code>anopheles</code> data-set as an example. We consider two models: an intercept-only model and one that uses elevation as a covariate. Let <span class="math inline">\(\mu(x_i)\)</span> be the number of mosquitoes captured at a location <span class="math inline">\(x_i\)</span>; then the linear predictor with elevation as a covariate takes the form <span id="eq-anopheles-glmm"><span class="math display">\[
@@ -695,9 +693,8 @@ Figure&nbsp;3.6: Plot of the variances of the standard Binomial model and the Bi
 <span>                        data <span class="op">=</span> <span class="va">anopheles</span>, nAGQ <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>To fit the model with <code>glmer</code>, we first must create a variable in our data-set that allows us to identify the location associated with each count. In this case, since every row corresponds to a different location, we simply use the row number to identify the locations and save this in the <code>ID_loc</code> variable. The random effects <span class="math inline">\(Z_i\)</span> are then included in the model by adding <code>(1 | ID_loc)</code> in the formula of the <code>glmer</code> function.</p>
-<p>When introducing the variable elevation, we standardize it so that its mean is 0 and its variance is 1. This helps the model-fitting algorithm converge more reliably and is generally good practice when covariates have very different scales. Importantly, standardizing a variable does not change the fit of the model to the data—it only changes how we interpret the regression coefficients. In other words, the model is mathematically equivalent; only the units of measurement differ.</p>
-<p>For example, suppose we model mosquito counts using elevation measured in metres and obtain a regression coefficient of –0.002. This means that for every one-metre increase in elevation, the expected mosquito count decreases by about 0.2%. If we instead standardize elevation so that one unit represents one standard deviation (say 150 m), the corresponding coefficient becomes –0.002 × 150 = –0.30. Both models yield identical fitted values and predictions. The only difference is that in the standardized model, the coefficient refers to a one-standard-deviation change in elevation rather than a one-metre change.</p>
-<p>The argument <code>nAGQ</code> is used to define the precision of the approximation of the maximum likelihood estimation algorithm. By default <code>nAGQ = 1</code>, which corresponds to the Laplace approximation. Values for <code>nAGQ</code> larger than 1 are used to define the number of points of the adaptive Gaussian-Hermite quadrature. The general principle is that the larger <code>nAGQ</code> the better, but at the expense of an increased computing time. Based on the guidelines and help pages of the <code>lme4</code> package, it is stated that a reasonable value for <code>nAGQ</code> is 25. For more technical details on this aspect, we refer the reader to <span class="citation" data-cites="bates2015">Bates et al. (<a href="references.html#ref-bates2015" role="doc-biblioref">2015</a>)</span>.</p>
+<p>When introducing the variable elevation, we standardize it so that its mean is 0 and its variance is 1. This helps the model-fitting algorithm converge more reliably and is generally good practice when covariates have very different scales. Importantly, standardizing a variable does not change the fit of the model to the data—it only changes how we interpret the regression coefficients. In other words, the model is mathematically equivalent; only the units of measurement differ. For example, suppose we model mosquito counts using elevation measured in metres and obtain a regression coefficient of –0.002. This means that for every one-metre increase in elevation, the expected mosquito count decreases by about 0.2%. If we instead standardize elevation so that one unit represents one standard deviation (say 150 m), the corresponding coefficient becomes –0.002 × 150 = –0.30. Both models yield identical fitted values and predictions. The only difference is that in the standardized model, the coefficient refers to a one-standard-deviation change in elevation rather than a one-metre change.</p>
+<p>The argument <code>nAGQ</code> is used to define the precision of the approximation of the maximum likelihood estimation algorithm. By default <code>nAGQ = 1</code>, which corresponds to the Laplace approximation. Values for <code>nAGQ</code> larger than 1 are used to define the number of points of the adaptive Gaussian-Hermite quadrature. The general principle is that the larger <code>nAGQ</code> the better, but at the expense of an increased computing time. Based on the guidelines and help pages of the <code>lme4</code> package, it is stated that a reasonable value for <code>nAGQ</code> is 25. For more technical details on this aspect, we refer you to <span class="citation" data-cites="bates2015">Bates et al. (<a href="references.html#ref-bates2015" role="doc-biblioref">2015</a>)</span>.</p>
 <p>We can now look at the summary of the fitted models to the mosquitoes data-set.</p>
 <div class="cell">
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">### Summary of the model with elevation</span></span>
@@ -758,7 +755,7 @@ Figure&nbsp;3.6: Plot of the variances of the standard Binomial model and the Bi
 <span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>From the summary of the model that uses elevation, we observe that the estimated regression coefficient <span class="math inline">\(\beta_{1}\)</span> is statistically significantly different from 0. The interpretation of the estimated regression coefficient is the following: for an increase of about 100 meters in elevation, all other things being equal, the average number of mosquitoes decreases by about <span class="math inline">\(100\% \times [1-\exp\{-0.19794\}] \approx 18\%\)</span>. Note that when using a standardized variable, a unit increase for this corresponds to an increase in the original unstandardized variable equal to its standard deviation, which for the <code>elevation</code> variable is about 100 meters.</p>
-<p>From the summaries of the two models, under <code>Random effects:</code>, we obtain the estimates associated with the random effects introduced in the model. In this case, since we only have introduced <span class="math inline">\(Z_i\)</span>, this part of the summary provides the maximum likelihood estimate for <span class="math inline">\(\tau^2\)</span>, the variance of <span class="math inline">\(Z_i\)</span>, which is found on the line where <code>ID_loc</code> is printed. We then observe that the estimates for <span class="math inline">\(\tau^2\)</span> for the intercept-only model is <code>0.761</code>, whilst for the model with elevation this is <code>0.7146</code>. Note that the figures reported under <code>Std.Dev.</code> are simply the square root of the value reported under <code>Variance</code>. As expected, the introduction of elevation contributes to the explanation of the residual variation captured by <span class="math inline">\(Z_i\)</span>, though by a very small amount. The estimated values of <span class="math inline">\(\tau^2\)</span> thus suggest that there is extra-Binomial variation in the data that is not accounted for by elevation.</p>
+<p>From the summaries of the two models, under <code>Random effects:</code>, we obtain the estimates associated with the random effects introduced in the model. In this case, since we only have introduced <span class="math inline">\(Z_i\)</span> as a random effect, this part of the summary provides the maximum likelihood estimate for <span class="math inline">\(\tau^2\)</span>, the variance of <span class="math inline">\(Z_i\)</span>, which is found on the line where <code>ID_loc</code> is printed. We then observe that the estimates for <span class="math inline">\(\tau^2\)</span> for the intercept-only model is <code>0.761</code>, whilst for the model with elevation this is <code>0.7146</code>. Note that the figures reported under <code>Std.Dev.</code> are simply the square root of the value reported under <code>Variance</code>. As expected, the introduction of elevation contributes to the explanation of the residual variation captured by <span class="math inline">\(Z_i\)</span>, though by a very small amount. The estimated values of <span class="math inline">\(\tau^2\)</span> thus suggest that there is extra-Binomial variation in the data that is not accounted for by elevation.</p>
 <p>In the next section, we will illustrate how to assess the presence of residual correlation for continuous measurements and overdispersed count data.</p>
 </section></section><section id="sec-expl-spatial" class="level3" data-number="3.1.3"><h3 data-number="3.1.3" class="anchored" data-anchor-id="sec-expl-spatial">
 <span class="header-section-number">3.1.3</span> Exploring residual spatial correlation</h3>
@@ -769,7 +766,7 @@ V_{ij} = (Z_i - Z_j)^2.
 <p>The first issue is that we do not observe <span class="math inline">\(Z_i\)</span> as, by definition, this is a latent variable. Hence, we require an estimate for <span class="math inline">\(Z_i\)</span> which we can then feed into <span class="math inline">\(V_{ij}\)</span>. To emphasize this point, from now on, we shall replace <a href="#eq-squared-diff" class="quarto-xref">Equation&nbsp;<span>3.10</span></a> with <span id="eq-hat-squared-diff"><span class="math display">\[
 \hat{V}_{ij} = (\hat{Z}_{i} - \hat{Z}_j)^2.
 \tag{3.11}\]</span></span> Several options are available for estimating <span class="math inline">\(Z_{i}\)</span>. Our choice is to use the model of the predictive distribution of <span class="math inline">\(Z_i\)</span>, that is the distribution of <span class="math inline">\(Z_{i}\)</span> conditioned to the data <span class="math inline">\(y_i\)</span>. This estimator for <span class="math inline">\(Z_i\)</span> is also readily available from the output of the <code>lmer</code> and <code>glmer</code> functions of the <code>lme4</code> package, as we will illustrate later in our example in this section.</p>
-<p>The second issue is that if we simply plot <span class="math inline">\(\hat{V}_{ij}\)</span> against the distances <span class="math inline">\(u_{ij}\)</span> (also known as <em>cloud variogram</em>), due to the high noisiness in the <span class="math inline">\(\hat{V}_{ij}\)</span>, it may be quite difficult to assess the presence of an increasing trend in the <span class="math inline">\(\hat{V}_{ij}\)</span> and thus detect spatial correlation. Hence, it is general practice to group the distances <span class="math inline">\(u_{ij}\)</span> into classes, say <span class="math inline">\(\mathcal{U}\)</span>, and then take average of all the <span class="math inline">\(\hat{V}_{ij}\)</span> that fall within <span class="math inline">\(\mathcal{U}\)</span>.</p>
+<p>The second issue is that if we simply plot <span class="math inline">\(\hat{V}_{ij}\)</span> against the distances <span class="math inline">\(u_{ij}\)</span> (also known as <em>cloud variogram</em>; see Exercise 3 at the bottom of this chapter), due to the high noisiness in the <span class="math inline">\(\hat{V}_{ij}\)</span>, it may be quite difficult to assess the presence of an increasing trend in the <span class="math inline">\(\hat{V}_{ij}\)</span> and thus detect spatial correlation. Hence, it is general practice to group the distances <span class="math inline">\(u_{ij}\)</span> into classes, say <span class="math inline">\(\mathcal{U}\)</span>, and then take average of all the <span class="math inline">\(\hat{V}_{ij}\)</span> that fall within <span class="math inline">\(\mathcal{U}\)</span>.</p>
 <p>We can now write the formal definition of the empirical variogram as <span id="eq-empirical-variogram"><span class="math display">\[
 \hat{V}(\mathcal{U}) = \frac{1}{2 |\mathcal{U}|} \sum_{(i, j): (u_i, u_j) \in \mathcal{U}} \hat{V}_{ij}
 \tag{3.12}\]</span></span> where <span class="math inline">\(|\mathcal{U}|\)</span> denotes the number of pairs of locations that fall within the distance class <span class="math inline">\(\mathcal{U}\)</span>. The rationale behind dividing by 2 in <span class="math inline">\(1/2 |\mathcal{U}|\)</span> from the above equation, will be elucidated in <a href="#sec-linear-model" class="quarto-xref"><span>Section 3.2</span></a>. When creating the empirical variogram plot, we select the midpoint values of the distance classes <span class="math inline">\(\mathcal{U}\)</span> to represent the x-axis values.</p>
@@ -781,8 +778,9 @@ V_{ij} = (Z_i - Z_j)^2.
 <li><p>Use the resulting 10,000 empirical variograms to compute 95<span class="math inline">\(\%\)</span> confidence intervals, by taking the 0.025 and 0.975 quantiles of these for each distance class <span class="math inline">\(\hat{V}(\mathcal{U})\)</span>.</p></li>
 <li><p>If the observed empirical variogram lies entirely within the envelope generated in the previous step, we conclude that there is no evidence of residual spatial correlation in the data. When, instead, parts of the empirical variogram fall outside the envelope, this suggests the presence of residual spatial dependence.</p></li>
 </ol>
-<p>In point 5 above, the extent and pattern of these deviations can vary considerably. In many cases, the departures from the envelope are quite subtle, with only a few points of the empirical variogram falling outside, as we will see in later examples. Such patterns may indicate a weak or complex form of spatial dependence that is difficult to recover from the data. Ultimately, only the fit of a geostatistical model can provide a definitive assessment of the extent of the spatial correlation. The empirical variogram should therefore be viewed as a diagnostic tool that helps flag potential issues, rather than as conclusive evidence on its own.</p>
+<p>In point 5 above, the extent and pattern of these deviations can vary considerably. In many cases, the departures from the envelope are quite subtle, with only a few points of the empirical variogram falling outside, as we will see in later examples. Such patterns may indicate weak spatial dependence that is difficult to recover from the data. Ultimately, only the fit of a geostatistical model can provide a definitive assessment of the extent of the spatial correlation. The empirical variogram should therefore be viewed as a diagnostic tool that helps to explore residual spatial correlation, rather than as conclusive evidence on its own.</p>
 <p>We now show an application of all the concepts introduced in this section to the Liberia data on river-blindness.</p>
+<!-- UP TO HERE -->
 <section id="sec-empirical-variog-bin" class="level4" data-number="3.1.3.1"><h4 data-number="3.1.3.1" class="anchored" data-anchor-id="sec-empirical-variog-bin">
 <span class="header-section-number">3.1.3.1</span> Example: assessing spatial correlation for the Liberia data</h4>
 <p>We consider the Binomial mixed model that uses the log-transformed elevation as a covariate to model river blindness prevalence, hence <span id="eq-liberia-bin-mixed-elev"><span class="math display">\[
@@ -988,7 +986,7 @@ Figure&nbsp;3.9: Plot of the empirical variogram (solid line) computed using the
 <p>The application of the empirical variogram, whose results are shown in <a href="#fig-italy-sim-variog" class="quarto-xref">Figure&nbsp;<span>3.9</span></a>, indicate the presence of residual correlation. This is because we observe that the solid line representing the empirical variogram falls outside of the 95% envelope for spatial independence.</p>
 </section></section></section></section><section id="sec-linear-model" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="sec-linear-model">
 <span class="header-section-number">3.2</span> The linear geostatistical model</h2>
-<p>In this section, we consider spatially referenced outcomes <span class="math inline">\(Y_i\)</span> that are continuous. We first consider the simpler case of a single measurement <span class="math inline">\(Y_i\)</span> per location <span class="math inline">\(x_i\)</span>. Recalling the class of generalized linear models introduced in <a href="01_intro.html#sec-geostat-models" class="quarto-xref"><span>Section 1.5</span></a>, the linear predictor takes the form <span id="eq-linear-geostat-model-lp"><span class="math display">\[
+<p>In this section, we consider spatially referenced outcomes <span class="math inline">\(Y_i\)</span> that are continuous. We first consider the simpler case of a single measurement <span class="math inline">\(Y_i\)</span> per location <span class="math inline">\(x_i\)</span>. Recalling the class of generalized linear models introduced in <span class="quarto-unresolved-ref">?sec-geostat-models</span>, the linear predictor takes the form <span id="eq-linear-geostat-model-lp"><span class="math display">\[
 \mu_{i} = d(x_i)^\top \beta + S(x_i).
 \tag{3.15}\]</span></span> Hence, in this case, we interpret <span class="math inline">\(\beta\)</span> as the effect on <span class="math inline">\(\mu_i\)</span> for a unit increase in <span class="math inline">\(d(x_i)\)</span>. Let <span class="math inline">\(U_i\)</span> denote i.i.d. random variables representing the measurement error associated with <span class="math inline">\(Y_i\)</span>, each having mean zero and variance <span class="math inline">\(\omega^2\)</span>. Thanks to the linear properties of Gaussian random variables, we can also express the linear model in a compact expression, as <span id="eq-linear-geostat-model"><span class="math display">\[
 Y_i = \mu_i + U_i = d(x_i)^\top \beta + S(x_i) + U_i.
@@ -997,7 +995,7 @@ Y_i = \mu_i + U_i = d(x_i)^\top \beta + S(x_i) + U_i.
 <li>Defining the relationship between each covariate and the mean value <span class="math inline">\(\mu_i\)</span>.</li>
 <li>Selecting an appropriate correlation function for <span class="math inline">\(S(x)\)</span>.</li>
 </ol>
-<p>As illustrated in the previous sections, the initial step of exploratory analysis allows us to handle the first aspect, where we determine the regression relationship between covariates and the mean value <span class="math inline">\(\mu_i\)</span>. However, based on existing methods of exploratory analysis, it is difficult to understand what is a suitable correlation function at this stage. A commonly recommended starting point is the Matern correlation function (see <a href="01_intro.html#eq-matern" class="quarto-xref">Equation&nbsp;<span>1.5</span></a>), which offers considerable flexibility in capturing a wide range of correlation structures, under the assumption of stationarity and isotropy. As we shall illustrate in the next example, even estimating a Matern correlation function is a task that poses many inferential challenges due to the poor identifiability, especially, of its smoothness parameter <span class="math inline">\(\kappa\)</span>.</p>
+<p>As illustrated in the previous sections, the initial step of exploratory analysis allows us to handle the first aspect, where we determine the regression relationship between covariates and the mean value <span class="math inline">\(\mu_i\)</span>. However, based on existing methods of exploratory analysis, it is difficult to understand what is a suitable correlation function at this stage. A commonly recommended starting point is the Matern correlation function (see <span class="quarto-unresolved-ref">?eq-matern</span>), which offers considerable flexibility in capturing a wide range of correlation structures, under the assumption of stationarity and isotropy. As we shall illustrate in the next example, even estimating a Matern correlation function is a task that poses many inferential challenges due to the poor identifiability, especially, of its smoothness parameter <span class="math inline">\(\kappa\)</span>.</p>
 <section id="sec-glm-parest" class="level3" data-number="3.2.1"><h3 data-number="3.2.1" class="anchored" data-anchor-id="sec-glm-parest">
 <span class="header-section-number">3.2.1</span> Evaluating the inclusion of the measurement error term <span class="math inline">\(U_i\)</span> and the specification of the smoothness parameter <span class="math inline">\(\kappa\)</span>
 </h3>
@@ -1054,7 +1052,7 @@ Y_i = \mu + S(x_i) + U_i
 <span><span class="co">## AIC: -130.0606</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can then inspect the point and interval estimates for the model through the <code>summary</code> function of the model as shown in the code chunk above. This output is presented in three sections: in the first section, we have the results for the regression coefficients; in the second section, we have the estimate for the variance of the measurement error component, <span class="math inline">\(\omega^2\)</span> whose point estimate is about 0.015; in the final section, we have the estimates for the parameters of the spatial covariance function, <span class="math inline">\(\sigma^2\)</span> and <span class="math inline">\(\phi\)</span> which are about 0.171 and 9.021 (km), respectively. The message <code>Variance of the nugget effect fixed at 0</code> indicates that the nugget has not been included in the mode; try Exercise 7 to see how this summary changes in the presence of the nugget term.</p>
-<p>At this point, you may be wondering, why we have used 1.5 for the value of <span class="math inline">\(\kappa\)</span> and whether there is a statistical approach to find the most suitable value for this. We show such an approach in the code below. However, before examining the code, we would like to point out an important aspect that relates to how the value of <span class="math inline">\(\kappa\)</span> can affect the estimate of the measurement error variance <span class="math inline">\(\omega^2\)</span>. As we have shown, in <a href="01_intro.html#sec-matern-correlation" class="quarto-xref"><span>Section 1.5.1</span></a>, values of <span class="math inline">\(\kappa\)</span> that are closer to zero will give a rougher and less regular surface for <span class="math inline">\(S(x)\)</span>. In the case of a single observation, when <span class="math inline">\(\kappa\)</span> is closer to zero, it will thus become increasingly difficult to estimate <span class="math inline">\(\omega^2\)</span> since the likelihood function may attribute most of the noisiness to <span class="math inline">\(S(x)\)</span> and rely less on <span class="math inline">\(U_i\)</span> to explain the unstructured random variation found in the data. As a consequence of this, we can expect that for value of <span class="math inline">\(\kappa\)</span> closer to zero, the estimates of <span class="math inline">\(\omega^2\)</span> will also be smaller and, on the contrary, when <span class="math inline">\(\kappa\)</span> is larger, the estimates of <span class="math inline">\(\omega^2\)</span> will also increase. The results generated in the below clearly illustrate this point.</p>
+<p>At this point, you may be wondering, why we have used 1.5 for the value of <span class="math inline">\(\kappa\)</span> and whether there is a statistical approach to find the most suitable value for this. We show such an approach in the code below. However, before examining the code, we would like to point out an important aspect that relates to how the value of <span class="math inline">\(\kappa\)</span> can affect the estimate of the measurement error variance <span class="math inline">\(\omega^2\)</span>. As we have shown, in <span class="quarto-unresolved-ref">?sec-matern-correlation</span>, values of <span class="math inline">\(\kappa\)</span> that are closer to zero will give a rougher and less regular surface for <span class="math inline">\(S(x)\)</span>. In the case of a single observation, when <span class="math inline">\(\kappa\)</span> is closer to zero, it will thus become increasingly difficult to estimate <span class="math inline">\(\omega^2\)</span> since the likelihood function may attribute most of the noisiness to <span class="math inline">\(S(x)\)</span> and rely less on <span class="math inline">\(U_i\)</span> to explain the unstructured random variation found in the data. As a consequence of this, we can expect that for value of <span class="math inline">\(\kappa\)</span> closer to zero, the estimates of <span class="math inline">\(\omega^2\)</span> will also be smaller and, on the contrary, when <span class="math inline">\(\kappa\)</span> is larger, the estimates of <span class="math inline">\(\omega^2\)</span> will also increase. The results generated in the below clearly illustrate this point.</p>
 <div class="cell">
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span></span>
 <span><span class="co"># Number of the values chosen for kappa</span></span>
@@ -1105,11 +1103,11 @@ Figure&nbsp;3.10: (a) plot of the maximum likelihood estimate for the variance o
 <span class="header-section-number">3.2.2</span> Modelling hierarchical geostatistical data using the <code>re()</code> function</h3>
 <p>We now consider the analysis of geostatistical data with a hierarchical structure and show how to formulate and fit a geostatistical model that accounts for the effects of the different layers of the data. For this purpose, we use the <code>italy_sim</code> where each of the sampled locations can be grouped according to two administrative subdivisions of Italy, regions (Admin level 2) and provinces (Admin level 3), as shown in <a href="#fig-italy-maps" class="quarto-xref">Figure&nbsp;<span>3.11</span></a>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wmgeolab/rgeoboundaries">rgeoboundaries</a></span><span class="op">)</span></span>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">rgeoboundaries</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-spatial/mapview">mapview</a></span><span class="op">)</span></span>
-<span><span class="va">italy_regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rgeoboundaries/man/geoboundaries.html">geoboundaries</a></span><span class="op">(</span>country <span class="op">=</span> <span class="st">"italy"</span>, adm_lvl <span class="op">=</span> <span class="st">"adm2"</span><span class="op">)</span></span>
+<span><span class="va">italy_regions</span> <span class="op">&lt;-</span> <span class="fu">geoboundaries</span><span class="op">(</span>country <span class="op">=</span> <span class="st">"italy"</span>, adm_lvl <span class="op">=</span> <span class="st">"adm2"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">italy_provinces</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rgeoboundaries/man/geoboundaries.html">geoboundaries</a></span><span class="op">(</span>country <span class="op">=</span> <span class="st">"italy"</span>, adm_lvl <span class="op">=</span> <span class="st">"adm3"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">italy_provinces</span> <span class="op">&lt;-</span> <span class="fu">geoboundaries</span><span class="op">(</span>country <span class="op">=</span> <span class="st">"italy"</span>, adm_lvl <span class="op">=</span> <span class="st">"adm3"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
@@ -1164,7 +1162,9 @@ Y_{ij} = \beta_0 + \overbrace{\beta_1 d(x_i) + S(x_i)}^\text{Location-level effe
 <span><span class="co">##   6:    -331.42968: -1.04087  1.37294 -0.119652  5.33634 -1.62883 -1.33321 0.375031</span></span>
 <span><span class="co">##   7:    -331.43375: -1.07312  1.37288 -0.0878211  5.36725 -1.62883 -1.42011 0.376251</span></span>
 <span><span class="co">##   8:    -331.43375: -1.07445  1.37288 -0.0866254  5.36840 -1.62883 -1.42489 0.376323</span></span>
-<span><span class="co">##   9:    -331.43375: -1.07445  1.37288 -0.0866254  5.36840 -1.62883 -1.42489 0.376323</span></span>
+<span><span class="co">##   9:    -331.43375: -1.07445  1.37288 -0.0866228  5.36840 -1.62883 -1.42491 0.376323</span></span>
+<span><span class="co">##  10:    -331.43375: -1.07445  1.37288 -0.0866228  5.36840 -1.62883 -1.42491 0.376323</span></span>
+<span><span class="co">##  11:    -331.43375: -1.07445  1.37288 -0.0866228  5.36840 -1.62883 -1.42491 0.376323</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">italy_fit</span><span class="op">)</span></span>
 <span><span class="co">## Call:</span></span>
@@ -1180,7 +1180,7 @@ Y_{ij} = \beta_0 + \overbrace{\beta_1 d(x_i) + S(x_i)}^\text{Location-level effe
 <span><span class="co">## </span></span>
 <span><span class="co">## Regression coefficients</span></span>
 <span><span class="co">##                Estimate Lower limit Upper limit    StdErr z.value p.value    </span></span>
-<span><span class="co">## (Intercept)   -1.074451   -2.031690   -0.117212  0.488396    -2.2 0.02781 *  </span></span>
+<span><span class="co">## (Intercept)   -1.074454   -2.031694   -0.117213  0.488397    -2.2 0.02781 *  </span></span>
 <span><span class="co">## log(pop_dens)  1.372877    1.352018    1.393735  0.010642   129.0 &lt; 2e-16 ***</span></span>
 <span><span class="co">## ---</span></span>
 <span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
@@ -1192,7 +1192,7 @@ Y_{ij} = \beta_0 + \overbrace{\beta_1 d(x_i) + S(x_i)}^\text{Location-level effe
 <span><span class="co">## Matern covariance parameters (kappa=0.5)</span></span>
 <span><span class="co">##                       Estimate Lower limit Upper limit</span></span>
 <span><span class="co">## Spatial process var.   0.91702     0.59470       1.414</span></span>
-<span><span class="co">## Spatial corr. scale  214.51980   153.60751     299.587</span></span>
+<span><span class="co">## Spatial corr. scale  214.52032   153.60797     299.587</span></span>
 <span><span class="co">## Variance of the nugget effect fixed at 0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Unstructured random effects</span></span>
@@ -1269,7 +1269,7 @@ Table&nbsp;3.1: Maximum likelihood estimates and, lower and upper limits of the 
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Estimate"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Lower limit"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Upper limit"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"-1.0744513","2":"-2.0316905","3":"-0.1172122","_rn_":"(Intercept)"},{"1":"1.3728765","2":"1.3520182","3":"1.3937349","_rn_":"log(pop_dens)"},{"1":"0.9170206","2":"0.5946974","3":"1.4140413","_rn_":"Spatial process var."},{"1":"214.5198003","2":"153.6075107","3":"299.5865536","_rn_":"Spatial corr. scale"},{"1":"0.2405342","2":"0.1455287","3":"0.3975623","_rn_":"region (random eff. var.)"},{"1":"0.3763228","2":"0.3560707","3":"0.3977268","_rn_":"province (random eff. var.)"},{"1":"1.2167193","2":"1.2009329","3":"1.2327133","_rn_":"Measuremment error var."}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Estimate"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Lower limit"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Upper limit"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"-1.0744535","2":"-2.0316941","3":"-0.1172129","_rn_":"(Intercept)"},{"1":"1.3728765","2":"1.3520182","3":"1.3937349","_rn_":"log(pop_dens)"},{"1":"0.9170230","2":"0.5946993","3":"1.4140442","_rn_":"Spatial process var."},{"1":"214.5203218","2":"153.6079705","3":"299.5871133","_rn_":"Spatial corr. scale"},{"1":"0.2405302","2":"0.1455252","3":"0.3975585","_rn_":"region (random eff. var.)"},{"1":"0.3763231","2":"0.3560710","3":"0.3977271","_rn_":"province (random eff. var.)"},{"1":"1.2167193","2":"1.2009329","3":"1.2327133","_rn_":"Measuremment error var."}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -1277,7 +1277,7 @@ Table&nbsp;3.1: Maximum likelihood estimates and, lower and upper limits of the 
 </section></section><section id="generalized-linear-geostatistical-models" class="level2" data-number="3.3"><h2 data-number="3.3" class="anchored" data-anchor-id="generalized-linear-geostatistical-models">
 <span class="header-section-number">3.3</span> Generalized linear geostatistical models</h2>
 <p>We now consider the modelling of count outcomes, focusing our attention to the Binomial and Poisson geostatistical models.</p>
-<p>The use of Binomial geostatistical model is appropriate whenever the reported counts have a known upper bound. For example, when analyzing aggregated disease counts from cross-sectional survey data, the total number of people sampled at a location defines the largest number of possible reported disease cases. Recalling the model specification of <a href="01_intro.html#tbl-glm" class="quarto-xref">Table&nbsp;<span>1.3</span></a>, we specify the Binomial geostatistical model by stating that the reported disease counts <span class="math inline">\(Y_i\)</span> out of <span class="math inline">\(n_i\)</span> (the maximum value that <span class="math inline">\(Y_i\)</span> can take) at location <span class="math inline">\(x_i\)</span>, conditionally on the spatial random effects <span class="math inline">\(S(x_i)\)</span>, follow a Binomial distribution with probability <span class="math inline">\(p(x_i)\)</span> and logit-linear predictor <span id="eq-lp-bin"><span class="math display">\[
+<p>The use of Binomial geostatistical model is appropriate whenever the reported counts have a known upper bound. For example, when analyzing aggregated disease counts from cross-sectional survey data, the total number of people sampled at a location defines the largest number of possible reported disease cases. Recalling the model specification of <span class="quarto-unresolved-ref">?tbl-glm</span>, we specify the Binomial geostatistical model by stating that the reported disease counts <span class="math inline">\(Y_i\)</span> out of <span class="math inline">\(n_i\)</span> (the maximum value that <span class="math inline">\(Y_i\)</span> can take) at location <span class="math inline">\(x_i\)</span>, conditionally on the spatial random effects <span class="math inline">\(S(x_i)\)</span>, follow a Binomial distribution with probability <span class="math inline">\(p(x_i)\)</span> and logit-linear predictor <span id="eq-lp-bin"><span class="math display">\[
 \log\left\{\frac{p(x_i)}{1-p(x_i)}\right\} = d(x_i)^\top \beta + S(x_i).
 \tag{3.19}\]</span></span> In this model, <span class="math inline">\(p(x_i)\)</span> is commonly understood as representing the prevalence of the disease under consideration, defined as the proportion of individuals with the disease at a specific moment. While <span class="math inline">\(p(x_i)\)</span> is not strictly a proportion, its interpretation as disease prevalence is justified by the fact that if we were to sample a sufficiently large population at location <span class="math inline">\(x_i\)</span>, the proportion of individuals with the disease would converge closely to the value of <span class="math inline">\(p(x_i)\)</span>.</p>
 <p>A Binomial geostatistical model is also used when analyzing data at individual level where the outcome is binary and usually indicates the positive or negative result of a test for a disease under investigation. In this analysis, a mix of individual-level variables and location-level variables could be introduced to model the probability of a positive test. To formally write the model, we now use <span class="math inline">\(Y_{ij}\)</span> to indicate the binary outcome taking value 1, if the test was positive, and 0, if negative, for the <span class="math inline">\(j\)</span>-th individual sampled at location <span class="math inline">\(x_i\)</span>. The linear predictor now takes the form <span id="eq-lp-bin-ind"><span class="math display">\[
@@ -1302,15 +1302,13 @@ Table&nbsp;3.1: Maximum likelihood estimates and, lower and upper limits of the 
 <span>        family <span class="op">=</span> <span class="st">"binomial"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  0:    -0.0000000: -2.99847 0.313076  0.00000  4.21726
-  1:    -9.8274716: -2.94436 0.305213 -0.667117  4.84455
-  2:    -12.296797: -2.94197 0.318885 -0.666786  4.84426
-  3:    -12.681950: -2.94430 0.324414 -0.657779  4.83511
-  4:    -13.500521: -3.01028 0.337180 -0.605231  4.75222
-  5:    -13.742561: -3.07966 0.350429 -0.736683  4.55567
-  6:    -13.811747: -3.08714 0.351817 -0.894381  4.36566
-  7:    -13.812519: -3.08732 0.351833 -0.906068  4.34733
-  8:    -13.812520: -3.08732 0.351833 -0.905834  4.34756
-  9:    -13.812520: -3.08732 0.351833 -0.905834  4.34756</code></pre>
+  1:    -7.2824308: -2.97674 0.285682 -0.305244  4.41589
+  2:    -9.6410616: -2.95087 0.278392 -0.666208  4.33498
+  3:    -12.483643: -2.95140 0.278336 -1.61184  3.18980
+  4:    -13.178434: -2.94912 0.278103 -1.45441  3.18909
+  5:    -13.182965: -2.94945 0.278214 -1.44050  3.18853
+  6:    -13.182965: -2.94946 0.278215 -1.44040  3.18851
+  7:    -13.182965: -2.94946 0.278215 -1.44040  3.18851</code></pre>
 </div>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fit_liberia</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1326,8 +1324,8 @@ Inverse link function = stats::plogis(x)
 
 Regression coefficients
                 Estimate Lower limit Upper limit    StdErr z.value   p.value
-(Intercept)    -3.087322   -3.523935   -2.650708  0.222766 -13.859 &lt; 2.2e-16
-log(elevation)  0.351833    0.309448    0.394217  0.021625  16.270 &lt; 2.2e-16
+(Intercept)    -2.949459   -3.379371   -2.519546  0.219347 -13.447 &lt; 2.2e-16
+log(elevation)  0.278215    0.236257    0.320174  0.021408  12.996 &lt; 2.2e-16
                   
 (Intercept)    ***
 log(elevation) ***
@@ -1337,14 +1335,14 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 Spatial Gaussian process
 Matern covariance parameters (kappa=0.5)
                      Estimate Lower limit Upper limit
-Spatial process var.  0.40420     0.30635      0.5333
-Spatial corr. scale  77.28927    60.13060     99.3443
+Spatial process var.  0.23683     0.20968      0.2675
+Spatial corr. scale  24.25219    20.71708     28.3905
 Variance of the nugget effect fixed at 0
 
-Log-likelihood: 13.81252</code></pre>
+Log-likelihood: 13.18296</code></pre>
 </div>
 </div>
-<p>When using the <code>glgpm</code> function to fit a Binomial model, we need to specify the Binomial denominators, i.e.&nbsp;the number of people tested at a location in this case, through the argument <code>den</code>. Other arguments of <code>glgpm</code> that are used for carrying out MCML are <code>control_mcmc</code>, that defines the setting parameters of the Monte Carlo Markov Chain algorithm, and <code>par0</code>, which represents our best guess for the unknown parameters of the Binomial geostatistical model. For more information on the default values of these two arguments, we refer the reader to the help page of the <code>glgpm</code> function. To understand how to change the default parameters in order to improve the MCML estimation, we advise you to read <a href="#sec-mcml" class="quarto-xref"><span>Section 3.5.2.1</span></a>. Also, remember that to enable the estimation of the nugget effect, <span class="math inline">\(Z_i\)</span>, you should set <code>nugget=NULL</code> in the <code>gp</code> function, since by default the <code>glgpm</code> function excludes <span class="math inline">\(Z_i\)</span> when the out is non-Gaussian.</p>
+<p>When using the <code>glgpm</code> function to fit a Binomial model, we need to specify the Binomial denominators, i.e.&nbsp;the number of people tested at a location in this case, through the argument <code>den</code>. Other arguments of <code>glgpm</code> that are used for carrying out MCML are <code>control_mcmc</code>, that defines the setting parameters of the Monte Carlo Markov Chain algorithm, and <code>par0</code>, which represents our best guess for the unknown parameters of the Binomial geostatistical model. For more information on the default values of these two arguments, we refer you to the help page of the <code>glgpm</code> function. To understand how to change the default parameters in order to improve the MCML estimation, we advise you to read <a href="#sec-mcml" class="quarto-xref"><span>Section 3.5.2.1</span></a>. Also, remember that to enable the estimation of the nugget effect, <span class="math inline">\(Z_i\)</span>, you should set <code>nugget=NULL</code> in the <code>gp</code> function, since by default the <code>glgpm</code> function excludes <span class="math inline">\(Z_i\)</span> when the out is non-Gaussian.</p>
 <p>In the above summary of the model, the interpretation of the regression coefficients is the same as in a standard logistic regression model. Hence, by taking the exponential of the estimate for the regression coefficient <span class="math inline">\(\beta_1\)</span>, we could then express the effect for a unit increase in the covariate – in this case the log-transformed elevation – on the odds of disease prevalence. Finally, the interpretation of estimates of the covariance parameters is not affected by the type of distribution used to model the main outcome. From the above summary, we note the larger estimates of <span class="math inline">\(\sigma^2\)</span> than <span class="math inline">\(\tau^2\)</span> which suggest the dominance of spatial variation over the unstructured variation in the unexplained variation of disease prevalence. Finally, the estimate of <span class="math inline">\(\phi\)</span> indicates a relatively large spatial correlation with a <em>practical range</em> close to (<span class="math inline">\(58.67 \times 3 \approx\)</span>)180km.</p>
 </section><section id="sec-anopheles-fit" class="level3" data-number="3.3.2"><h3 data-number="3.3.2" class="anchored" data-anchor-id="sec-anopheles-fit">
 <span class="header-section-number">3.3.2</span> Example: <em>Anopheles Gambiae</em> mosquitoes in Cameroon</h3>
@@ -1417,7 +1415,7 @@ $median
 <span class="header-section-number">3.3.3</span> Using parametric bootstrap for computing confidence intervals</h3>
 <p>The bootstrap is a widely used resampling technique introduced by <span class="citation" data-cites="efron1979">Efron (<a href="references.html#ref-efron1979" role="doc-biblioref">1979</a>)</span> as a general approach to estimating the variability of statistical estimates without relying on strong parametric assumptions. While the classical non-parametric bootstrap resamples directly from the observed data, parametric bootstrap instead relies on simulating new datasets from an assumed parametric model, using plug-in estimates obtained from the original fit of the model to the data. This simulation-based method is particularly useful for complex models, such as those considered in this book, that yield an intractable likelihood function.</p>
 <p>We now describe how to carry out parametric bootstrap for geostatistical models in <code>RiskMap</code>. The use of simulation-based approaches will be more extensively covered in <a href="04_geostatistical-prediction.html" class="quarto-xref"><span>Chapter 4</span></a>, but, for the purpose of this section, it is first important to understand how data can be simulated from a geostatistical model.</p>
-<p>The way we have formulated geostatistical models in <a href="01_intro.html#sec-geostat-models" class="quarto-xref"><span>Section 1.5</span></a> provides a hint as to what step should be followed when simulating from a geostatistical model. Using the same notation of <a href="01_intro.html#sec-geostat-models" class="quarto-xref"><span>Section 1.5</span></a>, these are the steps.</p>
+<p>The way we have formulated geostatistical models in <span class="quarto-unresolved-ref">?sec-geostat-models</span> provides a hint as to what step should be followed when simulating from a geostatistical model. Using the same notation of <span class="quarto-unresolved-ref">?sec-geostat-models</span>, these are the steps.</p>
 <ol type="1">
 <li><p>For a given set of predefined locations <span class="math inline">\(X\)</span> compute the covariance matrix <span class="math inline">\(\Sigma\)</span> with <span class="math inline">\((i,j)\)</span>-th entry <span class="math inline">\(\sigma^2 \rho(u_{ij})\)</span>.</p></li>
 <li><p>Compute the covariate effects <span class="math inline">\(d(x)^\top \beta\)</span> for all the locations in <span class="math inline">\(X\)</span>.</p></li>
@@ -1541,7 +1539,7 @@ $median
 <p><span class="math display">\[
 {\rm PR}_i = \frac{y_i - \hat{\text{E}}\left[Y_i \mid W_i\right]}{\sqrt{\hat{\text{Var}}\left[Y_i \mid W_i\right]}}
 \]</span></p>
-<p>where <span class="math inline">\(\hat{\text{E}}\left[Y_i \mid W_i\right]\)</span> and <span class="math inline">\(\hat{\text{Var}}\left[Y_i \mid W_i\right]\)</span> are estimates of the conditional expectation and variance of <span class="math inline">\(Y_i\)</span> given <span class="math inline">\(W_i\)</span>. See <a href="01_intro.html#tbl-glm" class="quarto-xref">Table&nbsp;<span>1.3</span></a> for the expressions of <span class="math inline">\(\text{E}\left[Y_i \mid W_i\right]\)</span> and <span class="math inline">\(\text{Var}\left[Y_i \mid W_i\right]\)</span> for the probability distributions considered in this book.</p>
+<p>where <span class="math inline">\(\hat{\text{E}}\left[Y_i \mid W_i\right]\)</span> and <span class="math inline">\(\hat{\text{Var}}\left[Y_i \mid W_i\right]\)</span> are estimates of the conditional expectation and variance of <span class="math inline">\(Y_i\)</span> given <span class="math inline">\(W_i\)</span>. See <span class="quarto-unresolved-ref">?tbl-glm</span> for the expressions of <span class="math inline">\(\text{E}\left[Y_i \mid W_i\right]\)</span> and <span class="math inline">\(\text{Var}\left[Y_i \mid W_i\right]\)</span> for the probability distributions considered in this book.</p>
 <p>For example, using Monte Carlo samples from <span class="math inline">\(W_i\)</span>, say <span class="math inline">\(W_{i,(j)}\)</span> for <span class="math inline">\(j = 1, \ldots, B\)</span> (see <a href="#sec-mcmc-mala" class="quarto-xref"><span>Section 3.5.2.2</span></a> for how these samples are generated in <code>RiskMap</code>), the expectations can be estimated as:</p>
 <p><span class="math display">\[
 \hat{\text{E}}\left[Y_i \mid W_i\right] = \frac{1}{B} \sum_{j=1}^B \hat{\text{E}}\left[Y_i \mid W_{i,(j)}\right], \quad
@@ -1582,7 +1580,7 @@ L(\theta) = [Y] = \int_{R^n} \int_{R^n} \: [Z] [S] [Y \:|\: Z, S] \: d Z d S
 \sigma^2 \rho(u_{ij}; \phi, \kappa) &amp; \mbox{if }i\neq j \\
 \sigma^2 + \tau^2 &amp;  \mbox{if }i = j
 \end{cases}
-\]</span> where <span class="math inline">\(\rho(u;\phi,\kappa)\)</span> is the Matern correlation function with scale parameter <span class="math inline">\(\phi\)</span> and smoothness parameter <span class="math inline">\(\kappa\)</span>; see <a href="01_intro.html#eq-matern" class="quarto-xref">Equation&nbsp;<span>1.5</span></a>.</p>
+\]</span> where <span class="math inline">\(\rho(u;\phi,\kappa)\)</span> is the Matern correlation function with scale parameter <span class="math inline">\(\phi\)</span> and smoothness parameter <span class="math inline">\(\kappa\)</span>; see <span class="quarto-unresolved-ref">?eq-matern</span>.</p>
 <p>In the next two sections we provide a brief overview of Monte Carlo maximum likelihood and the use of Markov chain Monte Carlo to approximate <a href="#eq-glgm-lik2" class="quarto-xref">Equation&nbsp;<span>3.26</span></a>.</p>
 <section id="sec-mcml" class="level4" data-number="3.5.2.1"><h4 data-number="3.5.2.1" class="anchored" data-anchor-id="sec-mcml">
 <span class="header-section-number">3.5.2.1</span> Monte Carlo maximum likelihood</h4>
@@ -2053,242 +2051,236 @@ Zouré, Honorat GM, Mounkaila Noma, Afework H Tekle, Uche V Amazigo, Peter J Dig
 </div>
 </div>
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-    const icon = "";
-    const anchorJS = new window.AnchorJS();
-    anchorJS.options = {
-      placement: 'right',
-      icon: icon
-    };
-    anchorJS.add('.anchored');
-    const isCodeAnnotation = (el) => {
-      for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {                     
-          return true;
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
       }
-      return false;
-    }
-    const onCopySuccess = function(e) {
-      // button target
-      const button = e.trigger;
-      // don't keep focus
-      button.blur();
-      // flash "checked"
-      button.classList.add('code-copy-button-checked');
-      var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copied!");
-      let tooltip;
-      if (window.bootstrap) {
-        button.setAttribute("data-bs-toggle", "tooltip");
-        button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copied!");
-        tooltip = new bootstrap.Tooltip(button, 
-          { trigger: "manual", 
-            customClass: "code-copy-button-tooltip",
-            offset: [0, -8]});
-        tooltip.show();    
-      }
-      setTimeout(function() {
-        if (tooltip) {
-          tooltip.hide();
-          button.removeAttribute("data-bs-title");
-          button.removeAttribute("data-bs-toggle");
-          button.removeAttribute("data-bs-placement");
-        }
-        button.setAttribute("title", currentTitle);
-        button.classList.remove('code-copy-button-checked');
-      }, 1000);
-      // clear code selection
-      e.clearSelection();
-    }
-    const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
-        }
-        return codeEl.innerText;
-    }
-    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-      text: getTextToCopy
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
     });
-    clipboard.on('success', onCopySuccess);
-    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-        text: getTextToCopy,
-        container: window.document.getElementById('quarto-embedded-source-code-modal')
-      });
-      clipboardModal.on('success', onCopySuccess);
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
-      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
-      var isInternal = (href) => {
-          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-      }
-      // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-      for (var i=0; i<links.length; i++) {
-        const link = links[i];
-        if (!isInternal(link.href)) {
-          // undo the damage that might have been done by quarto-nav.js in the case of
-          // links that we want to consider external
-          if (link.dataset.originalHref !== undefined) {
-            link.href = link.dataset.originalHref;
-          }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
         }
       }
-    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-      const config = {
-        allowHTML: true,
-        maxWidth: 500,
-        delay: 100,
-        arrow: false,
-        appendTo: function(el) {
-            return el.parentElement;
-        },
-        interactive: true,
-        interactiveBorder: 10,
-        theme: 'quarto',
-        placement: 'bottom-start',
-      };
-      if (contentFn) {
-        config.content = contentFn;
-      }
-      if (onTriggerFn) {
-        config.onTrigger = onTriggerFn;
-      }
-      if (onUntriggerFn) {
-        config.onUntrigger = onUntriggerFn;
-      }
-      window.tippy(el, config); 
     }
-    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-    for (var i=0; i<noterefs.length; i++) {
-      const ref = noterefs[i];
-      tippyHover(ref, function() {
-        // use id or data attribute instead here
-        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-        try { href = new URL(href).hash; } catch {}
-        const id = href.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note) {
-          return note.innerHTML;
-        } else {
-          return "";
-        }
-      });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
     }
-    const xrefs = window.document.querySelectorAll('a.quarto-xref');
-    const processXRef = (id, note) => {
-      // Strip column container classes
-      const stripColumnClz = (el) => {
-        el.classList.remove("page-full", "page-columns");
-        if (el.children) {
-          for (const child of el.children) {
-            stripColumnClz(child);
-          }
-        }
-      }
-      stripColumnClz(note)
-      if (id === null || id.startsWith('sec-')) {
-        // Special case sections, only their first couple elements
-        const container = document.createElement("div");
-        if (note.children && note.children.length > 2) {
-          container.appendChild(note.children[0].cloneNode(true));
-          for (let i = 1; i < note.children.length; i++) {
-            const child = note.children[i];
-            if (child.tagName === "P" && child.innerText === "") {
-              continue;
-            } else {
-              container.appendChild(child.cloneNode(true));
-              break;
-            }
-          }
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(container);
-          }
-          return container.innerHTML
-        } else {
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(note);
-          }
-          return note.innerHTML;
-        }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
       } else {
-        // Remove any anchor links if they are present
-        const anchorLink = note.querySelector('a.anchorjs-link');
-        if (anchorLink) {
-          anchorLink.remove();
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
         }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        if (note.classList.contains("callout")) {
-          return note.outerHTML;
-        } else {
-          return note.innerHTML;
-        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
       }
     }
-    for (var i=0; i<xrefs.length; i++) {
-      const xref = xrefs[i];
-      tippyHover(xref, undefined, function(instance) {
-        instance.disable();
-        let url = xref.getAttribute('href');
-        let hash = undefined; 
-        if (url.startsWith('#')) {
-          hash = url;
-        } else {
-          try { hash = new URL(url).hash; } catch {}
-        }
-        if (hash) {
-          const id = hash.replace(/^#\/?/, "");
-          const note = window.document.getElementById(id);
-          if (note !== null) {
-            try {
-              const html = processXRef(id, note.cloneNode(true));
-              instance.setContent(html);
-            } finally {
-              instance.enable();
-              instance.show();
-            }
-          } else {
-            // See if we can fetch this
-            fetch(url.split('#')[0])
-            .then(res => res.text())
-            .then(html => {
-              const parser = new DOMParser();
-              const htmlDoc = parser.parseFromString(html, "text/html");
-              const note = htmlDoc.getElementById(id);
-              if (note !== null) {
-                const html = processXRef(id, note);
-                instance.setContent(html);
-              } 
-            }).finally(() => {
-              instance.enable();
-              instance.show();
-            });
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
           }
         } else {
-          // See if we can fetch a full url (with no hash to target)
-          // This is a special case and we should probably do some content thinning / targeting
-          fetch(url)
+          // See if we can fetch this
+          fetch(url.split('#')[0])
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.querySelector('main.content');
+            const note = htmlDoc.getElementById(id);
             if (note !== null) {
-              // This should only happen for chapter cross references
-              // (since there is no id in the URL)
-              // remove the first header
-              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-                note.children[0].remove();
-              }
-              const html = processXRef(null, note);
+              const html = processXRef(id, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -2296,161 +2288,185 @@ Zouré, Honorat GM, Mounkaila Noma, Afework H Tekle, Uche V Amazigo, Peter J Dig
             instance.show();
           });
         }
-      }, function(instance) {
-      });
-    }
-        let selectedAnnoteEl;
-        const selectorForAnnotation = ( cell, annotation) => {
-          let cellAttr = 'data-code-cell="' + cell + '"';
-          let lineAttr = 'data-code-annotation="' +  annotation + '"';
-          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-          return selector;
-        }
-        const selectCodeLines = (annoteEl) => {
-          const doc = window.document;
-          const targetCell = annoteEl.getAttribute("data-target-cell");
-          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-          const lineIds = lines.map((line) => {
-            return targetCell + "-" + line;
-          })
-          let top = null;
-          let height = null;
-          let parent = null;
-          if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
-            }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
-            }
-            selectedAnnoteEl = annoteEl;
-          }
-        };
-        const unselectCodeLines = () => {
-          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-          elementsIds.forEach((elId) => {
-            const div = window.document.getElementById(elId);
-            if (div) {
-              div.remove();
-            }
-          });
-          selectedAnnoteEl = undefined;
-        };
-          // Handle positioning of the toggle
-      window.addEventListener(
-        "resize",
-        throttle(() => {
-          elRect = undefined;
-          if (selectedAnnoteEl) {
-            selectCodeLines(selectedAnnoteEl);
-          }
-        }, 10)
-      );
-      function throttle(fn, ms) {
-      let throttle = false;
-      let timer;
-        return (...args) => {
-          if(!throttle) { // first call gets through
-              fn.apply(this, args);
-              throttle = true;
-          } else { // all the others get throttled
-              if(timer) clearTimeout(timer); // cancel #2
-              timer = setTimeout(() => {
-                fn.apply(this, args);
-                timer = throttle = false;
-              }, ms);
-          }
-        };
-      }
-        // Attach click handler to the DT
-        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-        for (const annoteDlNode of annoteDls) {
-          annoteDlNode.addEventListener('click', (event) => {
-            const clickedEl = event.target;
-            if (clickedEl !== selectedAnnoteEl) {
-              unselectCodeLines();
-              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-              if (activeEl) {
-                activeEl.classList.remove('code-annotation-active');
-              }
-              selectCodeLines(clickedEl);
-              clickedEl.classList.add('code-annotation-active');
-            } else {
-              // Unselect the line
-              unselectCodeLines();
-              clickedEl.classList.remove('code-annotation-active');
-            }
-          });
-        }
-    const findCites = (el) => {
-      const parentEl = el.parentElement;
-      if (parentEl) {
-        const cites = parentEl.dataset.cites;
-        if (cites) {
-          return {
-            el,
-            cites: cites.split(' ')
-          };
-        } else {
-          return findCites(el.parentElement)
-        }
       } else {
-        return undefined;
-      }
-    };
-    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-    for (var i=0; i<bibliorefs.length; i++) {
-      const ref = bibliorefs[i];
-      const citeInfo = findCites(ref);
-      if (citeInfo) {
-        tippyHover(citeInfo.el, function() {
-          var popup = window.document.createElement('div');
-          citeInfo.cites.forEach(function(cite) {
-            var citeDiv = window.document.createElement('div');
-            citeDiv.classList.add('hanging-indent');
-            citeDiv.classList.add('csl-entry');
-            var biblioDiv = window.document.getElementById('ref-' + cite);
-            if (biblioDiv) {
-              citeDiv.innerHTML = biblioDiv.innerHTML;
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
             }
-            popup.appendChild(citeDiv);
-          });
-          return popup.innerHTML;
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
         });
       }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
     }
-  });
-  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./02_handling-spatial-data.html" class="pagination-link" aria-label="Handling of spatial data in R">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Handling of spatial data in R</span></span>
       </a>          
