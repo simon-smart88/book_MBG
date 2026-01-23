@@ -780,7 +780,6 @@ V_{ij} = (Z_i - Z_j)^2.
 </ol>
 <p>In point 5 above, the extent and pattern of these deviations can vary considerably. In many cases, the departures from the envelope are quite subtle, with only a few points of the empirical variogram falling outside, as we will see in later examples. Such patterns may indicate weak spatial dependence that is difficult to recover from the data. Ultimately, only the fit of a geostatistical model can provide a definitive assessment of the extent of the spatial correlation. The empirical variogram should therefore be viewed as a diagnostic tool that helps to explore residual spatial correlation, rather than as conclusive evidence on its own.</p>
 <p>We now show an application of all the concepts introduced in this section to the Liberia data on river-blindness.</p>
-<!-- UP TO HERE -->
 <section id="sec-empirical-variog-bin" class="level4" data-number="3.1.3.1"><h4 data-number="3.1.3.1" class="anchored" data-anchor-id="sec-empirical-variog-bin">
 <span class="header-section-number">3.1.3.1</span> Example: assessing spatial correlation for the Liberia data</h4>
 <p>We consider the Binomial mixed model that uses the log-transformed elevation as a covariate to model river blindness prevalence, hence <span id="eq-liberia-bin-mixed-elev"><span class="math display">\[
@@ -843,7 +842,7 @@ log(elevtn) -0.981</code></pre>
 <span>                              scale_to_km <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                              n_permutation <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Through the argument <code>bins</code> we can specify the classes of distance, previously denoted by <span class="math inline">\(\mathcal{U}\)</span>; check the help page of <code>s_variogram</code> to see how this is defined by default. The value passed to <code>bins</code> in the code above correspond to define the following classes of distance <span class="math inline">\(\mathcal{U}\)</span>: <span class="math inline">\([15, 30]\)</span>, <span class="math inline">\((30, 40]\)</span> and so forth, with the last class being <span class="math inline">\([350, +\infty)\)</span>, i.e.&nbsp;all pairs of locations whose distances are above 350km. The argument <code>n_permutation</code> allows the user to specify the number of permutations that are performed to generate the envelope for absence of spatial correlation previously described.</p>
+<p>Through the argument <code>bins</code> we can specify the classes of distance, previously denoted by <span class="math inline">\(\mathcal{U}\)</span>; check the help page of <code>s_variogram</code> to see how this is defined by default. The values passed to <code>bins</code> in the code above correspond to define the following classes of distance <span class="math inline">\(\mathcal{U}\)</span>: <span class="math inline">\([15, 30]\)</span>, <span class="math inline">\((30, 40]\)</span> and so forth, with the last class being <span class="math inline">\([350, +\infty)\)</span>, i.e.&nbsp;all pairs of locations whose distances are above 350km. The argument <code>n_permutation</code> allows the user to specify the number of permutations that are performed to generate the envelope for absence of spatial correlation, previously described.</p>
 <div class="cell">
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">dist_summaries</span><span class="op">(</span>data <span class="op">=</span> <span class="va">liberia</span>,</span>
 <span>               scale_to_km <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -859,7 +858,7 @@ log(elevtn) -0.981</code></pre>
 <span><span class="co">## $median</span></span>
 <span><span class="co">## [1] 185.7845</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The <code>dist_summaries</code> function within the <code>RiskMap</code> package can be used for gauging the extent of the area covered by your dataset, aiding in the selection of appropriate values to be passed to the <code>bins</code> argument. In the provided output above, we can observe that for the Liberia dataset, the minimum and maximum distances are approximately 3km and 533km, respectively. While there is not a one-size-fits-all recommendation for setting <code>bins</code>, two fundamental principles should inform your decision-making. Firstly, it is advisable to avoid choosing overly large distance intervals, as the uncertainty associated with the empirical variogram tends to increase with distance due to fewer available pairs of observations for estimation. Secondly, especially when spatial correlation is not strong, it is crucial to carefully explore the behavior of the variogram at smaller distances. Consequently, it is generally advisable to experiment with different <code>bins</code> configurations and observe how they impact the pattern of the empirical variogram.</p>
+<p>The <code>dist_summaries</code> function within the <code>RiskMap</code> package can be used for gauging the extent of the area covered by your dataset, aiding in the selection of appropriate values to be passed to the <code>bins</code> argument. In the provided output above, we observe that for the Liberia dataset, the minimum and maximum distances are approximately 3km and 533km, respectively. While there is not a one-size-fits-all recommendation for setting <code>bins</code>, two fundamental principles should inform your choice. Firstly, it is advisable to avoid choosing overly large distance intervals, as the uncertainty associated with the empirical variogram tends to increase with distance due to fewer available pairs of observations for estimation. Secondly, especially when spatial correlation is not strong, it is crucial to carefully explore the behavior of the variogram at smaller distances. Consequently, it is generally advisable to experiment with different <code>bins</code> configurations and observe how they impact the pattern of the empirical variogram.</p>
 <div class="cell">
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">plot_s_variogram</span><span class="op">(</span><span class="va">liberia_variog</span>,</span>
 <span>                 plot_envelope <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -874,7 +873,7 @@ Figure&nbsp;3.7: Plot of the empirical variogram (solid line) computed using the
 </div>
 </div>
 </div>
-<p>Finally, the <code>plot_s_variogram</code> function enables us to visualize the empirical variogram and, through the <code>plot_envelope</code> argument, include the envelope generated by the permutation procedure. As illustrated in <a href="#fig-liberia-variog" class="quarto-xref">Figure&nbsp;<span>3.7</span></a>, we observe that the empirical variogram falls outside the envelope at relatively short distances, typically below 30km. However, for distances exceeding 30km, the behavior of the empirical variogram does not significantly differ from variograms generated under the assumption of spatial independence. In summary, we interpret the evidence presented in <a href="#fig-liberia-variog" class="quarto-xref">Figure&nbsp;<span>3.7</span></a> as indicative of residual spatial correlation within the data. Nevertheless, it is essential to exercise caution when attempting to ascertain the scale of the spatial correlation using the empirical variogram. As we will emphasize throughout this book, the empirical variogram’s sensitivity to the choice of bins values renders it an unreliable tool for drawing statistical inferences. In other words, we advocate employing the empirical variogram primarily to assess the presence of residual correlation.</p>
+<p>Finally, the <code>plot_s_variogram</code> function enables us to visualize the empirical variogram and, through the <code>plot_envelope</code> argument, include the envelope generated by the permutation procedure. As illustrated in <a href="#fig-liberia-variog" class="quarto-xref">Figure&nbsp;<span>3.7</span></a>, we observe that the empirical variogram falls outside the envelope at relatively short distances, typically below 30km. However, for distances exceeding 30km, the behavior of the empirical variogram does not significantly differ from variograms generated under the assumption of spatial independence. In summary, we interpret the evidence presented in <a href="#fig-liberia-variog" class="quarto-xref">Figure&nbsp;<span>3.7</span></a> as indicative of residual spatial correlation within the data. Nevertheless, it is essential to exercise caution when attempting to ascertain the scale of the spatial correlation using the empirical variogram. As we will emphasize throughout this book, the empirical variogram’s sensitivity to the choice of bins values renders it an unreliable tool for drawing statistical inferences. In other words, we recommend employing the empirical variogram primarily to assess the presence of residual correlation.</p>
 </section><section id="sec-empirical-variog-lm" class="level4" data-number="3.1.3.2"><h4 data-number="3.1.3.2" class="anchored" data-anchor-id="sec-empirical-variog-lm">
 <span class="header-section-number">3.1.3.2</span> Exploring residual spatial correlation with linear Gaussian models</h4>
 <p>When using a linear model to assess spatial correlation, it is important to distinguish two cases: 1) when the data contain only one location per location; 2) when more than one observation per location is available. We now consider each of these two scenarios separately.</p>
@@ -984,6 +983,7 @@ Figure&nbsp;3.9: Plot of the empirical variogram (solid line) computed using the
 </div>
 <p>In the code above, the introduction of the <span class="math inline">\(Z_i\)</span> random effect is specified in the <code>lmer</code> function though <code>(1|ID_loc)</code> in the formula; recall that <code>ID_loc</code> is the numerical indicator that identifies each location. From the summary of the model, we obtain both the estimates of the regression coefficients <span class="math inline">\(\beta_{0}\)</span> and <span class="math inline">\(\beta_{1}\)</span>, as well for the variances <span class="math inline">\(\tau^2\)</span> listed under <code>Random effects:</code>. The estimate of <span class="math inline">\(\sigma^2\)</span> is found on the line of printed output starting with <code>ID_loc</code>, whilst that for <span class="math inline">\(\omega^2\)</span> is next to <code>Residual</code>.</p>
 <p>The application of the empirical variogram, whose results are shown in <a href="#fig-italy-sim-variog" class="quarto-xref">Figure&nbsp;<span>3.9</span></a>, indicate the presence of residual correlation. This is because we observe that the solid line representing the empirical variogram falls outside of the 95% envelope for spatial independence.</p>
+<!-- UP TO HERE -->
 </section></section></section></section><section id="sec-linear-model" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="sec-linear-model">
 <span class="header-section-number">3.2</span> The linear geostatistical model</h2>
 <p>In this section, we consider spatially referenced outcomes <span class="math inline">\(Y_i\)</span> that are continuous. We first consider the simpler case of a single measurement <span class="math inline">\(Y_i\)</span> per location <span class="math inline">\(x_i\)</span>. Recalling the class of generalized linear models introduced in <span class="quarto-unresolved-ref">?sec-geostat-models</span>, the linear predictor takes the form <span id="eq-linear-geostat-model-lp"><span class="math display">\[
@@ -1302,13 +1302,14 @@ Table&nbsp;3.1: Maximum likelihood estimates and, lower and upper limits of the 
 <span>        family <span class="op">=</span> <span class="st">"binomial"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  0:    -0.0000000: -2.99847 0.313076  0.00000  4.21726
-  1:    -7.2824308: -2.97674 0.285682 -0.305244  4.41589
-  2:    -9.6410616: -2.95087 0.278392 -0.666208  4.33498
-  3:    -12.483643: -2.95140 0.278336 -1.61184  3.18980
-  4:    -13.178434: -2.94912 0.278103 -1.45441  3.18909
-  5:    -13.182965: -2.94945 0.278214 -1.44050  3.18853
-  6:    -13.182965: -2.94946 0.278215 -1.44040  3.18851
-  7:    -13.182965: -2.94946 0.278215 -1.44040  3.18851</code></pre>
+  1:    -11.097827: -2.90337 0.285038 -0.678232  4.84422
+  2:    -12.901223: -2.98634 0.314041 -1.29541  4.05477
+  3:    -13.116897: -2.98537 0.313576 -1.14193  4.16309
+  4:    -13.125557: -2.98445 0.313394 -1.09352  4.22401
+  5:    -13.125625: -2.98452 0.313409 -1.08874  4.22948
+  6:    -13.125625: -2.98452 0.313409 -1.08869  4.22953
+  7:    -13.125625: -2.98452 0.313409 -1.08869  4.22953
+  8:    -13.125625: -2.98452 0.313409 -1.08869  4.22953</code></pre>
 </div>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fit_liberia</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1324,8 +1325,8 @@ Inverse link function = stats::plogis(x)
 
 Regression coefficients
                 Estimate Lower limit Upper limit    StdErr z.value   p.value
-(Intercept)    -2.949459   -3.379371   -2.519546  0.219347 -13.447 &lt; 2.2e-16
-log(elevation)  0.278215    0.236257    0.320174  0.021408  12.996 &lt; 2.2e-16
+(Intercept)    -2.984521   -3.434541   -2.534501  0.229606 -12.998 &lt; 2.2e-16
+log(elevation)  0.313409    0.269524    0.357293  0.022391  13.997 &lt; 2.2e-16
                   
 (Intercept)    ***
 log(elevation) ***
@@ -1335,11 +1336,11 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 Spatial Gaussian process
 Matern covariance parameters (kappa=0.5)
                      Estimate Lower limit Upper limit
-Spatial process var.  0.23683     0.20968      0.2675
-Spatial corr. scale  24.25219    20.71708     28.3905
+Spatial process var.  0.33666     0.25619      0.4424
+Spatial corr. scale  68.68519    52.66372     89.5808
 Variance of the nugget effect fixed at 0
 
-Log-likelihood: 13.18296</code></pre>
+Log-likelihood: 13.12563</code></pre>
 </div>
 </div>
 <p>When using the <code>glgpm</code> function to fit a Binomial model, we need to specify the Binomial denominators, i.e.&nbsp;the number of people tested at a location in this case, through the argument <code>den</code>. Other arguments of <code>glgpm</code> that are used for carrying out MCML are <code>control_mcmc</code>, that defines the setting parameters of the Monte Carlo Markov Chain algorithm, and <code>par0</code>, which represents our best guess for the unknown parameters of the Binomial geostatistical model. For more information on the default values of these two arguments, we refer you to the help page of the <code>glgpm</code> function. To understand how to change the default parameters in order to improve the MCML estimation, we advise you to read <a href="#sec-mcml" class="quarto-xref"><span>Section 3.5.2.1</span></a>. Also, remember that to enable the estimation of the nugget effect, <span class="math inline">\(Z_i\)</span>, you should set <code>nugget=NULL</code> in the <code>gp</code> function, since by default the <code>glgpm</code> function excludes <span class="math inline">\(Z_i\)</span> when the out is non-Gaussian.</p>

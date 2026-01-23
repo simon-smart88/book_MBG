@@ -470,13 +470,13 @@ In point 5 above, the extent and pattern of these deviations can vary considerab
 
 We now show an application of all the concepts introduced in this section to the Liberia data on river-blindness.
 
-<!-- UP TO HERE -->
-
 #### Example: assessing spatial correlation for the Liberia data {#sec-empirical-variog-bin}
 
-We consider the Binomial mixed model that uses the log-transformed elevation as a covariate to model river blindness prevalence, hence $$
+We consider the Binomial mixed model that uses the log-transformed elevation as a covariate to model river blindness prevalence, hence 
+$$
 \log\left\{\frac{p(x_i)}{1-p(x_i)}\right\} = \beta_{0} + \beta_{1}\log\{e(x_i)\} + Z_i
-$$ {#eq-liberia-bin-mixed-elev} where $e(x_i)$ is the elevation in meters at location $x_i$ and the $Z_i$ are i.i.d. Gaussian variables with mean 0 and variance $\tau^2$. We first fit the model above using the `glmer` function.
+$$ {#eq-liberia-bin-mixed-elev} 
+where $e(x_i)$ is the elevation in meters at location $x_i$ and the $Z_i$ are i.i.d. Gaussian variables with mean 0 and variance $\tau^2$. We first fit the model above using the `glmer` function.
 
 ```{r}
 # Convert the data-set into an sf object
@@ -511,14 +511,14 @@ liberia_variog <- s_variogram(data = liberia,
                               n_permutation = 200)
 ```
 
-Through the argument `bins` we can specify the classes of distance, previously denoted by $\mathcal{U}$; check the help page of `s_variogram` to see how this is defined by default. The value passed to `bins` in the code above correspond to define the following classes of distance $\mathcal{U}$: $[15, 30]$, $(30, 40]$ and so forth, with the last class being $[350, +\infty)$, i.e. all pairs of locations whose distances are above 350km. The argument `n_permutation` allows the user to specify the number of permutations that are performed to generate the envelope for absence of spatial correlation previously described.
+Through the argument `bins` we can specify the classes of distance, previously denoted by $\mathcal{U}$; check the help page of `s_variogram` to see how this is defined by default. The values passed to `bins` in the code above correspond to define the following classes of distance $\mathcal{U}$: $[15, 30]$, $(30, 40]$ and so forth, with the last class being $[350, +\infty)$, i.e. all pairs of locations whose distances are above 350km. The argument `n_permutation` allows the user to specify the number of permutations that are performed to generate the envelope for absence of spatial correlation, previously described.
 
 ```{r collapse=TRUE}
 dist_summaries(data = liberia,
                scale_to_km = TRUE)
 ```
 
-The `dist_summaries` function within the `RiskMap` package can be used for gauging the extent of the area covered by your dataset, aiding in the selection of appropriate values to be passed to the `bins` argument. In the provided output above, we can observe that for the Liberia dataset, the minimum and maximum distances are approximately 3km and 533km, respectively. While there is not a one-size-fits-all recommendation for setting `bins`, two fundamental principles should inform your decision-making. Firstly, it is advisable to avoid choosing overly large distance intervals, as the uncertainty associated with the empirical variogram tends to increase with distance due to fewer available pairs of observations for estimation. Secondly, especially when spatial correlation is not strong, it is crucial to carefully explore the behavior of the variogram at smaller distances. Consequently, it is generally advisable to experiment with different `bins` configurations and observe how they impact the pattern of the empirical variogram.
+The `dist_summaries` function within the `RiskMap` package can be used for gauging the extent of the area covered by your dataset, aiding in the selection of appropriate values to be passed to the `bins` argument. In the provided output above, we observe that for the Liberia dataset, the minimum and maximum distances are approximately 3km and 533km, respectively. While there is not a one-size-fits-all recommendation for setting `bins`, two fundamental principles should inform your choice. Firstly, it is advisable to avoid choosing overly large distance intervals, as the uncertainty associated with the empirical variogram tends to increase with distance due to fewer available pairs of observations for estimation. Secondly, especially when spatial correlation is not strong, it is crucial to carefully explore the behavior of the variogram at smaller distances. Consequently, it is generally advisable to experiment with different `bins` configurations and observe how they impact the pattern of the empirical variogram.
 
 ```{r collapse=TRUE}
 #| label: fig-liberia-variog
@@ -528,7 +528,7 @@ plot_s_variogram(liberia_variog,
                  plot_envelope = TRUE)
 ```
 
-Finally, the `plot_s_variogram` function enables us to visualize the empirical variogram and, through the `plot_envelope` argument, include the envelope generated by the permutation procedure. As illustrated in @fig-liberia-variog, we observe that the empirical variogram falls outside the envelope at relatively short distances, typically below 30km. However, for distances exceeding 30km, the behavior of the empirical variogram does not significantly differ from variograms generated under the assumption of spatial independence. In summary, we interpret the evidence presented in @fig-liberia-variog as indicative of residual spatial correlation within the data. Nevertheless, it is essential to exercise caution when attempting to ascertain the scale of the spatial correlation using the empirical variogram. As we will emphasize throughout this book, the empirical variogram's sensitivity to the choice of bins values renders it an unreliable tool for drawing statistical inferences. In other words, we advocate employing the empirical variogram primarily to assess the presence of residual correlation.
+Finally, the `plot_s_variogram` function enables us to visualize the empirical variogram and, through the `plot_envelope` argument, include the envelope generated by the permutation procedure. As illustrated in @fig-liberia-variog, we observe that the empirical variogram falls outside the envelope at relatively short distances, typically below 30km. However, for distances exceeding 30km, the behavior of the empirical variogram does not significantly differ from variograms generated under the assumption of spatial independence. In summary, we interpret the evidence presented in @fig-liberia-variog as indicative of residual spatial correlation within the data. Nevertheless, it is essential to exercise caution when attempting to ascertain the scale of the spatial correlation using the empirical variogram. As we will emphasize throughout this book, the empirical variogram's sensitivity to the choice of bins values renders it an unreliable tool for drawing statistical inferences. In other words, we recommend employing the empirical variogram primarily to assess the presence of residual correlation.
 
 #### Exploring residual spatial correlation with linear Gaussian models {#sec-empirical-variog-lm}
 
@@ -618,6 +618,8 @@ plot_s_variogram(italy_sim_variog, plot_envelope = TRUE)
 In the code above, the introduction of the $Z_i$ random effect is specified in the `lmer` function though `(1|ID_loc)` in the formula; recall that `ID_loc` is the numerical indicator that identifies each location. From the summary of the model, we obtain both the estimates of the regression coefficients $\beta_{0}$ and $\beta_{1}$, as well for the variances $\tau^2$ listed under `Random effects:`. The estimate of $\sigma^2$ is found on the line of printed output starting with `ID_loc`, whilst that for $\omega^2$ is next to `Residual`.
 
 The application of the empirical variogram, whose results are shown in @fig-italy-sim-variog, indicate the presence of residual correlation. This is because we observe that the solid line representing the empirical variogram falls outside of the 95% envelope for spatial independence.
+
+<!-- UP TO HERE -->
 
 ## The linear geostatistical model {#sec-linear-model}
 
