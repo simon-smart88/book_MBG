@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.40">
+<meta name="generator" content="quarto-1.7.33">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>3&nbsp; Model formulation and parameter estimation – Model-based geostatistics for global public health using R</title>
 <style>
@@ -18,8 +18,9 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -30,7 +31,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -82,15 +83,16 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./04_geostatistical-prediction.html" rel="next">
 <link href="./02_handling-spatial-data.html" rel="prev">
-<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-9e1f2a4632985dffc2c80318c992baf5.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-425560e6e27c88e19529b7c03591d40d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-72bcd2ed1e9c3b17607b2ab6e4cfcaa3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-21c7f0257b9bb094a624d430cf8b6a6a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -144,7 +146,7 @@ window.Quarto = {
 };
 </script>
 </head>
-<body class="nav-sidebar floating">
+<body class="nav-sidebar floating quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
@@ -1164,9 +1166,7 @@ Y_{ij} = \beta_0 &amp;+ \overbrace{\beta_1 d(x_i) + S(x_i)}^\text{Location-level
 <span><span class="co">##   6:    -331.42968: -1.04087  1.37294 -0.119652  5.33634 -1.62883 -1.33321 0.375031</span></span>
 <span><span class="co">##   7:    -331.43375: -1.07312  1.37288 -0.0878211  5.36725 -1.62883 -1.42011 0.376251</span></span>
 <span><span class="co">##   8:    -331.43375: -1.07445  1.37288 -0.0866254  5.36840 -1.62883 -1.42489 0.376323</span></span>
-<span><span class="co">##   9:    -331.43375: -1.07445  1.37288 -0.0866228  5.36840 -1.62883 -1.42491 0.376323</span></span>
-<span><span class="co">##  10:    -331.43375: -1.07445  1.37288 -0.0866228  5.36840 -1.62883 -1.42491 0.376323</span></span>
-<span><span class="co">##  11:    -331.43375: -1.07445  1.37288 -0.0866228  5.36840 -1.62883 -1.42491 0.376323</span></span>
+<span><span class="co">##   9:    -331.43375: -1.07445  1.37288 -0.0866254  5.36840 -1.62883 -1.42489 0.376323</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">italy_fit</span><span class="op">)</span></span>
 <span><span class="co">## Call:</span></span>
@@ -1182,7 +1182,7 @@ Y_{ij} = \beta_0 &amp;+ \overbrace{\beta_1 d(x_i) + S(x_i)}^\text{Location-level
 <span><span class="co">## </span></span>
 <span><span class="co">## Regression coefficients</span></span>
 <span><span class="co">##                Estimate Lower limit Upper limit    StdErr z.value p.value    </span></span>
-<span><span class="co">## (Intercept)   -1.074454   -2.031694   -0.117213  0.488397    -2.2 0.02781 *  </span></span>
+<span><span class="co">## (Intercept)   -1.074451   -2.031690   -0.117212  0.488396    -2.2 0.02781 *  </span></span>
 <span><span class="co">## log(pop_dens)  1.372877    1.352018    1.393735  0.010642   129.0 &lt; 2e-16 ***</span></span>
 <span><span class="co">## ---</span></span>
 <span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
@@ -1194,7 +1194,7 @@ Y_{ij} = \beta_0 &amp;+ \overbrace{\beta_1 d(x_i) + S(x_i)}^\text{Location-level
 <span><span class="co">## Matern covariance parameters (kappa=0.5)</span></span>
 <span><span class="co">##                       Estimate Lower limit Upper limit</span></span>
 <span><span class="co">## Spatial process var.   0.91702     0.59470       1.414</span></span>
-<span><span class="co">## Spatial corr. scale  214.52032   153.60797     299.587</span></span>
+<span><span class="co">## Spatial corr. scale  214.51980   153.60751     299.587</span></span>
 <span><span class="co">## Variance of the nugget effect fixed at 0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Unstructured random effects</span></span>
@@ -1271,7 +1271,7 @@ Table&nbsp;3.1: Maximum likelihood estimates and, lower and upper limits of the 
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Estimate"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Lower limit"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Upper limit"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"-1.0744535","2":"-2.0316941","3":"-0.1172129","_rn_":"(Intercept)"},{"1":"1.3728765","2":"1.3520182","3":"1.3937349","_rn_":"log(pop_dens)"},{"1":"0.9170230","2":"0.5946993","3":"1.4140442","_rn_":"Spatial process var."},{"1":"214.5203218","2":"153.6079705","3":"299.5871133","_rn_":"Spatial corr. scale"},{"1":"0.2405302","2":"0.1455252","3":"0.3975585","_rn_":"region (random eff. var.)"},{"1":"0.3763231","2":"0.3560710","3":"0.3977271","_rn_":"province (random eff. var.)"},{"1":"1.2167193","2":"1.2009329","3":"1.2327133","_rn_":"Measuremment error var."}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Estimate"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Lower limit"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Upper limit"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"-1.0744513","2":"-2.0316905","3":"-0.1172122","_rn_":"(Intercept)"},{"1":"1.3728765","2":"1.3520182","3":"1.3937349","_rn_":"log(pop_dens)"},{"1":"0.9170206","2":"0.5946974","3":"1.4140413","_rn_":"Spatial process var."},{"1":"214.5198003","2":"153.6075107","3":"299.5865536","_rn_":"Spatial corr. scale"},{"1":"0.2405342","2":"0.1455287","3":"0.3975623","_rn_":"region (random eff. var.)"},{"1":"0.3763228","2":"0.3560707","3":"0.3977268","_rn_":"province (random eff. var.)"},{"1":"1.2167193","2":"1.2009329","3":"1.2327133","_rn_":"Measuremment error var."}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -1304,17 +1304,19 @@ Table&nbsp;3.1: Maximum likelihood estimates and, lower and upper limits of the 
 <span>        family <span class="op">=</span> <span class="st">"binomial"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  0:    -0.0000000: -2.99847 0.313076  0.00000  4.21726
-  1:    -7.0604115: -2.97869 0.314750 -0.695258  4.82064
-  2:    -11.218416: -2.90697 0.297509 -1.18319  4.02182
-  3:    -11.680785: -2.85214 0.277617 -1.17324  3.94461
-  4:    -12.312887: -2.63184 0.237255 -1.25429  3.81492
-  5:    -12.565678: -2.62898 0.236262 -1.40834  3.57993
-  6:    -12.573095: -2.65658 0.241639 -1.40954  3.55428
-  7:    -12.573684: -2.67113 0.244472 -1.41317  3.54424
-  8:    -12.573745: -2.67776 0.245763 -1.41480  3.53998
-  9:    -12.573749: -2.68007 0.246213 -1.41537  3.53850
- 10:    -12.573750: -2.68045 0.246285 -1.41546  3.53826
- 11:    -12.573750: -2.68046 0.246287 -1.41546  3.53825</code></pre>
+  1:    -2.8679095: -3.00154 0.287930 -0.0857569  4.27126
+  2:    -9.2318182: -3.06913 0.303587 -0.438243  4.46125
+  3:    -10.299878: -3.08810 0.327269 -0.756018  4.71676
+  4:    -10.533701: -3.08691 0.331616 -0.755563  4.71612
+  5:    -10.622471: -3.08483 0.333709 -0.753415  4.71308
+  6:    -11.644798: -2.98706 0.315099 -0.748627  4.59328
+  7:    -13.744723: -2.85794 0.291203 -1.56770  3.62289
+  8:    -14.033968: -2.82217 0.283534 -1.46707  3.61720
+  9:    -14.034869: -2.82335 0.283719 -1.46127  3.61601
+ 10:    -14.034869: -2.82336 0.283722 -1.46126  3.61597
+ 11:    -14.034869: -2.82336 0.283722 -1.46126  3.61597
+ 12:    -14.034869: -2.82336 0.283722 -1.46126  3.61597
+ 13:    -14.034869: -2.82336 0.283722 -1.46126  3.61597</code></pre>
 </div>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fit_liberia</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1329,20 +1331,23 @@ Inverse link function = stats::plogis(x)
 'Lower limit' and 'Upper limit' are the limits of the 95% confidence level intervals
 
 Regression coefficients
-                Estimate Lower limit Upper limit    StdErr z.value  p.value   
-(Intercept)    -2.680457   -4.624060   -0.736853  0.991653 -2.7030 0.006871 **
-log(elevation)  0.246287    0.056968    0.435606  0.096593  2.5497 0.010781 * 
+                Estimate Lower limit Upper limit    StdErr z.value   p.value
+(Intercept)    -2.823364   -3.300003   -2.346725  0.243187 -11.610 &lt; 2.2e-16
+log(elevation)  0.283722    0.238130    0.329313  0.023261  12.197 &lt; 2.2e-16
+                  
+(Intercept)    ***
+log(elevation) ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Spatial Gaussian process
 Matern covariance parameters (kappa=0.5)
                      Estimate Lower limit Upper limit
-Spatial process var.  0.24281     0.19665      0.2998
-Spatial corr. scale  34.40669    24.46025     48.3977
+Spatial process var.  0.23194     0.19929      0.2699
+Spatial corr. scale  37.18755    31.42283     44.0098
 Variance of the nugget effect fixed at 0
 
-Log-likelihood: 12.57375</code></pre>
+Log-likelihood: 14.03487</code></pre>
 </div>
 </div>
 <p>When using the <code>glgpm</code> function to fit a Binomial model, we need to specify the Binomial denominators, i.e.&nbsp;the number of people tested at a location in this case, through the argument <code>den</code>. Other arguments of <code>glgpm</code> that are used for carrying out MCML are <code>control_mcmc</code>, that defines the setting parameters of the Monte Carlo Markov Chain algorithm, and <code>par0</code>, which represents our best guess for the unknown parameters of the Binomial geostatistical model. For more information on the default values of these two arguments, we refer you to the help page of the <code>glgpm</code> function. To understand how to change the default parameters in order to improve the MCML estimation, we advise you to read <a href="#sec-mcml" class="quarto-xref"><span>Section 3.5.2.1</span></a>. Also, remember that to enable the estimation of the nugget effect, <span class="math inline">\(Z_i\)</span>, you should set <code>nugget=NULL</code> in the <code>gp</code> function, since by default the <code>glgpm</code> function excludes <span class="math inline">\(Z_i\)</span>.</p>
@@ -1533,7 +1538,6 @@ $median
 </div>
 <p>By comparing the 95<span class="math inline">\(\%\)</span> confidence intervals obtained from the <code>summary</code> of the fitted model with those derived from the bootstrap approach, we observe that the former are considerably narrower for the covariance parameters, while the intervals are fairly similar for the regression coefficients.</p>
 <p>This discrepancy arises because the Wald-type confidence intervals from <code>summary</code> rely on a Gaussian approximation of the maximum likelihood estimator for the covariance parameters, which may not be entirely reliable. (To improve the accuracy of this approximation, <code>RiskMap</code> applies it to the log-transformed parameters and then transforms the confidence intervals back to the original scale.) On the other hand, bootstrap-based confidence intervals tend to be more reliable, as they are not dependent on the Gaussian assumption. However, they are also more computationally demanding. The use of only 100 bootstrap samples, as shown above, may indeed be insufficient. It is generally recommended to use at least 1000 iterations, if computationally feasible, to minimize the Monte Carlo error arising from the bootstrap simulations.</p>
-<!-- UP TO HERE -->
 </section></section><section id="the-residuals-of-a-geostatistical-model-issues-to-consider" class="level2" data-number="3.4"><h2 data-number="3.4" class="anchored" data-anchor-id="the-residuals-of-a-geostatistical-model-issues-to-consider">
 <span class="header-section-number">3.4</span> The residuals of a geostatistical model: issues to consider</h2>
 <p>In geostatistical models, the concept of residuals, which are widely used in regression modelling to carry out model diagnostics, becomes more nuanced than in standard regression models (i.e., models that do not include random effects) . Generally, residuals aim to quantify the discrepancy between observed outcomes and what the model predicts. However, in GLGMs, there are multiple valid definitions of residuals.</p>
@@ -1555,11 +1559,12 @@ $median
 <p>While the residuals discussed above can provide useful insights into model fit, they are often less informative in the context of count data, especially for binary data and low counts. Moreover, even in the simpler case of linear geostatistical models where all three types of residuals introduced earlier (random effects residuals, Pearson residuals, and deviance residuals) are mathematically equivalent, it is easy to show that the correlation structure of the estimated residuals is related to the spatial correlation matrix of the fitted geostatistical model (see <a href="#sec-h-matrix" class="quarto-xref"><span>Section 3.5.3</span></a>). Whether this correlation in the estimated residuals is unimportant or poses a problem, particularly when using residuals to assess whether spatial dependence has been fully accounted for by the model, is still an open question and requires further investigation.</p>
 <p>Given these complexities, especially in the context of count data, we have chosen not to delve deeper into residual diagnostics in this edition of the book. Instead, model validation will be addressed more comprehensively in the context of geostatistical prediction in <a href="04_geostatistical-prediction.html" class="quarto-xref"><span>Chapter 4</span></a>.</p>
 <p>Nevertheless, we note that some standard diagnostic tools from regression analysis (such as scatter plots of fitted values versus residuals) can still be informative and are worth exploring as part of routine model assessment <span class="citation" data-cites="weisberg2014">(Chapter 9, <a href="references.html#ref-weisberg2014" role="doc-biblioref">Weisberg 2014</a>)</span>.</p>
+<!-- UP TO HERE -->
 </section><section id="theory" class="level2" data-number="3.5"><h2 data-number="3.5" class="anchored" data-anchor-id="theory">
 <span class="header-section-number">3.5</span> Theory</h2>
 <section id="maximum-likelihood-estimation-for-non-gaussian-mixed-models-with-independent-random-effects" class="level3" data-number="3.5.1"><h3 data-number="3.5.1" class="anchored" data-anchor-id="maximum-likelihood-estimation-for-non-gaussian-mixed-models-with-independent-random-effects">
 <span class="header-section-number">3.5.1</span> Maximum likelihood estimation for non-Gaussian mixed models with independent random effects</h3>
-<p>In this section, we provide more technical details on the derivation of the likelihood function for the mixed model specified in <a href="#eq-linear-predictor-glmms-ch2" class="quarto-xref">Equation&nbsp;<span>3.7</span></a>. While not essential for understanding the application and interpretation of geostatistical models, this section provides useful insights into computational challenges inherent to the models presented in this book. It is also important to point out that in this section we consider the case when the outcome <span class="math inline">\(Y_i\)</span> is a count.</p>
+<p>In this section, we provide more technical details on the derivation of the likelihood function for the mixed model specified in <a href="#eq-linear-predictor-glmms-ch2" class="quarto-xref">Equation&nbsp;<span>3.7</span></a>. While not essential for understanding the application and interpretation of geostatistical models, this section provides useful insights into computational challenges inherent to the models presented in this book. In this section, we restrict our attention to the case when the outcome <span class="math inline">\(Y_i\)</span> is a count.</p>
 <p>Let <span class="math inline">\(\theta = (\beta, \tau^2)\)</span> denote the vector of unknown parameters, where <span class="math inline">\(\beta\)</span> is the vector of regression coefficients and <span class="math inline">\(\tau^2\)</span> is the variance of the random effects <span class="math inline">\(Z = (Z_1, \ldots, Z_n)\)</span>. The likelihood function for a set of observations <span class="math inline">\(Y = (Y_1, \ldots, Y_n)\)</span>, for <span class="math inline">\(i=1,\ldots,n\)</span>, under the model in <a href="#eq-linear-predictor-glmms-ch2" class="quarto-xref">Equation&nbsp;<span>3.7</span></a>, is obtained by deriving the marginal distribution of <span class="math inline">\(Y_i\)</span>, hence <span class="math display">\[
 L(\theta) = [Y] = \int_{R^n} \: [Z] [Y \:|\: Z] \: d Z
 \]</span> Since the elements <span class="math inline">\(Z_i\)</span> in <span class="math inline">\(Z\)</span> are mutually independent, we can write <span class="math display">\[
@@ -1569,7 +1574,7 @@ L(\theta) = [Y] = \int_{R^n} \: [Z] [Y \:|\: Z] \: d Z
 \]</span> From these, it then follows that <span id="eq-glmm-final"><span class="math display">\[
 L(\theta) = \int_{R^n} \: \prod_{i=1}^n [Z_i] \prod_{i=1}^n [Y_i | Z_i] \: d Z = \prod_{i=1}^n \int_{R} \: [Z_i] [Y_i \:|\: Z_i] \: d Z_i.
 \tag{3.26}\]</span></span> This shows that under the model in <a href="#eq-linear-predictor-glmms-ch2" class="quarto-xref">Equation&nbsp;<span>3.7</span></a>, whilst accounting for overdispersion, this model does not account for any source of correlation between the observations. This is because the likelihood function can be expressed, as shown in the equation above, as the product of <span class="math inline">\(n\)</span> likelihoods associated with each of the observations.</p>
-<p>Another important observation is that the integrals that express the likelihood in <a href="#eq-glmm-final" class="quarto-xref">Equation&nbsp;<span>3.26</span></a>, cannot be solved analytically and need to be approximated. Several solutions are available that are either based on maximum likelihood estimation or Bayesian methods of inference. The function <code>glmer</code> used in <a href="#sec-empirical-variog-lm" class="quarto-xref"><span>Section 3.1.3.2</span></a> provides both the Laplace and Gaussian quadrature approximations options. The former consists of finding the <em>peak</em> of the integrand - i.e.&nbsp;the function that is being integrated - and approximating that with a Gaussian distribution centered at that <em>peak</em>, using the curvature of the original distribution to determine the width of the Gaussian distribution. The Gaussian quadrature is another numerical integration technique used to approximate the integral of a function. It involves choosing specific points (nodes) and weights within the integration interval to approximate the integral. By strategically selecting these points and weights based on a Gaussian distribution, Gaussian quadrature can provide highly accurate results compared to other numerical integration methods, such as the Laplace approximation. For a comprehensive overview of these and other methods of approximations of intractable integrals, we find that <span class="citation" data-cites="bishop2006">Bishop (<a href="references.html#ref-bishop2006" role="doc-biblioref">2006</a>)</span> is one of the most accessible textbooks on this topic.</p>
+<p>Another important observation is that the integrals that express the likelihood in <a href="#eq-glmm-final" class="quarto-xref">Equation&nbsp;<span>3.26</span></a>, cannot be solved analytically and need to be approximated. Several solutions are available that are either based on maximum likelihood estimation or Bayesian methods of inference. The function <code>glmer</code> used in <a href="#sec-empirical-variog-lm" class="quarto-xref"><span>Section 3.1.3.2</span></a> provides both the Laplace and Gaussian quadrature approximations options. The former consists of finding the <em>peak</em> of the integrand - i.e.&nbsp;the function that is being integrated - and approximating that with a Gaussian distribution centered at that <em>peak</em>, using the curvature of the original distribution to determine the width of the Gaussian distribution. The Gaussian quadrature is another numerical integration technique used to approximate the integral of a function. It involves choosing specific points (nodes) and weights within the integration interval to approximate the integral. By strategically selecting these points and weights based on a Gaussian distribution, Gaussian quadrature can provide highly accurate results compared to other numerical integration methods, such as the Laplace approximation. For a comprehensive overview of these and other methods of approximations of intractable integrals, we consider <span class="citation" data-cites="bishop2006">Bishop (<a href="references.html#ref-bishop2006" role="doc-biblioref">2006</a>)</span> to be an accessible textbook on this topic.</p>
 </section><section id="sec-glgm-lik" class="level3" data-number="3.5.2"><h3 data-number="3.5.2" class="anchored" data-anchor-id="sec-glgm-lik">
 <span class="header-section-number">3.5.2</span> Maximum likelihood estimation for non-Gaussian generalized linear geostatistical models</h3>
 <p>To derive the likelihood function of a generalized linear geostatistical model (GLGM), we consider the special case of a single observation per location without loss of generality. Let <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span> denote the same vectors of random variables introduced in the previous section, with components <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(Z_i\)</span> corresponding to the set of locations <span class="math inline">\(X = (x_1, \ldots, x_n)\)</span>. Additionally, we define <span class="math inline">\(S(X) = (S(x_1), \ldots, S(x_n))\)</span> to represent the spatial Gaussian process at the sampled locations <span class="math inline">\(X\)</span>. In this case the vector of unknown parameters is <span class="math inline">\(\theta = (\beta, \sigma^2, \phi, \tau^2)\)</span> and, as done in the previous section, we can obtain the likelihood function though the marginal distribution of the data, hence we write <span id="eq-glgm-lik1"><span class="math display">\[
@@ -1586,8 +1591,8 @@ L(\theta) = [Y] = \int_{R^n} \int_{R^n} \: [Z] [S] [Y \:|\: Z, S] \: d Z d S
 <p>In the next two sections we provide a brief overview of Monte Carlo maximum likelihood and the use of Markov chain Monte Carlo to approximate <a href="#eq-glgm-lik2" class="quarto-xref">Equation&nbsp;<span>3.28</span></a>.</p>
 <section id="sec-mcml" class="level4" data-number="3.5.2.1"><h4 data-number="3.5.2.1" class="anchored" data-anchor-id="sec-mcml">
 <span class="header-section-number">3.5.2.1</span> Monte Carlo maximum likelihood</h4>
-<p>In maximum likelihood estimation, we aim to maximize the likelihood function to find the parameters that make our data the most likely to have been observed. Monte Carlo Maximum Likelihood (MCML) is a method introduced by <span class="citation" data-cites="geyer1991">Charles J. Geyer (<a href="references.html#ref-geyer1991" role="doc-biblioref">1991</a>)</span>, designed to handle situations where the likelihood function is difficult or impossible to compute directly. As shown above, non-Gaussian generalized linear geostatistical models yield an intractable likelihood function that involves a high-dimensional integral, hence we use MCML to approximate this.</p>
-<p>MCML solves this problem using Monte Carlo methods, which involve random sampling to approximate the value of these integrals. One way to apply Monte Carlo methods in this context is through <em>importance sampling</em>. Importance sampling allows us to approximate the likelihood function by rewriting the likelihood in a form that can be estimated using samples from an easier distribution, known as the <em>importance sampling distribution</em>. To this end, we then rewrite <a href="#eq-glgm-lik2" class="quarto-xref">Equation&nbsp;<span>3.28</span></a> as <span id="eq-mcml1"><span class="math display">\[
+<p>In maximum likelihood estimation, we aim to maximize the likelihood function to find the parameters that make our data the most likely to have been observed. Monte Carlo Maximum Likelihood (MCML) (see the seminal work by <span class="citation" data-cites="geyer1991">Charles J. Geyer (<a href="references.html#ref-geyer1991" role="doc-biblioref">1991</a>)</span>) is designed to handle situations where the likelihood function is intractable. In the case of a non-Gaussian generalized linear geostatistical model, its likelihood function involves a high-dimensional integral which can be approximated using MCML.</p>
+<p>One way to apply Monte Carlo methods in this context is through <em>importance sampling</em>. Importance sampling allows us to approximate the likelihood function by rewriting the likelihood in a form that can be estimated using samples from an easier distribution, known as the <em>importance sampling distribution</em>. To this end, we then rewrite <a href="#eq-glgm-lik2" class="quarto-xref">Equation&nbsp;<span>3.28</span></a> as <span id="eq-mcml1"><span class="math display">\[
 \begin{aligned}
 L(\theta)
 &amp;= \int [W, Y; \theta] \: dW  \\
@@ -1600,12 +1605,11 @@ L(\theta)
 <p>We approximate the expression in <a href="#eq-mcml1" class="quarto-xref">Equation&nbsp;<span>3.29</span></a> as follows: <span id="eq-mcml2"><span class="math display">\[
 L_{MC}(\theta) = \frac{1}{B} \sum_{j=1}^B \frac{[W_{(j)}, Y; \theta]}{[W_{(j)}, Y; \theta_0]}.
 \tag{3.30}\]</span></span></p>
-<p>As <span class="math inline">\(B \rightarrow \infty\)</span>, the Monte Carlo likelihood <span class="math inline">\(L_{MC}\)</span> converges to the exact likelihood function described in <a href="#eq-mcml1" class="quarto-xref">Equation&nbsp;<span>3.29</span></a>. The maximization of this Monte Carlo likelihood is performed using an optimization algorithm that uses the analytical expressions of the first and second derivatives. This approach is especially useful for exploring the likelihood surface, which can be relatively flat, particularly in the space of covariance parameters. To improve the approximation of the likelihood function in equation <a href="#eq-mcml2" class="quarto-xref">Equation&nbsp;<span>3.30</span></a>, this process can be repeated iteratively, replacing <span class="math inline">\(\theta_0\)</span> after each step with the estimate obtained from equation <a href="#eq-mcml2" class="quarto-xref">Equation&nbsp;<span>3.30</span></a>, until convergence is achieved. However, due to Monte Carlo error, the estimates after each iteration may still vary considerably, making convergence difficult to reach if very strict criteria are used.</p>
-<p>For spatial prediction, we take a pragmatic approach by running an initial MCML iteration, followed by a second iteration with 10,000 samples, without further iterations. This is because spatial prediction is generally less affected by Monte Carlo error, as will be demonstrated later. On the other hand, when the goal is to draw inferences about model parameters, more iterations may be needed to reduce Monte Carlo error to acceptable levels.</p>
+<p>As <span class="math inline">\(B \rightarrow \infty\)</span>, the Monte Carlo likelihood <span class="math inline">\(L_{MC}\)</span> converges to the exact likelihood function described in <a href="#eq-mcml1" class="quarto-xref">Equation&nbsp;<span>3.29</span></a>. The maximization of this Monte Carlo likelihood is performed using an optimization algorithm that uses the analytical expressions of the first and second derivatives. This approach is especially useful for exploring the likelihood surface, which can be relatively flat, particularly in the space of covariance parameters. To improve the approximation of the likelihood function in equation <a href="#eq-mcml2" class="quarto-xref">Equation&nbsp;<span>3.30</span></a>, this process can be repeated iteratively, replacing <span class="math inline">\(\theta_0\)</span> after each step with the estimate obtained from equation <a href="#eq-mcml2" class="quarto-xref">Equation&nbsp;<span>3.30</span></a>, until convergence is achieved. However, due to Monte Carlo error, the estimates after each iteration may still vary considerably, making convergence difficult to reach if very strict criteria are used. In practice, relaxed convergence criteria or a fixed maximum number of iterations (typically 3-5) are employed with a sufficiently large number of Monte Carlo samples (e.g., <span class="math inline">\(10,000\)</span>). Under these conditions, we find that the procedure provides reliable parameter estimates, and the impact of Monte Carlo error on spatial prediction has been observed to be negligible.</p>
 </section><section id="sec-mcmc-mala" class="level4" data-number="3.5.2.2"><h4 data-number="3.5.2.2" class="anchored" data-anchor-id="sec-mcmc-mala">
 <span class="header-section-number">3.5.2.2</span> Monte Carlo Markov Chain: sampling from the predictive distribution of the spatial Gaussian process</h4>
-<p>Building on the outline of the MCML method from the previous section, we now address the task of sampling from the distribution <span class="math inline">\([W \mid Y]\)</span> to generate the samples <span class="math inline">\(W_{(j)}\)</span> used in equation <a href="#eq-mcml2" class="quarto-xref">Equation&nbsp;<span>3.30</span></a>. To simplify the notation, we will use $[W Y]$$ in place of <span class="math inline">\([W \mid Y; \theta_0]\)</span>, but it is important to emphasize that the parameters <span class="math inline">\(\theta_0\)</span> are considered fixed when sampling from <span class="math inline">\([W \mid Y]\)</span>. Since direct simulation from <span class="math inline">\([W \mid Y]\)</span> is not feasible, we must rely on Markov chain Monte Carlo (MCMC) methods, which we will briefly introduce next.</p>
-<p>The is a foundational technique in the field of MCMC methods, which are widely used for sampling from complex probability distributions. The primary goal of MCMC methods is to generate a sequence of samples from a target distribution where direct sampling is challenging, such as the distribution of <span class="math inline">\([W | Y]\)</span>. The Metropolis-Hastings algorithm, first introduced by <span class="citation" data-cites="metropolis1953equation">Metropolis et al. (<a href="references.html#ref-metropolis1953equation" role="doc-biblioref">1953</a>)</span> and later generalized by <span class="citation" data-cites="hastings1970monte">Hastings (<a href="references.html#ref-hastings1970monte" role="doc-biblioref">1970</a>)</span>, achieves this by constructing a Markov chain that has $[W | Y]$$ as its stationary distribution. In what follows, we shall use <span class="math inline">\(\pi(W)\)</span> to denote the density function of <span class="math inline">\([W | Y]\)</span> up to a constant of proportionality.</p>
+<p>Building on the outline of the MCML method from the previous section, we now address the task of sampling from the distribution <span class="math inline">\([W \mid Y]\)</span> to generate the samples <span class="math inline">\(W_{(j)}\)</span> used in equation <a href="#eq-mcml2" class="quarto-xref">Equation&nbsp;<span>3.30</span></a>. To simplify the notation, we will use <span class="math inline">\([W \mid Y]\)</span> in place of <span class="math inline">\([W \mid Y; \theta_0]\)</span>, but it is important to emphasize that the parameters <span class="math inline">\(\theta_0\)</span> are considered fixed when sampling from <span class="math inline">\([W \mid Y]\)</span>. Since direct simulation from <span class="math inline">\([W \mid Y]\)</span> is not feasible, we must rely on Markov chain Monte Carlo (MCMC) methods, which we will briefly introduce next.</p>
+<p>The is a foundational technique in the field of MCMC methods, which are widely used for sampling from complex probability distributions. The primary goal of MCMC methods is to generate a sequence of samples from a target distribution where direct sampling is challenging, such as the distribution of <span class="math inline">\([W | Y]\)</span>. The Metropolis-Hastings algorithm, first introduced by <span class="citation" data-cites="metropolis1953equation">Metropolis et al. (<a href="references.html#ref-metropolis1953equation" role="doc-biblioref">1953</a>)</span> and later generalized by <span class="citation" data-cites="hastings1970monte">Hastings (<a href="references.html#ref-hastings1970monte" role="doc-biblioref">1970</a>)</span>, achieves this by constructing a Markov chain that has <span class="math inline">\([W \| Y]\)</span> as its stationary distribution. In what follows, we shall use <span class="math inline">\(\pi(W)\)</span> to denote the density function of <span class="math inline">\([W | Y]\)</span> up to a constant of proportionality.</p>
 <p>Given a current realization <span class="math inline">\(W_{(k)}\)</span> of the distribution <span class="math inline">\([W | Y]\)</span> in the Markov chain, the algorithm proceeds as follows.</p>
 <ul>
 <li>Propose a new realization <span class="math inline">\(W_{(k+1)}\)</span> from <span class="math inline">\(q(W_{(k+1)} \mid W_{(k)})\)</span>, where <span class="math inline">\(q(\cdot \mid \cdot)\)</span> is the density function of a chosen proposal distribution.</li>
@@ -1734,44 +1738,31 @@ Figure&nbsp;3.14: Trace plot (left panel) and autocorrelation function plot (rig
 <p><span class="math display">\[
 Y_i = d(x_i)^\top \beta + S(x_i) + Z_i
 \]</span></p>
-<p>where <span class="math inline">\(Y_i\)</span> is the observed response at location $ x_i $, $ d(x_i) $ is a $ p $-dimensional vector of covariates, $ $ is a $ p $ vector of regression coefficients, $ S(x_i) $ is a spatially structured random effect, and $ Z_i N(0, ^2) $ is independent Gaussian noise. The model can be rewritten as</p>
+<p>where <span class="math inline">\(Y_i\)</span> is the observed response at location <span class="math inline">\(x_i\)</span>, <span class="math inline">\(d(x_i)\)</span> is a <span class="math inline">\(p\)</span>-dimensional vector of covariates, <span class="math inline">\(\beta\)</span> is a <span class="math inline">\(p \times 1\)</span> vector of regression coefficients, <span class="math inline">\(S(x_i)\)</span> is a spatially structured random effect, and <span class="math inline">\(Z_i \sim N(0, \tau^2)\)</span> is independent Gaussian noise. The model can be rewritten as</p>
 <p><span class="math display">\[
 Y = D\beta + S + Z
 \]</span></p>
-<p>where $ Y = (Y_1, , Y_n)$ is the $ n $ vector of observations, $ S = (S(x_1), , S(x_n))^$ is the vector of spatially dependent random effects, <span class="math inline">\(Z = (Z_1, \ldots, Z_n)\)</span> is the noise, and $ D $ is an $ n p $ matrix of covariates given by</p>
-<p><span class="math display">\[
+<p>where <span class="math inline">\(Y = (Y_1, \ldots, Y_n)\top\)</span> is the $ n $ vector of observations, <span class="math inline">\(S = (S(x_1), \ldots, S(x_n))^\top\)</span> is the vector of spatially dependent random effects, <span class="math inline">\(Z = (Z_1, \ldots, Z_n)\)</span> is the noise, and <span class="math inline">\(D\)</span> is an <span class="math inline">\(n \times p\)</span> matrix of covariates given by <span class="math display">\[
 D = (d_1(X), \ldots, d_p(X))
-\]</span></p>
-<p>with each column $ d_j(X) = (d_j(x_1),,d_j(x_n))^$ representing the values of the $ j $-th covariate across all locations. This formulation accounts for both fixed effects through $ D$ and spatial correlation through $ S(x_i) $. The covariance matrix of $ Y $ is</p>
+\]</span> with each column <span class="math inline">\(d_j(X) = (d_j(x_1),\ldots,d_j(x_n))^\top\)</span> representing the values of the <span class="math inline">\(j\)</span>-th covariate across all locations. This formulation accounts for both fixed effects through $ D$ and spatial correlation through <span class="math inline">\(S(x_i)\)</span>. The covariance matrix of <span class="math inline">\(Y\)</span> is</p>
 <p><span class="math display">\[
 V = \Sigma + \tau^2 I
 \]</span></p>
-<p>where $ $ is the spatial covariance matrix of <span class="math inline">\(S\)</span>. Assuming the covariance parameters are known, the generalized least squares estimator for $ $ is</p>
-<p><span class="math display">\[
+<p>where <span class="math inline">\(\Sigma\)</span> is the spatial covariance matrix of <span class="math inline">\(S\)</span>. Assuming the covariance parameters are known, the generalized least squares estimator for <span class="math inline">\(\beta\)</span> is <span class="math display">\[
 \hat{\beta} = (D^T V^{-1} D)^{-1} D^T V^{-1} Y.
-\]</span></p>
-<p>The predictor for <span class="math inline">\(S\)</span> is the conditional expectation <span class="math inline">\(E[S(x_i) \: | \: Y_i]\)</span> is</p>
-<p><span class="math display">\[
+\]</span> The predictor for <span class="math inline">\(S\)</span> is the conditional expectation <span class="math inline">\(E[S(x_i) \: | \: Y_i]\)</span> is <span class="math display">\[
 \hat{S} = \Sigma V^{-1} (Y - D\hat{\beta}).
-\]</span></p>
-<p>so the predictors for <span class="math inline">\(Y\)</span> can be written as</p>
-<p><span class="math display">\[
+\]</span> so the predictors for <span class="math inline">\(Y\)</span> can be written as <span class="math display">\[
 \hat{Y} = D\hat{\beta} + \hat{S}.
-\]</span></p>
-<p>The hat matrix, which projects observations onto the fitted space, is</p>
+\]</span> The hat matrix, which projects observations onto the fitted space, is</p>
 <p><span class="math display">\[
 H = [D - \Sigma V^{-1} D] (D^T V^{-1} D)^{-1} D^T V^{-1} + \Sigma V^{-1}.
-\]</span></p>
-<p>This matrix is symmetric since it consists of symmetric components, satisfying <span class="math inline">\(H^T = H\)</span>. It is also idempotent, meaning <span class="math inline">\(H^2 = H\)</span>, which follows from the properties of projection matrices. The diagonal elements <span class="math inline">\(h_{ii}\)</span> represent the leverage of each observation, quantifying how much each $ Y_i $ influences its own fitted value. The rank of $ H $ is at most $ p $, constrained by the rank of $ D $. Unlike in ordinary least squares where the hat matrix is <span class="math inline">\(H = D (D^T D)^{-1} D^T\)</span>, here it depends on <span class="math inline">\(V^{-1}\)</span>, accounting for spatial dependence. Since <span class="math inline">\(V \neq I\)</span>, the hat matrix represents an oblique projection rather than an orthogonal one.</p>
-<p>The residuals, i.e.&nbsp;the estimate of <span class="math inline">\(Z\)</span> are given by</p>
-<p><span class="math display">\[
+\]</span> This matrix is symmetric since it consists of symmetric components, satisfying <span class="math inline">\(H^T = H\)</span>. It is also idempotent, meaning <span class="math inline">\(H^2 = H\)</span>, which follows from the properties of projection matrices. The diagonal elements <span class="math inline">\(h_{ii}\)</span> represent the leverage of each observation, quantifying how much each $ Y_i $ influences its own fitted value. The rank of $ H $ is at most $ p $, constrained by the rank of $ D $. Unlike in ordinary least squares where the hat matrix is <span class="math inline">\(H = D (D^T D)^{-1} D^T\)</span>, here it depends on <span class="math inline">\(V^{-1}\)</span>, accounting for spatial dependence. Since <span class="math inline">\(V \neq I\)</span>, the hat matrix represents an oblique projection rather than an orthogonal one.</p>
+<p>The residuals, i.e.&nbsp;the estimate of <span class="math inline">\(Z\)</span> are given by <span class="math display">\[
 \hat{Z} = Y - \hat{Y} = (I - H) Y.
-\]</span></p>
-<p>We note that the covariance structure of <span class="math inline">\(\hat{Z}\)</span> is</p>
-<p><span class="math display">\[
+\]</span> We note that the covariance structure of <span class="math inline">\(\hat{Z}\)</span> is <span class="math display">\[
 \text{Var}(\hat{Z}) = (I - H) V (I - H)^T.
-\]</span></p>
-<p>Hence, the estimated residuals from a linear geostatistical model do have a correlation structure which relates to the chosen spatial correlation structure in <span class="math inline">\(\Sigma\)</span>.</p>
+\]</span> Hence, the estimated residuals from a linear geostatistical model do have a correlation structure which relates to the chosen spatial correlation structure in <span class="math inline">\(\Sigma\)</span>.</p>
 </section></section><section id="review-questions" class="level2" data-number="3.6"><h2 data-number="3.6" class="anchored" data-anchor-id="review-questions">
 <span class="header-section-number">3.6</span> Review questions</h2>
 <ul>
@@ -2054,236 +2045,242 @@ Zouré, Honorat GM, Mounkaila Noma, Afework H Tekle, Uche V Amazigo, Peter J Dig
 </div>
 </div>
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
-      }
-    }
-    return false;
-  }
-  const onCopySuccess = function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
-      }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  }
-  const getTextToCopy = function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-    text: getTextToCopy
-  });
-  clipboard.on('success', onCopySuccess);
-  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-      text: getTextToCopy,
-      container: window.document.getElementById('quarto-embedded-source-code-modal')
-    });
-    clipboardModal.on('success', onCopySuccess);
-  }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-    var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-        // undo the damage that might have been done by quarto-nav.js in the case of
-        // links that we want to consider external
-        if (link.dataset.originalHref !== undefined) {
-          link.href = link.dataset.originalHref;
-        }
-      }
-    }
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-    const config = {
-      allowHTML: true,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start',
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
     };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      if (note) {
-        return note.innerHTML;
-      } else {
-        return "";
-      }
-    });
-  }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
         }
       }
+      return false;
     }
-    stripColumnClz(note)
-    if (id === null || id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
-          } else {
-            container.appendChild(child.cloneNode(true));
-            break;
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
           }
         }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(container);
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
         }
-        return container.innerHTML
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
       } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(note);
-      }
-      if (note.classList.contains("callout")) {
-        return note.outerHTML;
-      } else {
-        return note.innerHTML;
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
       }
     }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
           }
         } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
+            const note = htmlDoc.querySelector('main.content');
             if (note !== null) {
-              const html = processXRef(id, note);
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -2291,185 +2288,161 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             instance.show();
           });
         }
-      } else {
-        // See if we can fetch a full url (with no hash to target)
-        // This is a special case and we should probably do some content thinning / targeting
-        fetch(url)
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.querySelector('main.content');
-          if (note !== null) {
-            // This should only happen for chapter cross references
-            // (since there is no id in the URL)
-            // remove the first header
-            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-              note.children[0].remove();
-            }
-            const html = processXRef(null, note);
-            instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
-      }
-    }, function(instance) {
-    });
-  }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            div.style.left = 0;
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
-    }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
-          }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
+      }, function(instance) {
       });
     }
-  }
-});
-</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./02_handling-spatial-data.html" class="pagination-link" aria-label="Handling of spatial data in R">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Handling of spatial data in R</span></span>
       </a>          

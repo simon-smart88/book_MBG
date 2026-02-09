@@ -978,12 +978,11 @@ If we define the residuals as the component of the model that expresses the vari
 
 Let $W_i$ denote the sum of all the random effects in the model, whether $W_i = S(x_i)$, $W_i = S(x_i) + Z_i$, or any other random effects structure. In addition to RERs, other types of residuals more common in standard regression modeling can also be used, however, because of the presence of random effects $W_i$, their definition becomes more convoluted.
 
-Let us consider the *Pearson residuals*. Conditionally on $W_i$ we can define these as:
-$$
+Let us consider the *Pearson residuals*. Conditionally on $W_i$ we can define these as: $$
 {\rm PR}_i(W_i) = \frac{y_i - \hat{\text{E}}\left[Y_i]}{\sqrt{\hat{\text{Var}}\left[Y_i]}}
 $$
 
-where $\hat{\text{E}}\left[Y_i\right]$ and $\hat{\text{Var}}\left[Y_i \right]$ are estimates of the predictive expectation and variance of $Y_i$. Using Monte Carlo samples,  say $W_{i,(j)}$ for $j = 1, \ldots, B$, from the distribution of $W_i$ given the data (see @sec-mcmc-mala for how these samples are generated in `RiskMap`), the expectations can be estimated as:
+where $\hat{\text{E}}\left[Y_i\right]$ and $\hat{\text{Var}}\left[Y_i \right]$ are estimates of the predictive expectation and variance of $Y_i$. Using Monte Carlo samples, say $W_{i,(j)}$ for $j = 1, \ldots, B$, from the distribution of $W_i$ given the data (see @sec-mcmc-mala for how these samples are generated in `RiskMap`), the expectations can be estimated as:
 
 $$
 \hat{\text{E}}\left[Y_i \right] = \frac{1}{B} \sum_{j=1}^B \hat{\text{E}}\left[Y_i \mid W_{i,(j)}\right], \quad
@@ -1010,41 +1009,52 @@ Nevertheless, we note that some standard diagnostic tools from regression analys
 
 ### Maximum likelihood estimation for non-Gaussian mixed models with independent random effects
 
-In this section, we provide more technical details on the derivation of the likelihood function for the mixed model specified in @eq-linear-predictor-glmms-ch2. While not essential for understanding the application and interpretation of geostatistical models, this section provides useful insights into computational challenges inherent to the models presented in this book. It is also important to point out that in this section we consider the case when the outcome $Y_i$ is a count.
+In this section, we provide more technical details on the derivation of the likelihood function for the mixed model specified in @eq-linear-predictor-glmms-ch2. While not essential for understanding the application and interpretation of geostatistical models, this section provides useful insights into computational challenges inherent to the models presented in this book. In this section, we restrict our attention to the case when the outcome $Y_i$ is a count.
 
 Let $\theta = (\beta, \tau^2)$ denote the vector of unknown parameters, where $\beta$ is the vector of regression coefficients and $\tau^2$ is the variance of the random effects $Z = (Z_1, \ldots, Z_n)$. The likelihood function for a set of observations $Y = (Y_1, \ldots, Y_n)$, for $i=1,\ldots,n$, under the model in @eq-linear-predictor-glmms-ch2, is obtained by deriving the marginal distribution of $Y_i$, hence $$
 L(\theta) = [Y] = \int_{R^n} \: [Z] [Y \:|\: Z] \: d Z
-$$ Since the elements $Z_i$ in $Z$ are mutually independent, we can write $$
+$$ 
+Since the elements $Z_i$ in $Z$ are mutually independent, we can write $$
 [Z] = \prod_{i=1}^n [Z_i]
-$$ and, using the conditional independence among the $Y$ given $Z$, we obtain $$
+$$ 
+and, using the conditional independence among the $Y$ given $Z$, we obtain $$
 [Y \:|\: Z] = \prod_{i=1}^n [Y_i | Z_i].
-$$ From these, it then follows that $$
+$$ From these, it then follows that 
+$$
 L(\theta) = \int_{R^n} \: \prod_{i=1}^n [Z_i] \prod_{i=1}^n [Y_i | Z_i] \: d Z = \prod_{i=1}^n \int_{R} \: [Z_i] [Y_i \:|\: Z_i] \: d Z_i.
-$$ {#eq-glmm-final} This shows that under the model in @eq-linear-predictor-glmms-ch2, whilst accounting for overdispersion, this model does not account for any source of correlation between the observations. This is because the likelihood function can be expressed, as shown in the equation above, as the product of $n$ likelihoods associated with each of the observations.
+$$ {#eq-glmm-final} 
+This shows that under the model in @eq-linear-predictor-glmms-ch2, whilst accounting for overdispersion, this model does not account for any source of correlation between the observations. This is because the likelihood function can be expressed, as shown in the equation above, as the product of $n$ likelihoods associated with each of the observations.
 
-Another important observation is that the integrals that express the likelihood in @eq-glmm-final, cannot be solved analytically and need to be approximated. Several solutions are available that are either based on maximum likelihood estimation or Bayesian methods of inference. The function `glmer` used in @sec-empirical-variog-lm provides both the Laplace and Gaussian quadrature approximations options. The former consists of finding the *peak* of the integrand - i.e. the function that is being integrated - and approximating that with a Gaussian distribution centered at that *peak*, using the curvature of the original distribution to determine the width of the Gaussian distribution. The Gaussian quadrature is another numerical integration technique used to approximate the integral of a function. It involves choosing specific points (nodes) and weights within the integration interval to approximate the integral. By strategically selecting these points and weights based on a Gaussian distribution, Gaussian quadrature can provide highly accurate results compared to other numerical integration methods, such as the Laplace approximation. For a comprehensive overview of these and other methods of approximations of intractable integrals, we find that @bishop2006 is one of the most accessible textbooks on this topic.
+Another important observation is that the integrals that express the likelihood in @eq-glmm-final, cannot be solved analytically and need to be approximated. Several solutions are available that are either based on maximum likelihood estimation or Bayesian methods of inference. The function `glmer` used in @sec-empirical-variog-lm provides both the Laplace and Gaussian quadrature approximations options. The former consists of finding the *peak* of the integrand - i.e. the function that is being integrated - and approximating that with a Gaussian distribution centered at that *peak*, using the curvature of the original distribution to determine the width of the Gaussian distribution. The Gaussian quadrature is another numerical integration technique used to approximate the integral of a function. It involves choosing specific points (nodes) and weights within the integration interval to approximate the integral. By strategically selecting these points and weights based on a Gaussian distribution, Gaussian quadrature can provide highly accurate results compared to other numerical integration methods, such as the Laplace approximation. For a comprehensive overview of these and other methods of approximations of intractable integrals, we consider @bishop2006 to be an accessible textbook on this topic.
 
 ### Maximum likelihood estimation for non-Gaussian generalized linear geostatistical models {#sec-glgm-lik}
 
-To derive the likelihood function of a generalized linear geostatistical model (GLGM), we consider the special case of a single observation per location without loss of generality. Let $Y$ and $Z$ denote the same vectors of random variables introduced in the previous section, with components $Y_i$ and $Z_i$ corresponding to the set of locations $X = (x_1, \ldots, x_n)$. Additionally, we define $S(X) = (S(x_1), \ldots, S(x_n))$ to represent the spatial Gaussian process at the sampled locations $X$. In this case the vector of unknown parameters is $\theta = (\beta, \sigma^2, \phi, \tau^2)$ and, as done in the previous section, we can obtain the likelihood function though the marginal distribution of the data, hence we write $$
+To derive the likelihood function of a generalized linear geostatistical model (GLGM), we consider the special case of a single observation per location without loss of generality. Let $Y$ and $Z$ denote the same vectors of random variables introduced in the previous section, with components $Y_i$ and $Z_i$ corresponding to the set of locations $X = (x_1, \ldots, x_n)$. Additionally, we define $S(X) = (S(x_1), \ldots, S(x_n))$ to represent the spatial Gaussian process at the sampled locations $X$. In this case the vector of unknown parameters is $\theta = (\beta, \sigma^2, \phi, \tau^2)$ and, as done in the previous section, we can obtain the likelihood function though the marginal distribution of the data, hence we write 
+$$
 L(\theta) = [Y] = \int_{R^n} \int_{R^n} \: [Z] [S] [Y \:|\: Z, S] \: d Z d S
-$$ {#eq-glgm-lik1} To simplify the explanation and notation in this section and the following ones, we will first rewrite the likelihood function in terms of the random effect $W_i = S(x_i) + Z_i$ and will denote this in its vector form as $W = (W_1, \ldots, W_n)$. Hence we write $$L(\theta) = [Y] = \int_{R^n} \: [W] [Y \:|\: W] \: d W$$ {#eq-glgm-lik2} In this model formulation, we assume that $Y$ conditionally on $W$ is a set of mutually independent outcomes, hence $$
+$$ {#eq-glgm-lik1} 
+To simplify the explanation and notation in this section and the following ones, we will first rewrite the likelihood function in terms of the random effect $W_i = S(x_i) + Z_i$ and will denote this in its vector form as $W = (W_1, \ldots, W_n)$. Hence we write $$L(\theta) = [Y] = \int_{R^n} \: [W] [Y \:|\: W] \: d W$$ {#eq-glgm-lik2} In this model formulation, we assume that $Y$ conditionally on $W$ is a set of mutually independent outcomes, hence 
+$$
 [Y | W]  = \prod_{i=1}^n [Y_i | W_i].
-$$ However, unlike in the previous section, the distribution of $[W]$ is a Multivariate Gaussian distribution with correlated components, hence we cannot split the integral into separate univariate ones as before. More specifically, $W$ follows a Multivariate Gaussian distribution with mean vector $0$ and covariance matrix $\Omega$, whose $(i, j)$-th entry is $$
+$$ 
+However, unlike in the previous section, the distribution of $[W]$ is a Multivariate Gaussian distribution with correlated components, hence we cannot split the integral into separate univariate ones as before. More specifically, $W$ follows a Multivariate Gaussian distribution with mean vector $0$ and covariance matrix $\Omega$, whose $(i, j)$-th entry is 
+$$
 [\Omega]_{ij} = 
 \begin{cases}
 \sigma^2 \rho(u_{ij}; \phi, \kappa) & \mbox{if }i\neq j \\
 \sigma^2 + \tau^2 &  \mbox{if }i = j
 \end{cases}
-$$ where $\rho(u;\phi,\kappa)$ is the Matern correlation function with scale parameter $\phi$ and smoothness parameter $\kappa$; see @eq-matern.
+$$ 
+where $\rho(u;\phi,\kappa)$ is the Matern correlation function with scale parameter $\phi$ and smoothness parameter $\kappa$; see @eq-matern.
 
 In the next two sections we provide a brief overview of Monte Carlo maximum likelihood and the use of Markov chain Monte Carlo to approximate @eq-glgm-lik2.
 
 #### Monte Carlo maximum likelihood {#sec-mcml}
 
-In maximum likelihood estimation, we aim to maximize the likelihood function to find the parameters that make our data the most likely to have been observed. Monte Carlo Maximum Likelihood (MCML) is a method introduced by @geyer1991, designed to handle situations where the likelihood function is difficult or impossible to compute directly. As shown above, non-Gaussian generalized linear geostatistical models yield an intractable likelihood function that involves a high-dimensional integral, hence we use MCML to approximate this.
+In maximum likelihood estimation, we aim to maximize the likelihood function to find the parameters that make our data the most likely to have been observed. Monte Carlo Maximum Likelihood (MCML) (see the seminal work by @geyer1991) is designed to handle situations where the likelihood function is intractable. In the case of a non-Gaussian generalized linear geostatistical model, its likelihood function involves a high-dimensional integral which can be approximated using MCML.
 
-MCML solves this problem using Monte Carlo methods, which involve random sampling to approximate the value of these integrals. One way to apply Monte Carlo methods in this context is through *importance sampling*. Importance sampling allows us to approximate the likelihood function by rewriting the likelihood in a form that can be estimated using samples from an easier distribution, known as the *importance sampling distribution*. To this end, we then rewrite @eq-glgm-lik2 as $$
+One way to apply Monte Carlo methods in this context is through *importance sampling*. Importance sampling allows us to approximate the likelihood function by rewriting the likelihood in a form that can be estimated using samples from an easier distribution, known as the *importance sampling distribution*. To this end, we then rewrite @eq-glgm-lik2 as 
+$$
 \begin{aligned}
 L(\theta) 
 &= \int [W, Y; \theta] \: dW  \\
@@ -1052,7 +1062,8 @@ L(\theta)
 &\propto  \int \frac{[W, Y; \theta]}{[W, Y; \theta_0]} [W | Y; \theta_0] \: dW  \\
 &= E\left\{\frac{[W, Y; \theta]}{[W, Y; \theta_0]}\right\},
 \end{aligned} 
-$$ {#eq-mcml1} where $\theta_0$ represents our best guess of $\theta_0$ and the expectation in the equation above is taken with respect to $[W | Y; \theta_0]$, which represent our *importance sampling distribution*.
+$$ {#eq-mcml1} 
+where $\theta_0$ represents our best guess of $\theta_0$ and the expectation in the equation above is taken with respect to $[W | Y; \theta_0]$, which represent our *importance sampling distribution*.
 
 Let $W_{(j)}$ represent the $j$-th sample out of $B$ drawn from the distribution $[W \mid Y; \theta_0]$. To simulate samples from $[W \mid Y; \theta_0]$, Markov chain Monte Carlo (MCMC) algorithms are required and we explain more in detail in the next section.
 
@@ -1060,15 +1071,13 @@ We approximate the expression in @eq-mcml1 as follows: $$
 L_{MC}(\theta) = \frac{1}{B} \sum_{j=1}^B \frac{[W_{(j)}, Y; \theta]}{[W_{(j)}, Y; \theta_0]}.
 $$ {#eq-mcml2}
 
-As $B \rightarrow \infty$, the Monte Carlo likelihood $L_{MC}$ converges to the exact likelihood function described in @eq-mcml1. The maximization of this Monte Carlo likelihood is performed using an optimization algorithm that uses the analytical expressions of the first and second derivatives. This approach is especially useful for exploring the likelihood surface, which can be relatively flat, particularly in the space of covariance parameters. To improve the approximation of the likelihood function in equation @eq-mcml2, this process can be repeated iteratively, replacing $\theta_0$ after each step with the estimate obtained from equation @eq-mcml2, until convergence is achieved. However, due to Monte Carlo error, the estimates after each iteration may still vary considerably, making convergence difficult to reach if very strict criteria are used.
-
-For spatial prediction, we take a pragmatic approach by running an initial MCML iteration, followed by a second iteration with 10,000 samples, without further iterations. This is because spatial prediction is generally less affected by Monte Carlo error, as will be demonstrated later. On the other hand, when the goal is to draw inferences about model parameters, more iterations may be needed to reduce Monte Carlo error to acceptable levels.
+As $B \rightarrow \infty$, the Monte Carlo likelihood $L_{MC}$ converges to the exact likelihood function described in @eq-mcml1. The maximization of this Monte Carlo likelihood is performed using an optimization algorithm that uses the analytical expressions of the first and second derivatives. This approach is especially useful for exploring the likelihood surface, which can be relatively flat, particularly in the space of covariance parameters. To improve the approximation of the likelihood function in equation @eq-mcml2, this process can be repeated iteratively, replacing $\theta_0$ after each step with the estimate obtained from equation @eq-mcml2, until convergence is achieved. However, due to Monte Carlo error, the estimates after each iteration may still vary considerably, making convergence difficult to reach if very strict criteria are used. In practice, relaxed convergence criteria or a fixed maximum number of iterations (typically 3-5) are employed with a sufficiently large number of Monte Carlo samples (e.g., $10,000$). Under these conditions, we find that the procedure provides reliable parameter estimates, and the impact of Monte Carlo error on spatial prediction has been observed to be negligible.
 
 #### Monte Carlo Markov Chain: sampling from the predictive distribution of the spatial Gaussian process {#sec-mcmc-mala}
 
-Building on the outline of the MCML method from the previous section, we now address the task of sampling from the distribution $[W \mid Y]$ to generate the samples $W_{(j)}$ used in equation @eq-mcml2. To simplify the notation, we will use \$\[W \mid Y\]\$\$ in place of $[W \mid Y; \theta_0]$, but it is important to emphasize that the parameters $\theta_0$ are considered fixed when sampling from $[W \mid Y]$. Since direct simulation from $[W \mid Y]$ is not feasible, we must rely on Markov chain Monte Carlo (MCMC) methods, which we will briefly introduce next.
+Building on the outline of the MCML method from the previous section, we now address the task of sampling from the distribution $[W \mid Y]$ to generate the samples $W_{(j)}$ used in equation @eq-mcml2. To simplify the notation, we will use $[W \mid Y]$ in place of $[W \mid Y; \theta_0]$, but it is important to emphasize that the parameters $\theta_0$ are considered fixed when sampling from $[W \mid Y]$. Since direct simulation from $[W \mid Y]$ is not feasible, we must rely on Markov chain Monte Carlo (MCMC) methods, which we will briefly introduce next.
 
-The \textit{Metropolis-Hastings algorithm} is a foundational technique in the field of MCMC methods, which are widely used for sampling from complex probability distributions. The primary goal of MCMC methods is to generate a sequence of samples from a target distribution where direct sampling is challenging, such as the distribution of $[W | Y]$. The Metropolis-Hastings algorithm, first introduced by @metropolis1953equation and later generalized by @hastings1970monte, achieves this by constructing a Markov chain that has \$\[W \| Y\]\$\$ as its stationary distribution. In what follows, we shall use $\pi(W)$ to denote the density function of $[W | Y]$ up to a constant of proportionality.
+The \textit{Metropolis-Hastings algorithm} is a foundational technique in the field of MCMC methods, which are widely used for sampling from complex probability distributions. The primary goal of MCMC methods is to generate a sequence of samples from a target distribution where direct sampling is challenging, such as the distribution of $[W | Y]$. The Metropolis-Hastings algorithm, first introduced by @metropolis1953equation and later generalized by @hastings1970monte, achieves this by constructing a Markov chain that has $[W \| Y]$ as its stationary distribution. In what follows, we shall use $\pi(W)$ to denote the density function of $[W | Y]$ up to a constant of proportionality.
 
 Given a current realization $W_{(k)}$ of the distribution $[W | Y]$ in the Markov chain, the algorithm proceeds as follows.
 
@@ -1209,62 +1218,49 @@ $$
 Y_i = d(x_i)^\top \beta + S(x_i) + Z_i
 $$
 
-where $Y_i$ is the observed response at location \$ x_i \$, \$ d(x_i) \$ is a \$ p \$-dimensional vector of covariates, \$ \beta \$ is a \$ p \times 1 \$ vector of regression coefficients, \$ S(x_i) \$ is a spatially structured random effect, and \$ Z_i \sim N(0, \tau\^2) \$ is independent Gaussian noise. The model can be rewritten as
+where $Y_i$ is the observed response at location $x_i$, $d(x_i)$ is a $p$-dimensional vector of covariates, $\beta$ is a $p \times 1$ vector of regression coefficients, $S(x_i)$ is a spatially structured random effect, and $Z_i \sim N(0, \tau^2)$ is independent Gaussian noise. The model can be rewritten as
 
 $$
 Y = D\beta + S + Z
 $$
 
-where \$ Y = (Y_1, \ldots, Y_n)\top \$ is the \$ n \times 1 \$ vector of observations, \$ S = (S(x_1), \ldots, S(x_n))\^\top \$ is the vector of spatially dependent random effects, $Z = (Z_1, \ldots, Z_n)$ is the noise, and \$ D \$ is an \$ n \times p \$ matrix of covariates given by
-
+where $Y = (Y_1, \ldots, Y_n)\top$ is the $ n \times 1$ vector of observations, $S = (S(x_1), \ldots, S(x_n))^\top$ is the vector of spatially dependent random effects, $Z = (Z_1, \ldots, Z_n)$ is the noise, and $D$ is an $n \times p$ matrix of covariates given by
 $$
 D = (d_1(X), \ldots, d_p(X))
 $$
-
-with each column \$ d_j(X) = (d_j(x_1),\ldots,d_j(x_n))\^\top\$ representing the values of the \$ j \$-th covariate across all locations. This formulation accounts for both fixed effects through \$ D\beta \$ and spatial correlation through \$ S(x_i) \$. The covariance matrix of \$ Y \$ is
+with each column $d_j(X) = (d_j(x_1),\ldots,d_j(x_n))^\top$ representing the values of the $j$-th covariate across all locations. This formulation accounts for both fixed effects through $ D\beta $ and spatial correlation through $S(x_i)$. The covariance matrix of $Y$ is
 
 $$
 V = \Sigma + \tau^2 I
 $$
 
-where \$ \Sigma \$ is the spatial covariance matrix of $S$. Assuming the covariance parameters are known, the generalized least squares estimator for \$ \beta \$ is
-
+where $\Sigma$ is the spatial covariance matrix of $S$. Assuming the covariance parameters are known, the generalized least squares estimator for $\beta$ is
 $$
 \hat{\beta} = (D^T V^{-1} D)^{-1} D^T V^{-1} Y.
 $$
-
 The predictor for $S$ is the conditional expectation $E[S(x_i) \: | \: Y_i]$ is
-
 $$
 \hat{S} = \Sigma V^{-1} (Y - D\hat{\beta}).
 $$
-
 so the predictors for $Y$ can be written as
-
 $$
 \hat{Y} = D\hat{\beta} + \hat{S}.
 $$
-
 The hat matrix, which projects observations onto the fitted space, is
 
 $$
 H = [D - \Sigma V^{-1} D] (D^T V^{-1} D)^{-1} D^T V^{-1} + \Sigma V^{-1}.
 $$
-
-This matrix is symmetric since it consists of symmetric components, satisfying $H^T = H$. It is also idempotent, meaning $H^2 = H$, which follows from the properties of projection matrices. The diagonal elements $h_{ii}$ represent the leverage of each observation, quantifying how much each \$ Y_i \$ influences its own fitted value. The rank of \$ H \$ is at most \$ p \$, constrained by the rank of \$ D \$. Unlike in ordinary least squares where the hat matrix is $H = D (D^T D)^{-1} D^T$, here it depends on $V^{-1}$, accounting for spatial dependence. Since $V \neq I$, the hat matrix represents an oblique projection rather than an orthogonal one.
+This matrix is symmetric since it consists of symmetric components, satisfying $H^T = H$. It is also idempotent, meaning $H^2 = H$, which follows from the properties of projection matrices. The diagonal elements $h_{ii}$ represent the leverage of each observation, quantifying how much each $ Y_i $ influences its own fitted value. The rank of $ H $ is at most $ p $, constrained by the rank of $ D $. Unlike in ordinary least squares where the hat matrix is $H = D (D^T D)^{-1} D^T$, here it depends on $V^{-1}$, accounting for spatial dependence. Since $V \neq I$, the hat matrix represents an oblique projection rather than an orthogonal one.
 
 The residuals, i.e. the estimate of $Z$ are given by
-
 $$
 \hat{Z} = Y - \hat{Y} = (I - H) Y.
 $$
-
 We note that the covariance structure of $\hat{Z}$ is
-
 $$
 \text{Var}(\hat{Z}) = (I - H) V (I - H)^T.
 $$
-
 Hence, the estimated residuals from a linear geostatistical model do have a correlation structure which relates to the chosen spatial correlation structure in $\Sigma$.
 
 ## Review questions
