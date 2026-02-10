@@ -20,7 +20,7 @@ fig-asp: 0.75
 
 Geostatistics was originally developed and applied as a predictive tool for improving mining operations and planning. In the seminal paper on model-based geostatistics (MBG) [@diggle1998], the authors begin by stating:
 
-> \*"Conventional geostatistical methodology solves the problem of predicting the realized value of a linear functional of a Gaussian spatial stochastic process\* $S(x)$ based on observations $Y_i= S(x_i) + Z_i$ at sampling locations $x_i$, where the $Z_i$ are mutually independent, zero-mean Gaussian random variables."
+> "Conventional geostatistical methodology solves the problem of predicting the realized value of a linear functional of a Gaussian spatial stochastic process $S(x)$ based on observations $Y_i= S(x_i) + Z_i$ at sampling locations $x_i$, where the $Z_i$ are mutually independent, zero-mean Gaussian random variables."
 
 It is no coincidence that, although MBG represents a broad class of statistical models applicable to both estimation and prediction problems, the majority of its applications have focused on prediction. This is evident in many scientific fields where MBG has been used, including global public health, which is the primary application focus in this book. In line with the quote above, for most of the examples considered in this book, the analyses we illustrate aim to use a finite set of locations $x_i$ --- typically corresponding to households or villages --- to make inferences about an observed disease risk surface. Having performed estimation of MBG models in @sec-estimation, we can now carry out spatial prediction to answer critical public health questions, such as identifying hot-spots and cold-spots --- areas of unusually high or low disease risk, respectively --- or determining whether the average prevalence across a region exceeds a predefined policy threshold.
 
@@ -28,7 +28,7 @@ In this chapter, we will explore these issues, beginning with a formal statistic
 
 ## Spatial prediction using geostatistical models {#sec-spat-pred-target}
 
-Let us consider the class of generalized linear geostatistical models (GLGM) as in @sec-geostat-models. In the formulation of prediction problems, the first step consists of defining our predictive target, which we denote as $T(x)$ where $x$ denotes any locations within the study, which is usually not part of the sampled data. For example in the analysis of the riverblindness in Liberia, our interest lies in identifying areas where disease prevalence exceeds 20$\%$, a threshold that use been used in the past to identify areas in need of mass drug administration due to the potential for significant disease burden and transmission [@amazigo2008]. Hence, in this case, disease prevalence corresponds to our predictive target $T(x)$. To draw inferences on $T(x)$ and allow us to answer the question of where $T(x)$ exceeds a 20$\%$ threshold, we first need to obtain the so called *predictive distribution* of $T(x)$. More specifically, the *predictive distribution* of $T(x)$ is the distribution of $T(x)$ conditioned to the data, which we denote by $[T(x) \: \mid \: y]$. More importantly, by incorporating the information provided by the data, the predictive distribution of the target enables us to quantify the uncertainty stemming from the stochastic nature of the process we are modeling. In other words, the predictive distribution reflects the range of possible values that the target $T(x)$ can take and their likelihoods based on the model we have fitted to the data. As we shall see in our examples, we can use the predictive distribution of $T(x)$ both to provide what is our "best guess" for $T(x)$ and a summary of uncertainty which quantifies how much concentrated is the predictive distribution around that guess. However, providing a single "best guess" for $T(x)$ is not always the answer to our research question. In the example on riverblindness mentioned at the start of the this section, a more natural way to use the predictive distribution would be to compute the likelihood that $T(x)$ exceeds 0.2 at any given location $x$.
+Let us consider the class of generalized linear geostatistical models (GLGM) as in @sec-geostat-models. In the formulation of prediction problems, the first step consists of defining our predictive target, which we denote as $T(x)$ where $x$ denotes any locations within the study, which is usually not part of the sampled data. For example in the analysis of the riverblindness in Liberia, our interest lies in identifying areas where disease prevalence exceeds 20$\%$, a threshold that use been used in the past to identify areas in need of mass drug administration due to the potential for significant disease burden and transmission [@amazigo2008]. Hence, in this case, disease prevalence corresponds to our predictive target $T(x)$. To draw inferences on $T(x)$ and allow us to answer the question of where $T(x)$ exceeds a 20$\%$ threshold, we first need to obtain the so called *predictive distribution* of $T(x)$. More specifically, the *predictive distribution* of $T(x)$ is the distribution of $T(x)$ conditioned to the data, which we denote by $[T(x) \: \mid \: y]$. More importantly, by incorporating the information provided by the data, the predictive distribution of the target enables us to quantify the uncertainty stemming from the stochastic nature of the process we are modeling. In other words, the predictive distribution reflects the range of possible values that the target $T(x)$ can take and their likelihoods based on the model we have fitted to the data. As we shall see in our examples, we can use the predictive distribution of $T(x)$ both to provide what is our "best guess" for $T(x)$ and a summary of uncertainty which quantifies how concentrated is the predictive distribution around that guess. However, providing a single "best guess" for $T(x)$ is not always the answer to our research question. In the example on riverblindness mentioned at the start of the this section, a more natural way to use the predictive distribution would be to compute the likelihood that $T(x)$ exceeds 0.2 at any given location $x$.
 
 In summary, the first two steps of spatial prediction are:
 
@@ -47,7 +47,7 @@ In our exposition so far, we have also made the implicit assumption that predict
 Before we consider these two types of prediction targets more in detail, we first explain the preliminary steps that need to be performed and are common to both. Whether our goal is predict a spatially continuous or areal-level target, the initial task is to draw Monte Carlo samples from the predictive distribution of the spatial process $S(x)$. Next, we define a set of prediction locations, say $q$ in total, denoted as $\tilde{X} = {\tilde{x}_1, \ldots, \tilde{x}_q}$. These locations correspond to a regular grid that spans our region of interest, $A$. the predictive distribution of the spatial process over the grid, represented as $[S(\tilde{X}) \: |\: y]$. This distribution allows us to generate Monte Carlo samples for $S(\tilde{X})$, which will later be used for computing our target.
 
 ::: {.callout-note}
-Here, we are overlooking the fact that when $T(x)$ is a linear transformation of $S(x)$ and the the model fitted to the data is a linear geostatistical model, then we can derive any summary of the predictive distribution analytically, without the need of carrying out any simulation. Although this may displease some of our fellow statisticians who care about computational efficiency, for pedagogical reasons, here we have chosen to explain only the Monte Carlo based approach, which works in all scenarios.
+Here, we are overlooking the fact that when $T(x)$ is a linear transformation of $S(x)$ and themodel fitted to the data is a linear geostatistical model, then we can derive any summary of the predictive distribution analytically, without the need of carrying out any simulation. Although this may displease some of our fellow statisticians who care about computational efficiency, for pedagogical reasons, here we have chosen to explain only the Monte Carlo based approach, which works in all scenarios.
 ::: 
 
 At this stage, we need to consider which of the two following types of predictions from $[S(\tilde{X}) \: |\: y]$ are required.
@@ -68,7 +68,7 @@ O3. For spatially continuous targets, both marginal and joint predictions can be
 
 We now show how the ideas and concepts discussed above are put into practice in an geostatistical analysis, using the Liberia data example. Using the fitted model in @sec-liberia-estim1, we use the `predict_over_grid` function in `RiskMap`, to sample from the predictive distribution of the spatial Gaussian process $S(x)$ based on a regular grid spanning the country of Liberia.
 
-The `pred_over_grid` function enables us to predict the the separate effects of the covariates, given by $d(x)^\top \beta$, and the spatial random effects, $S(x)$, at any desired location $x$. Hence, before we can use the `pred_over_grid` function, we need to do 1) obtain a shape file that defines the boundaries of our study area, 2) use that to create a regular grid and 3) extract the covariates values at those locations. The R script below performs all these steps.
+The `pred_over_grid` function enables us to predict the separate effects of the covariates, given by $d(x)^\top \beta$, and the spatial random effects, $S(x)$, at any desired location $x$. Hence, before we can use the `pred_over_grid` function, we need to do 1) obtain a shape file that defines the boundaries of our study area, 2) use that to create a regular grid and 3) extract the covariates values at those locations. The R script below performs all these steps.
 
 ```{r, echo=FALSE, message=FALSE, collapse=TRUE}
 library(sf)
@@ -124,7 +124,7 @@ lb_predictors <- data.frame(elevation =
                                 st_coordinates(liberia_grid)))
 ```
 
-In the code above, we generated a prediction grid --- which, we recall, that we denote as $\tilde{X}$ --- with a spatial resolution of 5 km. Generally, a higher spatial resolution (note that a "higher spatial resolution" corresponds to a lower value for `spat_res`) yields more detailed prediction maps but also increases the computational cost. In this case, the choice of a 5 km grid strikes a balance between sufficient visualization clarity and manageable computation time.
+In the code above, we generated a prediction grid, previously referred to as $\tilde{X}$, with a spatial resolution of 5 km. Generally, a higher spatial resolution (note that a "higher spatial resolution" corresponds to a lower value for `spat_res`) yields more detailed prediction maps but also increases the computational cost. In this case, the choice of a 5 km grid strikes a balance between sufficient visualization clarity and manageable computation time.
 
 At this point, we have all the necessary inputs to execute the `pred_over_grid` function for both marginal and joint predictions, as demonstrated below.
 
@@ -158,6 +158,8 @@ We can inspect the predictive distribution of any component $S(\tilde{X})$ throu
 hist(lb_pred_S_m$S_samples[,1], main = "Predictive distribution",
      xlab = expression(S(tilde(x)[1])))
 ```
+
+<!-- UP TO HERE -->
 
 ## Spatially continuous targets {#sec-spat-cont-target}
 
@@ -628,7 +630,7 @@ pit_transform <- function(data, F_M) {
 }
 ```
 
-We then apply this function to show how the assessment of calibration through the PIT is carried out under two scenarios: 1) $F_{Y}$ is a Gamma distribution with shape 2 and scale parameter 1; 2) $F_{Y}$ is Student's T distribution with 3 degrees of freedom. In each of the two scenarios, we show how the PIT behaves when our model coincides with the the true model (i.e. $F_{M} = F_{Y}$) and when instead our model $M$ is a Gaussian distribution, with mean and variance estimated from the data.
+We then apply this function to show how the assessment of calibration through the PIT is carried out under two scenarios: 1) $F_{Y}$ is a Gamma distribution with shape 2 and scale parameter 1; 2) $F_{Y}$ is Student's T distribution with 3 degrees of freedom. In each of the two scenarios, we show how the PIT behaves when our model coincides with thetrue model (i.e. $F_{M} = F_{Y}$) and when instead our model $M$ is a Gaussian distribution, with mean and variance estimated from the data.
 
 ```{r, collapse=TRUE}
 #| label: fig-hist-pit
@@ -711,7 +713,7 @@ In the simulated example, the PIT might seem unnecessary because we can directly
 
 However, in the case of Binomial and Poisson geostatistical models, the marginal distribution of the data $Y$ -- unconditioned on the spatial random effects $S(x)$ -- cannot be obtained analytically. Specifically, geostatistical models for count data assume that $Y$, conditioned on $S(x)$, follows either a Binomial or Poisson distribution. But once we integrate out $S(x)$ to obtain the marginal (i.e., unconditioned) distribution of $Y$, this distribution is no longer Poisson or Binomial. Instead, it becomes an overdispersed count distribution that lacks a closed-form expression.
 
-In such cases, the PIT becomes valuable for evaluating model adequacy, as it allows for assessing the uniformity of PIT values against the assumed model distribution, even when the marginal distribution is intractable. However, direct application of the PIT raises the issue that the the transformation $F_{Y}(Y)$ does not follow a uniform distribution, because of the discrete nature of the random variable $Y$. Hence, for a given discrete-outcome model $M$, we use a modified version of the PIT, referred to as nonrandomized PIT (henceforth, nPIT), originally proposed by @czado2009, taking the form $$
+In such cases, the PIT becomes valuable for evaluating model adequacy, as it allows for assessing the uniformity of PIT values against the assumed model distribution, even when the marginal distribution is intractable. However, direct application of the PIT raises the issue that thetransformation $F_{Y}(Y)$ does not follow a uniform distribution, because of the discrete nature of the random variable $Y$. Hence, for a given discrete-outcome model $M$, we use a modified version of the PIT, referred to as nonrandomized PIT (henceforth, nPIT), originally proposed by @czado2009, taking the form $$
 \text{nPIT}(u,y) = 
 \begin{cases} 
 0, & u \leq F_{M}(y-1) \\ 

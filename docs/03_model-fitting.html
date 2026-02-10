@@ -402,7 +402,7 @@ Note
 <p>The letter <span class="math inline">\(e\)</span> stands for the so-called Euler’s number and represents the base of the natural logarithm. In the book, we write <span class="math inline">\(\log(\cdot)\)</span> to mean the “natural logarithm of <span class="math inline">\(\cdot\)</span>”.</p>
 </div>
 </div>
-<p>When the goal of statistical analysis is instead in developing a predictive model for the outcome of interest, the explanatory power and interpretability of the model may be of less concern. For this reason, the model with the log-transformed model could be preferred over the model with the linear spline, if it is shown to yield more predictive power. We will come back to this point again in <a href="04_geostatistical-prediction.html" class="quarto-xref"><span>Chapter 4</span></a>, where we will show how to assess and compare the predictive performance of different geostatistical models.</p>
+<p>When the goal of statistical analysis is instead in developing a predictive model for the outcome of interest, the explanatory power and interpretability of the model may be of less concern. For this reason, the model with the log-transformed model could be preferred over the model with the linear spline, if it is shown to yield more predictive power. We will come back to this point again in <span class="quarto-unresolved-ref">?sec-geo-prediction</span>, where we will show how to assess and compare the predictive performance of different geostatistical models.</p>
 <p>The other type of aggregated count data that we consider are unbounded counts. The Anopheles mosquitoes data-set (<span class="quarto-unresolved-ref">?sec-mosq-data-ch1</span>) is an example of this, since there is no upper limit to the number of mosquitoes that can be trapped at a location. Let us consider the covariate represented by elevation. In this case, the simplest model that can be used to analyse the data is a Poisson regression, where the linear predictor is defined as the log of the mean number of mosquitoes (<span class="quarto-unresolved-ref">?tbl-glm</span>). Hence, exploratory plots for the association with covariates should be generated using the log transformed counts of mosquitoes. In this instance, to avoid taking the log of zero, we can add 1 to the reported counts, if required. The variable of the <code>An.gambiae</code> in the <code>anopheles</code> data-set does not contain any 0, hence we simply apply the log transformation without adding 1.</p>
 <div class="cell">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">anopheles</span><span class="op">$</span><span class="va">log_counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">anopheles</span><span class="op">$</span><span class="va">An.gambiae</span><span class="op">)</span></span>
@@ -1304,19 +1304,16 @@ Table&nbsp;3.1: Maximum likelihood estimates and, lower and upper limits of the 
 <span>        family <span class="op">=</span> <span class="st">"binomial"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  0:    -0.0000000: -2.99847 0.313076  0.00000  4.21726
-  1:    -2.8679095: -3.00154 0.287930 -0.0857569  4.27126
-  2:    -9.2318182: -3.06913 0.303587 -0.438243  4.46125
-  3:    -10.299878: -3.08810 0.327269 -0.756018  4.71676
-  4:    -10.533701: -3.08691 0.331616 -0.755563  4.71612
-  5:    -10.622471: -3.08483 0.333709 -0.753415  4.71308
-  6:    -11.644798: -2.98706 0.315099 -0.748627  4.59328
-  7:    -13.744723: -2.85794 0.291203 -1.56770  3.62289
-  8:    -14.033968: -2.82217 0.283534 -1.46707  3.61720
-  9:    -14.034869: -2.82335 0.283719 -1.46127  3.61601
- 10:    -14.034869: -2.82336 0.283722 -1.46126  3.61597
- 11:    -14.034869: -2.82336 0.283722 -1.46126  3.61597
- 12:    -14.034869: -2.82336 0.283722 -1.46126  3.61597
- 13:    -14.034869: -2.82336 0.283722 -1.46126  3.61597</code></pre>
+  1:    -7.4854141: -2.93721 0.278044 -0.681842  4.82280
+  2:    -12.137636: -2.86642 0.274040 -1.16576  4.04169
+  3:    -12.803282: -2.92636 0.281116 -1.66738  3.26857
+  4:    -14.150636: -3.37385 0.381895 -1.64257  3.06900
+  5:    -15.424259: -3.55654 0.407179 -1.53860  2.89581
+  6:    -15.740445: -3.64186 0.427134 -1.58016  2.73957
+  7:    -15.741769: -3.63700 0.426189 -1.57296  2.74386
+  8:    -15.741770: -3.63700 0.426189 -1.57293  2.74392
+  9:    -15.741770: -3.63700 0.426189 -1.57293  2.74392
+ 10:    -15.741770: -3.63700 0.426189 -1.57293  2.74392</code></pre>
 </div>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fit_liberia</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1332,8 +1329,8 @@ Inverse link function = stats::plogis(x)
 
 Regression coefficients
                 Estimate Lower limit Upper limit    StdErr z.value   p.value
-(Intercept)    -2.823364   -3.300003   -2.346725  0.243187 -11.610 &lt; 2.2e-16
-log(elevation)  0.283722    0.238130    0.329313  0.023261  12.197 &lt; 2.2e-16
+(Intercept)    -3.636999   -4.058731   -3.215267  0.215173 -16.903 &lt; 2.2e-16
+log(elevation)  0.426189    0.385330    0.467048  0.020847  20.444 &lt; 2.2e-16
                   
 (Intercept)    ***
 log(elevation) ***
@@ -1343,11 +1340,11 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 Spatial Gaussian process
 Matern covariance parameters (kappa=0.5)
                      Estimate Lower limit Upper limit
-Spatial process var.  0.23194     0.19929      0.2699
-Spatial corr. scale  37.18755    31.42283     44.0098
+Spatial process var.  0.20744     0.18721      0.2298
+Spatial corr. scale  15.54775    13.47237     17.9428
 Variance of the nugget effect fixed at 0
 
-Log-likelihood: 14.03487</code></pre>
+Log-likelihood: 15.74177</code></pre>
 </div>
 </div>
 <p>When using the <code>glgpm</code> function to fit a Binomial model, we need to specify the Binomial denominators, i.e.&nbsp;the number of people tested at a location in this case, through the argument <code>den</code>. Other arguments of <code>glgpm</code> that are used for carrying out MCML are <code>control_mcmc</code>, that defines the setting parameters of the Monte Carlo Markov Chain algorithm, and <code>par0</code>, which represents our best guess for the unknown parameters of the Binomial geostatistical model. For more information on the default values of these two arguments, we refer you to the help page of the <code>glgpm</code> function. To understand how to change the default parameters in order to improve the MCML estimation, we advise you to read <a href="#sec-mcml" class="quarto-xref"><span>Section 3.5.2.1</span></a>. Also, remember that to enable the estimation of the nugget effect, <span class="math inline">\(Z_i\)</span>, you should set <code>nugget=NULL</code> in the <code>gp</code> function, since by default the <code>glgpm</code> function excludes <span class="math inline">\(Z_i\)</span>.</p>
@@ -1418,11 +1415,11 @@ $median
 [1] 43.70518</code></pre>
 </div>
 </div>
-<p>Using the <code>dist_summaries</code> function, we can see that, among the locations of the data-set, the average distance is about 55km and the minimum is about 387 meters. The estimate of phi of 4km is thus relatively small compared to the distances between locations in the data. In <a href="04_geostatistical-prediction.html" class="quarto-xref"><span>Chapter 4</span></a>, we will further investigate to what extent this small-scale spatial correlation can affect the predictions of the An. Gambiae counts.</p>
+<p>Using the <code>dist_summaries</code> function, we can see that, among the locations of the data-set, the average distance is about 55km and the minimum is about 387 meters. The estimate of phi of 4km is thus relatively small compared to the distances between locations in the data. In <span class="quarto-unresolved-ref">?sec-geo-prediction</span>, we will further investigate to what extent this small-scale spatial correlation can affect the predictions of the An. Gambiae counts.</p>
 </section><section id="sec-bootstrap" class="level3" data-number="3.3.3"><h3 data-number="3.3.3" class="anchored" data-anchor-id="sec-bootstrap">
 <span class="header-section-number">3.3.3</span> Using parametric bootstrap for computing confidence intervals</h3>
 <p>The bootstrap is a widely used resampling technique introduced by <span class="citation" data-cites="efron1979">Efron (<a href="references.html#ref-efron1979" role="doc-biblioref">1979</a>)</span> as a general approach to estimating the variability of statistical estimates without relying on strong parametric assumptions. While the classical non-parametric bootstrap resamples directly from the observed data, parametric bootstrap instead relies on simulating new datasets from an assumed parametric model, using plug-in estimates obtained from the original fit of the model to the data. This simulation-based method is particularly useful for complex models, such as those considered in this book, that yield an intractable likelihood function.</p>
-<p>We now describe how to carry out parametric bootstrap for geostatistical models in <code>RiskMap</code>. The use of simulation-based approaches will be more extensively covered in <a href="04_geostatistical-prediction.html" class="quarto-xref"><span>Chapter 4</span></a>, but, for the purpose of this section, it is first important to understand how data can be simulated from a geostatistical model.</p>
+<p>We now describe how to carry out parametric bootstrap for geostatistical models in <code>RiskMap</code>. The use of simulation-based approaches will be more extensively covered in <span class="quarto-unresolved-ref">?sec-geo-prediction</span>, but, for the purpose of this section, it is first important to understand how data can be simulated from a geostatistical model.</p>
 <p>The way we have formulated geostatistical models in <span class="quarto-unresolved-ref">?sec-geostat-models</span> provides a hint as to what step should be followed when simulating from a geostatistical model. Using the same notation of <span class="quarto-unresolved-ref">?sec-geostat-models</span>, these are the steps.</p>
 <ol type="1">
 <li><p>For a given set of predefined locations <span class="math inline">\(X\)</span> compute the covariance matrix <span class="math inline">\(\Sigma\)</span> with <span class="math inline">\((i,j)\)</span>-th entry <span class="math inline">\(\sigma^2 \rho(u_{ij})\)</span>.</p></li>
@@ -1557,7 +1554,7 @@ $median
 \]</span></p>
 <p>where <span class="math inline">\(\ell_i^{S}\)</span> is the log-likelihood of the so-called <em>saturated model</em>, and <span class="math inline">\(\ell_i^{F}\)</span> is the log-likelihood of the fitted model, both conditional on <span class="math inline">\(W_i\)</span>. The saturated model is a hypothetical model that fits the data <strong>perfectly</strong>, meaning it has as many parameters as data points. In such a model, the predicted values are exactly equal to the observed values, and therefore the log-likelihood reaches its maximum possible value. This model serves as a benchmark or upper bound against which the fit of any other model, including our fitted model, is compared. Hence, the difference <span class="math inline">\(\ell_i^{S} - \ell_i^{F}\)</span> reflects how much worse our model fits the data compared to this idealized scenario.</p>
 <p>While the residuals discussed above can provide useful insights into model fit, they are often less informative in the context of count data, especially for binary data and low counts. Moreover, even in the simpler case of linear geostatistical models where all three types of residuals introduced earlier (random effects residuals, Pearson residuals, and deviance residuals) are mathematically equivalent, it is easy to show that the correlation structure of the estimated residuals is related to the spatial correlation matrix of the fitted geostatistical model (see <a href="#sec-h-matrix" class="quarto-xref"><span>Section 3.5.3</span></a>). Whether this correlation in the estimated residuals is unimportant or poses a problem, particularly when using residuals to assess whether spatial dependence has been fully accounted for by the model, is still an open question and requires further investigation.</p>
-<p>Given these complexities, especially in the context of count data, we have chosen not to delve deeper into residual diagnostics in this edition of the book. Instead, model validation will be addressed more comprehensively in the context of geostatistical prediction in <a href="04_geostatistical-prediction.html" class="quarto-xref"><span>Chapter 4</span></a>.</p>
+<p>Given these complexities, especially in the context of count data, we have chosen not to delve deeper into residual diagnostics in this edition of the book. Instead, model validation will be addressed more comprehensively in the context of geostatistical prediction in <span class="quarto-unresolved-ref">?sec-geo-prediction</span>.</p>
 <p>Nevertheless, we note that some standard diagnostic tools from regression analysis (such as scatter plots of fitted values versus residuals) can still be informative and are worth exploring as part of routine model assessment <span class="citation" data-cites="weisberg2014">(Chapter 9, <a href="references.html#ref-weisberg2014" role="doc-biblioref">Weisberg 2014</a>)</span>.</p>
 <!-- UP TO HERE -->
 </section><section id="theory" class="level2" data-number="3.5"><h2 data-number="3.5" class="anchored" data-anchor-id="theory">
@@ -1609,7 +1606,7 @@ L_{MC}(\theta) = \frac{1}{B} \sum_{j=1}^B \frac{[W_{(j)}, Y; \theta]}{[W_{(j)}, 
 </section><section id="sec-mcmc-mala" class="level4" data-number="3.5.2.2"><h4 data-number="3.5.2.2" class="anchored" data-anchor-id="sec-mcmc-mala">
 <span class="header-section-number">3.5.2.2</span> Monte Carlo Markov Chain: sampling from the predictive distribution of the spatial Gaussian process</h4>
 <p>Building on the outline of the MCML method from the previous section, we now address the task of sampling from the distribution <span class="math inline">\([W \mid Y]\)</span> to generate the samples <span class="math inline">\(W_{(j)}\)</span> used in equation <a href="#eq-mcml2" class="quarto-xref">Equation&nbsp;<span>3.30</span></a>. To simplify the notation, we will use <span class="math inline">\([W \mid Y]\)</span> in place of <span class="math inline">\([W \mid Y; \theta_0]\)</span>, but it is important to emphasize that the parameters <span class="math inline">\(\theta_0\)</span> are considered fixed when sampling from <span class="math inline">\([W \mid Y]\)</span>. Since direct simulation from <span class="math inline">\([W \mid Y]\)</span> is not feasible, we must rely on Markov chain Monte Carlo (MCMC) methods, which we will briefly introduce next.</p>
-<p>The is a foundational technique in the field of MCMC methods, which are widely used for sampling from complex probability distributions. The primary goal of MCMC methods is to generate a sequence of samples from a target distribution where direct sampling is challenging, such as the distribution of <span class="math inline">\([W | Y]\)</span>. The Metropolis-Hastings algorithm, first introduced by <span class="citation" data-cites="metropolis1953equation">Metropolis et al. (<a href="references.html#ref-metropolis1953equation" role="doc-biblioref">1953</a>)</span> and later generalized by <span class="citation" data-cites="hastings1970monte">Hastings (<a href="references.html#ref-hastings1970monte" role="doc-biblioref">1970</a>)</span>, achieves this by constructing a Markov chain that has <span class="math inline">\([W \| Y]\)</span> as its stationary distribution. In what follows, we shall use <span class="math inline">\(\pi(W)\)</span> to denote the density function of <span class="math inline">\([W | Y]\)</span> up to a constant of proportionality.</p>
+<p>The Metropolis-Hastings algorithm} is a foundational technique in the field of MCMC methods, which are widely used for sampling from complex probability distributions. The primary goal of MCMC methods is to generate a sequence of samples from a target distribution where direct sampling is challenging, such as the distribution of <span class="math inline">\([W | Y]\)</span>. The Metropolis-Hastings algorithm, first introduced by <span class="citation" data-cites="metropolis1953equation">Metropolis et al. (<a href="references.html#ref-metropolis1953equation" role="doc-biblioref">1953</a>)</span> and later generalized by <span class="citation" data-cites="hastings1970monte">Hastings (<a href="references.html#ref-hastings1970monte" role="doc-biblioref">1970</a>)</span>, achieves this by constructing a Markov chain that has <span class="math inline">\([W \| Y]\)</span> as its stationary distribution. In what follows, we shall use <span class="math inline">\(\pi(W)\)</span> to denote the density function of <span class="math inline">\([W | Y]\)</span> up to a constant of proportionality.</p>
 <p>Given a current realization <span class="math inline">\(W_{(k)}\)</span> of the distribution <span class="math inline">\([W | Y]\)</span> in the Markov chain, the algorithm proceeds as follows.</p>
 <ul>
 <li>Propose a new realization <span class="math inline">\(W_{(k+1)}\)</span> from <span class="math inline">\(q(W_{(k+1)} \mid W_{(k)})\)</span>, where <span class="math inline">\(q(\cdot \mid \cdot)\)</span> is the density function of a chosen proposal distribution.</li>
@@ -1620,14 +1617,14 @@ L_{MC}(\theta) = \frac{1}{B} \sum_{j=1}^B \frac{[W_{(j)}, Y; \theta]}{[W_{(j)}, 
 <li>Accept the proposed realization <span class="math inline">\(W_{(k+1)}\)</span> with probability <span class="math inline">\(\alpha\)</span>; otherwise, retain the current realization <span class="math inline">\(W_{(k)}\)</span>.</li>
 </ul>
 <p>The algorithm ensures that, under certain conditions, the chain converges to the target distribution <span class="math inline">\(\pi(W)\)</span> as the number of steps increases <span class="citation" data-cites="roberts1996exponential">Roberts and Tweedie (<a href="references.html#ref-roberts1996exponential" role="doc-biblioref">1996</a>)</span>.</p>
-<p>The functions of the <code>RiskMap</code> package for fitting Binomial and Poisson geostatistical models implement the , which is an improvement over traditional Metropolis-Hastings MCMC methods. Introduced by <span class="citation" data-cites="rossky1978brownian">Rossky, Doll, and Friedman (<a href="references.html#ref-rossky1978brownian" role="doc-biblioref">1978</a>)</span> and further developed by <span class="citation" data-cites="roberts1996exponential">Roberts and Tweedie (<a href="references.html#ref-roberts1996exponential" role="doc-biblioref">1996</a>)</span>, MALA incorporates gradient information from the target distribution to propose more informed moves, potentially leading to faster convergence and more efficient exploration of the target distribution.</p>
+<p>The functions of the <code>RiskMap</code> package for fitting Binomial and Poisson geostatistical models implement the <em>Metropolis-Adjusted Langevin Algorithm (MALA)</em>, which is an improvement over traditional Metropolis-Hastings MCMC methods. Introduced by <span class="citation" data-cites="rossky1978brownian">Rossky, Doll, and Friedman (<a href="references.html#ref-rossky1978brownian" role="doc-biblioref">1978</a>)</span> and further developed by <span class="citation" data-cites="roberts1996exponential">Roberts and Tweedie (<a href="references.html#ref-roberts1996exponential" role="doc-biblioref">1996</a>)</span>, MALA incorporates gradient information from the target distribution to propose more informed moves, potentially leading to faster convergence and more efficient exploration of the target distribution.</p>
 <p>MALA combines the Metropolis-Hastings framework with Langevin dynamics, where proposals <span class="math inline">\(q(\cdot | \cdot)\)</span> are defined as:</p>
 <p><span class="math display">\[
 W_{(k+1)} = W_{(k)} + \frac{\epsilon^2}{2} \nabla \log \pi(W_{(k)}) + \epsilon \, \eta,
 \]</span></p>
 <p>where <span class="math inline">\(\epsilon\)</span> is a step size parameter, <span class="math inline">\(\nabla \log \pi(W_{(k)})\)</span> is the gradient of the log of the target density with respect to <span class="math inline">\(W_{(k)}\)</span>, and <span class="math inline">\(\eta \sim \mathcal{N}(0, I)\)</span> is a Gaussian random variable with mean 0 and independent components with unit variance.</p>
 <p>By leveraging the gradient, MALA can propose moves that are more likely to be accepted, especially in high-dimensional spaces or regions of low probability density.</p>
-<p>In the context of Laplace sampling for geostatistical models, the is used to construct an efficient proposal distribution. The primary objective is to generate samples from a conditional distribution of latent Gaussian processes, which is challenging due to high dimensionality and complex dependence structures.</p>
+<p>In the context of Laplace sampling for geostatistical models, the <em>Metropolis-Adjusted Langevin Algorithm (MALA)</em> is used to construct an efficient proposal distribution. The primary objective is to generate samples from a conditional distribution of latent Gaussian processes, which is challenging due to high dimensionality and complex dependence structures.</p>
 <p>The Laplace sampling method, as implemented in the <code>RiskMap</code> package, utilizes a specific form of MALA. Here, the proposal distribution is derived from a second-order Taylor expansion around the mode of the target distribution <span class="math inline">\([W | Y]\)</span>. Let <span class="math inline">\(\hat{w}\)</span> be the mode of this conditional distribution, and let <span class="math inline">\(\hat{\Omega}\)</span> be the inverse of the negative Hessian matrix evaluated at <span class="math inline">\(\hat{w}\)</span>, which approximates the local covariance structure of the distribution. We then define the random variable <span class="math inline">\(\tilde{W}\)</span> as</p>
 <p><span class="math display">\[
 \tilde{W} = \hat{\Omega}^{-1/2} (W - \hat{w})
