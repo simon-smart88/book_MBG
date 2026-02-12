@@ -28,7 +28,9 @@ In this chapter, we will explore these issues, beginning with a formal statistic
 
 ## Spatial prediction using geostatistical models {#sec-spat-pred-target}
 
-Let us consider the class of generalized linear geostatistical models (GLGM) as in @sec-geostat-models. In the formulation of prediction problems, the first step consists of defining our predictive target, which we denote as $T(x)$ where $x$ denotes any locations within the study, which is usually not part of the sampled data. For example in the analysis of the riverblindness in Liberia, our interest lies in identifying areas where disease prevalence exceeds 20$\%$, a threshold that use been used in the past to identify areas in need of mass drug administration due to the potential for significant disease burden and transmission [@amazigo2008]. Hence, in this case, disease prevalence corresponds to our predictive target $T(x)$. To draw inferences on $T(x)$ and allow us to answer the question of where $T(x)$ exceeds a 20$\%$ threshold, we first need to obtain the so called *predictive distribution* of $T(x)$. More specifically, the *predictive distribution* of $T(x)$ is the distribution of $T(x)$ conditioned to the data, which we denote by $[T(x) \: \mid \: y]$. More importantly, by incorporating the information provided by the data, the predictive distribution of the target enables us to quantify the uncertainty stemming from the stochastic nature of the process we are modeling. In other words, the predictive distribution reflects the range of possible values that the target $T(x)$ can take and their likelihoods based on the model we have fitted to the data. As we shall see in our examples, we can use the predictive distribution of $T(x)$ both to provide what is our "best guess" for $T(x)$ and a summary of uncertainty which quantifies how concentrated is the predictive distribution around that guess. However, providing a single "best guess" for $T(x)$ is not always the answer to our research question. In the example on riverblindness mentioned at the start of the this section, a more natural way to use the predictive distribution would be to compute the likelihood that $T(x)$ exceeds 0.2 at any given location $x$.
+Let us consider the class of generalized linear geostatistical models (GLGM) as in @sec-geostat-models. In the formulation of prediction problems, the first step consists of defining our predictive target, which we denote as $T(x)$ where $x$ denotes any locations within the study, which is usually not part of the sampled data. For example in the analysis of the riverblindness in Liberia, our interest lies in identifying areas where disease prevalence exceeds 20$\%$, a threshold that use been used in the past to identify areas in need of mass drug administration due to the potential for significant disease burden and transmission [@amazigo2008]. Hence, in this case, disease prevalence corresponds to our predictive target, which we define formally as $T(x) = \exp\{d(x)^\top \beta + S(x)\}/(1+\exp\{d(x)^\top \beta + S(x)\})$. As we will explain in more detail shortly, note that $T(x)$ is generally a function of the spatial process $S(x)$. Therefore, understanding how to predict $T(x)$ requires that we first understand how the prediction of $S(x)$ at any location $x$ should be carried out.
+
+To draw inferences on $T(x)$ and answer questions such as where $T(x)$ exceeds a 20% threshold, we first need to obtain the so-called *predictive distribution* of $S(x)$. More specifically, the *predictive distribution* of $S(x)$ is the distribution of $S(x)$ conditioned on the data, which we denote by $[S(x) \mid y]$. Similarly, we denote the predictive distribution of $T(x)$ by $[T(x) \mid y]$. The relationship between these two predictive distributions is straightforward: since $T(x)$ is a deterministic function of $S(x)$, we can obtain samples from $[T(x) \mid y]$ by first sampling from $[S(x) \mid y]$ and then transforming those samples according to the definition of $T(x)$. This functional relationship means that deriving the predictive distribution of $S(x)$ is the key step in making inferences about any target $T(x)$ that depends on it. More importantly, by incorporating the information provided by the data, the predictive distribution of $S(x)$ enables us to quantify the uncertainty stemming from the stochastic nature of the process we are modeling and propagate it into $T(x)$. In other words, the predictive distribution of $S(x)$ allows us to understand the range of possible values that the target $T(x)$ can take and their likelihoods based on the model we have fitted to the data. As we shall see in our examples, we can use the predictive distribution of $T(x)$ both to provide what is our "best guess" for $T(x)$ and a summary of uncertainty which quantifies how concentrated is the predictive distribution around that guess. However, providing a single "best guess" for $T(x)$ is not always the answer to our research question. In the example on riverblindness mentioned at the start of the this section, a more natural way to use the predictive distribution would be to compute the likelihood that $T(x)$ exceeds 0.2 at any given location $x$.
 
 In summary, the first two steps of spatial prediction are:
 
@@ -36,13 +38,11 @@ In summary, the first two steps of spatial prediction are:
 
 -   Step 2. obtain the predictive distribution of $T(x)$ and use this to compute summaries that helps to answer your original research question.
 
-This begs two practical questions: "How do we obtain the predictive distribution of $T(x)$?" and "How do we use the predictive distribution to compute our summaries?". For a mathematical derivation of the predictive distribution and the form that this takes in the special case of a linear geostatistical model, you can read @sec-theory-prediction. In what follows, we shall assume that we can simulate directly from $[T(x) \: \mid \: y]$ either using direct simulation or Markov Chains Monte Carlo (see @sec-mcmc-mala).
+This raises two practical questions: "How do we obtain the predictive distribution of $S(x)$?" and "How do we use the predictive distribution to compute summaries for our target $T(x)$?". For a mathematical derivation of the predictive distribution and the form that this takes in the special case of a linear geostatistical model, see @sec-theory-prediction. In what follows, we shall assume that we can simulate directly from $[S(x) \mid y]$, and consequently from $[T(x) \mid y]$, using either direct simulation or Markov Chain Monte Carlo methods (see @sec-mcmc-mala). We shall distinguish between two types of predictive targets.
 
-In our exposition so far, we have also made the implicit assumption that prediction is required for our predictive target at a single, unsampled, location $x$ and for this reason we have denote our predictive target simply as $T(x)$. However, this is almost never the case, since in most cases, our predictive target correspond to either of the following.
+-   **Spatially continuous targets** correspond to an unobserved spatially continuous surface, such as disease prevalence at all locations within a region. Formally, we denote this by $\mathcal{T} = \{T(x), x \in A\}$, where $A$ is our region of interest.
 
--   **Spatially continuous targets** correspond to an unobserved spatially continuous surface (e.g. disease prevalence), formally denoted by $\mathcal{T} = \{T(x), x \in A\}$, where $A$ is our region of interest.
-
--   **Areal-level targets**, usually defined as transformation of the spatially continuous surface $\mathcal{T}$, defined previously, and which we denote as $\mathcal{T}_{A} = F(\mathcal{T}, A)$. For example, the average of $T(x)$ over $A$ is an areal-level target, formally defined as $F(\mathcal{T}, A) = \int_{A} T(x) \: dx / |A|$, where $|A|$ is the area of $A$.
+-   **Areal-level targets** are summaries of the spatially continuous surface $\mathcal{T}$ over the region $A$, which we denote as $\mathcal{T}_{A} = F(\mathcal{T}, A)$. For example, the average of $T(x)$ over $A$ is an areal-level target, formally defined as $F(\mathcal{T}, A) = \int_{A} T(x) \, dx / |A|$, where $|A|$ denotes the area of $A$.
 
 Before we consider these two types of prediction targets more in detail, we first explain the preliminary steps that need to be performed and are common to both. Whether our goal is predict a spatially continuous or areal-level target, the initial task is to draw Monte Carlo samples from the predictive distribution of the spatial process $S(x)$. Next, we define a set of prediction locations, say $q$ in total, denoted as $\tilde{X} = {\tilde{x}_1, \ldots, \tilde{x}_q}$. These locations correspond to a regular grid that spans our region of interest, $A$. the predictive distribution of the spatial process over the grid, represented as $[S(\tilde{X}) \: |\: y]$. This distribution allows us to generate Monte Carlo samples for $S(\tilde{X})$, which will later be used for computing our target.
 
@@ -159,7 +159,6 @@ hist(lb_pred_S_m$S_samples[,1], main = "Predictive distribution",
      xlab = expression(S(tilde(x)[1])))
 ```
 
-<!-- UP TO HERE -->
 
 ## Spatially continuous targets {#sec-spat-cont-target}
 
@@ -183,7 +182,9 @@ The predictive targets in @tbl-spat-cont-pred-target corresponding to $d(x)^\top
 
 ### Example: mapping riverblidness prevalence in Liberia (continuing from @sec-pred-samples) {#sec-liberia-prediction-1}
 
-Let us continue the geostatistical of the riverblindness data in Liberia. The predictive target we consider is prevalence, hence $$T(x) = \frac{\exp\{ \beta_{0} + \beta_{1}\log\{e(x)\} + S(x)\}}{1+\exp\{\beta_{0} + \beta_{1}\log\{e(x)\} + S(x)\}},$$ {#eq-rb-prev-target} where $e(x)$ is the elevation in meters at location $x$.
+Let us continue the geostatistical of the riverblindness data in Liberia. The predictive target we consider is prevalence, hence 
+$$T(x) = \frac{\exp\{ \beta_{0} + \beta_{1}\log\{e(x)\} + S(x)\}}{1+\exp\{\beta_{0} + \beta_{1}\log\{e(x)\} + S(x)\}},$$ {#eq-rb-prev-target}
+where $e(x)$ is the elevation in meters at location $x$.
 
 Through the `pred_target_grid` we can use the output in `lb_pred_S_m` (or `lb_pred_S_j` as well, in this case) to generate predictions of prevalence over the regular grid at 5 km we have created earlier.
 
@@ -200,7 +201,7 @@ pred_target_grid(
 )
 ```
 
-In the function above the argument `f_target` can take a list of functions, as multiple predictive targets can be defined. Here, we only specified prevalence (`prev`). Note that in defining the predictive target in `f_target`, we need to express that as a function of $d(x)^\top \beta + S(x)$. The argument `include_covariates` also allows us to define predictive target that do not use covariates from the model. By default `include_covariates = TRUE`, hence in the code above covariates are part of what is defined as `lp`. To predict the spatial random effects $S(x)$ only, for example, you can set `include_covariates = FALSE` and `f_target = list(Sx = function(lp) lp)`. In `pd_summary`, we define the summaries that we want to visualize from the predictive distribution. Here, we have specified the mean, coefficient of variation and the probability of exceeding a 20$\%$ prevalence threshold.
+In the function above the argument `f_target` can take a list of functions, as multiple predictive targets can be defined. Here, we only specified prevalence (`prev`). Note that in defining the predictive target in `f_target`, we need to express that as a function of $d(x)^\top \beta + S(x)$. The argument `include_covariates` also allows us to define predictive targets that do not use covariates from the model. By default `include_covariates = TRUE`, hence in the code above covariates are part of what is defined through `lp`. To predict the spatial random effects $S(x)$ only, for example, you can set `include_covariates = FALSE` and `f_target = list(Sx = function(lp) lp)`. In `pd_summary`, we define the summaries that we want to visualize from the predictive distribution. Here, we have specified the mean, coefficient of variation and the probability of exceeding a 20$\%$ prevalence threshold.
 
 We can then visualize the resulting maps as follows.
 
@@ -223,7 +224,7 @@ The maps in @fig-lb-maps indicate a higher prevalence as we move away from the c
 
 ### Example: mapping malaria using age and elevation as predictors {#sec-non-spar-covariates}
 
-We now consider an example on malaria mapping, where we use two different types of covariates: a spatially referenced covariate corresponding to elevation; the individual age. We use the `malkenya_comm` subset of the `malkenya` data-set (see @sec-indiv-expl-analysis) and, to alleviate the computational burden, we further reduce this data-set by taking the first 1000 rows. Hence, we create our new data-set, `malkenya_comm1000`, using the followind code.
+We now consider an example on malaria mapping, where we use two different types of covariates: a spatially referenced covariate corresponding to elevation; the individual age. We use the `malkenya_comm` subset of the `malkenya` data-set (see @sec-indiv-expl-analysis) and, to alleviate the computational burden, we further reduce this data-set by taking the first 1000 rows. Hence, we create our new data-set, `malkenya_comm1000`, using the following code.
 
 ```{r, collapse=TRUE}
 malkenya_comm1000 <- malkenya_comm[1:1000,]
@@ -233,26 +234,26 @@ malkenya_comm1000 <- st_as_sf(malkenya_comm1000, coords = c("Long", "Lat"),
 malkenya_comm1000 <- st_transform(malkenya_comm1000, crs = 32736)
 ```
 
-Based on the exploratory analysis shown in @sec-indiv-expl-analysis, we consider a geostatistical model fitted to the individual binary outcomes, $Y_{ij}$, which correspond the rapid diagnostic test (RDT) results for the $j$-th individual in the $i$-th community, and take value $Y_{ij}=1$ if the RDT is positive and $Y_{ij}=0$ if the RDT is negative. Using a Binomial geostatistical model, we model the individual probability, $p_{ij}$ of a positive RDT using the following linear predictor. $$
+Based on the exploratory analysis shown in @sec-indiv-expl-analysis, we consider a geostatistical model fitted to the individual binary outcomes, $Y_{ij}$, which correspond the rapid diagnostic test (RDT) results for the $j$-th individual in the $i$-th community, and take value $Y_{ij}=1$ if the RDT is positive and $Y_{ij}=0$ if the RDT is negative. Using a Binomial geostatistical model, we model the individual probability, $p_{ij}$ of a positive RDT using the following linear predictor
+$$
 \log\left\{\frac{p_{ij}}{1-p_{ij}}\right\} = \beta_{0} + \beta_{1}a_{ij}+\beta_{2} \times\max\{a_{ij}-15, 0\} + \beta_{3}\max\{a_{ij}-40, 0\} + \beta_{4} e(x_i) + S(x_i),
-$$ {#eq-lp-malkenya} where $e(x_{i})$ and $a_{ij}$ are the elevation in meter and the age in years for the $j$-th individual residing at the $i$-th household, respectively.
+$$ {#eq-lp-malkenya}
+where $e(x_{i})$ and $a_{ij}$ are the elevation in meter and the age in years for the $j$-th individual residing at the $i$-th household, respectively.
 
 When using the model in @eq-lp-malkenya to predict RDT prevalence, a key question arises: how should we handle the age variable, which, unlike elevation, is not available as a geo-referenced covariate at all locations in the study area? The answer depends on the research question being addressed.
 
-For instance, if the goal is to infer disease risk across different age groups, we can generate different maps for each group of interest. This can be easily achieved by fixing the value of $a_{ij}$ to a specific age for all prediction locations. Alternatively, if the objective is to generate a predictive map for the general population, rather than for a specific age group, we must employ a probabilistic model for age and integrate out its effect.
+For instance, if the goal is to infer disease risk across different ages, we can generate different maps for each age of interest. This can be easily achieved by fixing the value of $a_{ij}$ to a specific age for all prediction locations. Alternatively, if the objective is to generate a predictive map for the general population, rather than for a specific age group, we must employ a probabilistic model for age and integrate out its effect.
 
-Developing a credible probabilistic model for age is beyond the scope of this section. Instead, we demonstrate a simple yet reasonable solution which uses the empirical age distribution from the data. By random sampling from this distribution, we can then assign age values to prediction locations. The steps are as follows.
+Developing a credible probabilistic model for age is beyond the scope of this section. Instead, we demonstrate a simple yet reasonable solution which uses the empirical age distribution from the data. The underlying idea is that we can assign ages to prediction locations by sampling randomly from this distribution, provided the age distribution is relatively homogeneous within the study area and our sample is representative of the target population. In the data used for this example, we believe these assumptions are reasonable, given the relatively small study area, where age is unlikely to exhibit significant spatial variation, and the fact that the data are a random sample from the community. We can the proceed through the following iterative steps to account for age in our predictions.
 
 1.  Obtain the empirical distribution of age from the data.
 2.  Sample with replacement from such distribution (the `sample` function in R can be used for this purpose) as many times as the number of prediction locations, so that each grid location $\tilde{x}$ has a value of age assigned.
 3.  Generate a sample from the predictive distribution of the target $T(\tilde{x})$ at each of the grid locations $\tilde{x}$.
 4.  Repeat 1 to 3, for as many times as the samples generates from $S(\tilde{X})$.
 
-This approach relies on two key assumptions. First, that the age distribution is spatially neutral, i.e., it does not vary across space. Second, that the data are representative of the age distribution in the target population. In the data used for this example, we believe these assumptions are reasonable, given the relatively small study area, where age is unlikely to exhibit significant spatial variation, and the fact that the data are a random sample from the community.
+In the scripts presented in the remainder of this section, we show how to generate a predictive map of prevalence for children age 15 years, and another map that instead uses the approach described above to generate a map of prevalence for the general population.
 
-In the scripts presented in the remainder of this section, we show how to generate a predictive map of prevalence for children age 15 years, and another map that instead uses the approach earlier described to remove the effect of age and generate a map of prevalence for the general population.
-
-First, we fit the model. Note that the effect of age is not linear and we use linear splines to account for this, using the results of the exploratory analysis shown in \@@sec-indiv-expl-analysis.
+First, we fit the model. Note that the effect of age is not linear and we use linear splines to account for this, using the results of the exploratory analysis shown in @sec-indiv-expl-analysis.
 
 ```{r, eval=FALSE}
 fit_malkenya <- glgpm(RDT ~ Age +  pmax(Age-15, 0) + 
@@ -354,27 +355,27 @@ When determining areal-level targets, we must first address the following questi
 The first question was discussed in earlier sections, where examples of predictive targets that define $T(x)$ can be found in @tbl-spat-cont-pred-target. The answers to the remaining questions are context-dependent and closely linked to the primary research objectives. In public health settings, the areas $A_i$ often correspond to administrative units or regions where decisions are made and resources are allocated.
 
 A common aggregating function for $T(x)$ is the mean, which is formally defined as:
-
 $$
 \mathcal{M}_i = \frac{1}{|A_i|}\int_{A_i} T(x) \: dx.
 $$ {#eq-mean-alt}
+In addition to the mean, several other aggregating functions can be applied depending on the context of the analysis. We also note that computing the integral in @eq-mean-alt requires some approximations. Our approach utilizes the regular grid $\tilde{X}$, previously defined when dealing with spatially continuous targets. This grid covers the area $A_i$, allowing us to approximate $M_i$ as: 
+$$\mathcal{M}_i \approx \frac{1}{\#\{j : \tilde{x}_j \in A_i\}} \sum_{\tilde{x}_j \in A_i} T(\tilde{x}_j), $$ {#eq-mean-alt-approx} 
+where $\#\{j : \tilde{x}_j \in A_i\}$ denotes the number of grid locations $\tilde{x}_j$ that fall within $A_i$. The same approximation will be applied to other areal-level targets discussed in this section. However, for simplicity, we will omit the detailed explanation of this step and instead express the predictive target as an integral.
 
-In addition to the mean, several other aggregating functions can be applied depending on the context of the analysis. We also note that computing the integral in @eq-mean-alt requires some approximations. Our approach utilizes the regular grid $\tilde{X}$, previously defined when dealing with spatially continuous targets. This grid covers the area $A_i$, allowing us to approximate $M_i$ as: $$\mathcal{M}_i \approx \frac{1}{\#\{j : \tilde{x}_j \in A_i\}} \sum_{\tilde{x}_j \in A_i} T(\tilde{x}_j), $$ {#eq-mean-alt-approx} where $\#\{j : \tilde{x}_j \in A_i\}$ denotes the number of grid locations $\tilde{x}_j$ that fall within $A_i$. The same approximation will be applied to other areal-level targets discussed in this section. However, for simplicity, we will omit the detailed explanation of this step and instead express the predictive target as an integral.
-
-For instance, in the study of Anopheles mosquitoes in Cameroon, we may be interested in estimating the total number of mosquitoes trapped within the study area ($A_i$ represents a single region in this case). If $T(x)$ denotes the number of mosquitoes trapped at location $x$, the areal-level target can be expressed as: $$
-  \mathcal{S}_i = \int_{A_i} T(x) \: dx.
-  $$
-
-Additionally, to capture the heterogeneity of $T(x)$ within an area, variance-based measures can be used. The variance of $T(x)$ in $A_i$ is given by: $$
-   \mathcal{V}_i = \frac{1}{|A_i|}\int_{A_i} \left(T(x) - \mathcal{M}_i\right)^2 \: dx,
-   $$ where $\mathcal{M}_i$ is the mean of $T(x)$ in $A_i$.
+For instance, in the study of Anopheles mosquitoes in Cameroon, we may be interested in estimating the total number of mosquitoes that could be trapped within the study area ($A_i$ represents a single region in this case). If $T(x)$ denotes the number of mosquitoes trapped at location $x$, the areal-level target can be expressed as:
+$$
+\mathcal{S}_i = \int_{A_i} T(x) \: dx.
+$$
+Additionally, to quantify the heterogeneity of $T(x)$ within an area, variance-based measures can be used. The variance of $T(x)$ in $A_i$ is given by: 
+$$
+\mathcal{V}_i = \frac{1}{|A_i|}\int_{A_i} \left(T(x) - \mathcal{M}_i\right)^2 \: dx,
+$$ 
+where $\mathcal{M}_i$ is the mean of $T(x)$ in $A_i$.
 
 The formulation of the areal-level targets given so far assumes equal weighting for all locations within the area. Alternatively, if the we consider for example the areal level target in @eq-mean-alt, one could use spatial weights, $w(x) > 0$, and redefine $\mathcal{M}_i$ as:
-
 $$
 \mathcal{M}_i = \frac{\int_{A_i} w(x) T(x) \: dx}{\int_{A_i} w(x) \: dx}.
 $$
-
 Selecting appropriate spatial weights is crucial, as it reflects the significance of different locations within the area. We can define three types of weighting: population-density, risk-based, and distance-based. We point out that this distinction is not always clear cut (population could indeed be a risk factor in our analysis) but this classification is made only for the sake of making the explanation clearer.
 
 For example, if the goal is to prioritize areas with higher populations, weights $w(x)$ could be proportional to population density at location $x$. This approach gives greater importance to locations where more people reside, which can be particularly relevant when aggregating disease prevalence data for resource allocation.
@@ -387,9 +388,11 @@ Using spatial weights in these ways ensures that the aggregation of disease prev
 
 ### Example: predicting the average riverblindness prevalence at admin level 1 in Liberia (continuing from @sec-liberia-prediction-1) {#sec-liberia-prediction-2}
 
-We continue our analysis of the Liberia data and consider areal-level targets. More specifically, we aim to predict the average prevalence over the regions which give the administrative level 1 of Liberia. By denoting with $A_i$ the i-th out of the 15 regions in Liberia. By denoting with $T(x)$ reiverblindness prevalence as defined in @eq-rb-prev-target, we define our predictive target as $$
+We continue our analysis of the Liberia data and consider areal-level targets. More specifically, we aim to predict the average prevalence over the regions which give the administrative level 1 of Liberia. By denoting with $A_i$ the i-th out of the 15 regions in Liberia. By denoting with $T(x)$ reiverblindness prevalence as defined in @eq-rb-prev-target, we define our predictive target as 
+$$
 T_{i} = \frac{1}{|A_i|} \int_{A_i} T(x) \: dx.
-$$ The R code below shows how predictions for $T_i$ can be performed using the `pred_target_shp` function.
+$$ 
+The R code below shows how predictions for $T_i$ can be performed using the `pred_target_shp` function.
 
 ```{r, collapse=TRUE, message=FALSE, eval=FALSE}
 # Admin level 1 boundaries
@@ -409,11 +412,15 @@ pred_shp <- pred_target_shp(lb_pred_S_j, shp = lb_adm1,
 
 The argument `shp_target` is used define the type of aggregation function over the region $A_i$, in this case the mean of the target $T(x)$. Also note that, like for spatially continuous targets, we can define any summary of the predictive distribution of $\mathcal{M}_i$ through the argument `pd_summary`. Here, we chose to compute only the mean of the predictive distribution but other summaries, such as exceedance probabilities, standard error, quantiles and so on, can be specified if needed.
 
-Before we plot the results on a map, let us also consider the population-density weighted target, defined as $$
+Before we plot the results on a map, let us also consider the population-density weighted target, defined as 
+$$
 T_{i}^* = \frac{ \int_{A_i} w(x) T(x) \: dx}{\int_{A_i} w(x) \: dx}.
-$$ To aid the explanation of the R code script, we first rewrite the above areal-level target as $$
+$$ 
+To aid the explanation of the R code script, we first rewrite the above areal-level target as 
+$$
 T_{i}^* = \int_{A_i} \tilde{w_i}(x) T(x) \: dx.
-$$ where $\tilde{w}_{i}(x)$ are the standardized weights that integrate to 1 in $A_i$ (i.e. $\int_{A_i} \tilde{w}_i(x) \: dx = 1$).
+$$
+where $\tilde{w}_{i}(x)$ are the standardized weights that integrate to 1 in $A_i$ (i.e. $\int_{A_i} \tilde{w}_i(x) \: dx = 1$).
 
 We first retrieve the population density data from the World Pop database (see @sec-pop-data) and use these to derive the un-standardized weights $w(x)$.
 
@@ -431,7 +438,6 @@ weights_pred <- extract(lbr_pop, st_coordinates(liberia_grid))$lbr_ppp_2014
 ```
 
 In the code above the population density weights are extracted at the locations of the prediction grid. In the `pred_target_shp` function, in order to use the weights for our predictive target, we need to specify two additional arguments: `weights` to which we pass the population density values (in our case these are stored in `weights_pred`); `standardize_weights`, which is a logical argument taking value `TRUE` if the weights to be standardized so that the sum over the grid covering a region $A_i$ adds up to one.
-
 ```{r, collapse=TRUE, eval=FALSE}
 pred_shp_w <- pred_target_shp(lb_pred_S_j, shp = lb_adm1,
                             shp_target = function(Tx) sum(Tx),
@@ -442,9 +448,7 @@ pred_shp_w <- pred_target_shp(lb_pred_S_j, shp = lb_adm1,
                             standardize_weights = TRUE,
                             col_names = "shapeName")
 ```
-
 We can then finally plot the results from the prediction at admin level 1, without using any weights and by weighing according to population density.
-
 ```{r, collapse=TRUE, fig.width=12, fig.height=6}
 #| label: fig-average-prev-Liberia
 #| fig-cap: "Maps of the predictive mean for the admin level 1 average prevalence in Liberia. The left panel uses a standard average of locations within an admin level 1 region, whilst in the right panel each location is weighted according to population density."
@@ -469,8 +473,9 @@ plot_2  <-
 library(gridExtra)
 grid.arrange(plot_1, plot_2, ncol = 2)
 ```
-
 In @fig-average-prev-Liberia, we observe that the differences between the two predictive targets, with and without weights, are not substantial. However, we observe that the predicted average prevalence shows slightly greater variation in coastal regions, particularly in Montserrado County, where the majority of the population residing in the capital of Monrovia. This concentration of population likely accounts for the more noticeable differences in this area.
+
+
 
 ### Example: predicting the total number of Anopheles gambiae mosquitoes (continuing from @sec-anopheles-fit) {#sec-anopheles-pred}
 
@@ -538,6 +543,10 @@ pred_n_mosq_shp$target$reg1$n_mosq
 ```
 
 Since we are not standardizing the weights, there is no need to specify `standardize_weights`, as it is set to `FALSE` by default. In the code above, we printed the mean of the predictive distribution of $T$ along with the 95% prediction interval. The point estimate of approximately 17,719 mosquitoes is likely an underestimate of the total number of Anopheles gambiae in the area, as the trap used to count the mosquitoes may not capture all of them, particularly those outside the immediate trapping zone or those active at different times.
+
+
+<!-- UP TO HERE -->
+
 
 ## Assessing the predictive performance of geostatistical models with cross-validation {#sec-compare-pp}
 

@@ -402,7 +402,7 @@ Note
 <p>The letter <span class="math inline">\(e\)</span> stands for the so-called Euler’s number and represents the base of the natural logarithm. In the book, we write <span class="math inline">\(\log(\cdot)\)</span> to mean the “natural logarithm of <span class="math inline">\(\cdot\)</span>”.</p>
 </div>
 </div>
-<p>When the goal of statistical analysis is instead in developing a predictive model for the outcome of interest, the explanatory power and interpretability of the model may be of less concern. For this reason, the model with the log-transformed model could be preferred over the model with the linear spline, if it is shown to yield more predictive power. We will come back to this point again in <span class="quarto-unresolved-ref">?sec-geo-prediction</span>, where we will show how to assess and compare the predictive performance of different geostatistical models.</p>
+<p>When the goal of statistical analysis is instead in developing a predictive model for the outcome of interest, the explanatory power and interpretability of the model may be of less concern. For this reason, the model with the log-transformed model could be preferred over the model with the linear spline, if it is shown to yield more predictive power. We will come back to this point again in <a href="04_geostatistical-prediction.html" class="quarto-xref"><span>Chapter 4</span></a>, where we will show how to assess and compare the predictive performance of different geostatistical models.</p>
 <p>The other type of aggregated count data that we consider are unbounded counts. The Anopheles mosquitoes data-set (<span class="quarto-unresolved-ref">?sec-mosq-data-ch1</span>) is an example of this, since there is no upper limit to the number of mosquitoes that can be trapped at a location. Let us consider the covariate represented by elevation. In this case, the simplest model that can be used to analyse the data is a Poisson regression, where the linear predictor is defined as the log of the mean number of mosquitoes (<span class="quarto-unresolved-ref">?tbl-glm</span>). Hence, exploratory plots for the association with covariates should be generated using the log transformed counts of mosquitoes. In this instance, to avoid taking the log of zero, we can add 1 to the reported counts, if required. The variable of the <code>An.gambiae</code> in the <code>anopheles</code> data-set does not contain any 0, hence we simply apply the log transformation without adding 1.</p>
 <div class="cell">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">anopheles</span><span class="op">$</span><span class="va">log_counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">anopheles</span><span class="op">$</span><span class="va">An.gambiae</span><span class="op">)</span></span>
@@ -1304,16 +1304,19 @@ Table&nbsp;3.1: Maximum likelihood estimates and, lower and upper limits of the 
 <span>        family <span class="op">=</span> <span class="st">"binomial"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  0:    -0.0000000: -2.99847 0.313076  0.00000  4.21726
-  1:    -7.4854141: -2.93721 0.278044 -0.681842  4.82280
-  2:    -12.137636: -2.86642 0.274040 -1.16576  4.04169
-  3:    -12.803282: -2.92636 0.281116 -1.66738  3.26857
-  4:    -14.150636: -3.37385 0.381895 -1.64257  3.06900
-  5:    -15.424259: -3.55654 0.407179 -1.53860  2.89581
-  6:    -15.740445: -3.64186 0.427134 -1.58016  2.73957
-  7:    -15.741769: -3.63700 0.426189 -1.57296  2.74386
-  8:    -15.741770: -3.63700 0.426189 -1.57293  2.74392
-  9:    -15.741770: -3.63700 0.426189 -1.57293  2.74392
- 10:    -15.741770: -3.63700 0.426189 -1.57293  2.74392</code></pre>
+  1:   -0.11651447: -2.99882 0.311146 -0.00391275  4.21972
+  2:   -0.35424883: -2.99956 0.306845 -0.0118250  4.22469
+  3:    -6.8587270: -2.99362 0.311502 -0.311804  4.42013
+  4:    -7.0122233: -2.99272 0.316054 -0.314226  4.42169
+  5:    -7.3998582: -2.99095 0.326564 -0.316424  4.42317
+  6:    -10.409148: -3.04416 0.341331 -0.463263  4.52276
+  7:    -12.121996: -3.13241 0.356933 -0.632090  4.57329
+  8:    -14.208345: -3.22732 0.375018 -1.22486  3.94464
+  9:    -14.749131: -3.23793 0.376984 -1.39843  3.67663
+ 10:    -14.840248: -3.24034 0.377445 -1.50094  3.50301
+ 11:    -14.845441: -3.24030 0.377436 -1.47997  3.52802
+ 12:    -14.845449: -3.24030 0.377436 -1.47913  3.52922
+ 13:    -14.845449: -3.24030 0.377436 -1.47913  3.52922</code></pre>
 </div>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fit_liberia</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1329,8 +1332,8 @@ Inverse link function = stats::plogis(x)
 
 Regression coefficients
                 Estimate Lower limit Upper limit    StdErr z.value   p.value
-(Intercept)    -3.636999   -4.058731   -3.215267  0.215173 -16.903 &lt; 2.2e-16
-log(elevation)  0.426189    0.385330    0.467048  0.020847  20.444 &lt; 2.2e-16
+(Intercept)    -3.240301   -3.670375   -2.810226  0.219430 -14.767 &lt; 2.2e-16
+log(elevation)  0.377436    0.335691    0.419180  0.021299  17.721 &lt; 2.2e-16
                   
 (Intercept)    ***
 log(elevation) ***
@@ -1340,11 +1343,11 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 Spatial Gaussian process
 Matern covariance parameters (kappa=0.5)
                      Estimate Lower limit Upper limit
-Spatial process var.  0.20744     0.18721      0.2298
-Spatial corr. scale  15.54775    13.47237     17.9428
+Spatial process var.  0.22784     0.19751      0.2628
+Spatial corr. scale  34.09732    29.12764     39.9149
 Variance of the nugget effect fixed at 0
 
-Log-likelihood: 15.74177</code></pre>
+Log-likelihood: 14.84545</code></pre>
 </div>
 </div>
 <p>When using the <code>glgpm</code> function to fit a Binomial model, we need to specify the Binomial denominators, i.e.&nbsp;the number of people tested at a location in this case, through the argument <code>den</code>. Other arguments of <code>glgpm</code> that are used for carrying out MCML are <code>control_mcmc</code>, that defines the setting parameters of the Monte Carlo Markov Chain algorithm, and <code>par0</code>, which represents our best guess for the unknown parameters of the Binomial geostatistical model. For more information on the default values of these two arguments, we refer you to the help page of the <code>glgpm</code> function. To understand how to change the default parameters in order to improve the MCML estimation, we advise you to read <a href="#sec-mcml" class="quarto-xref"><span>Section 3.5.2.1</span></a>. Also, remember that to enable the estimation of the nugget effect, <span class="math inline">\(Z_i\)</span>, you should set <code>nugget=NULL</code> in the <code>gp</code> function, since by default the <code>glgpm</code> function excludes <span class="math inline">\(Z_i\)</span>.</p>
@@ -1415,11 +1418,11 @@ $median
 [1] 43.70518</code></pre>
 </div>
 </div>
-<p>Using the <code>dist_summaries</code> function, we can see that, among the locations of the data-set, the average distance is about 55km and the minimum is about 387 meters. The estimate of phi of 4km is thus relatively small compared to the distances between locations in the data. In <span class="quarto-unresolved-ref">?sec-geo-prediction</span>, we will further investigate to what extent this small-scale spatial correlation can affect the predictions of the An. Gambiae counts.</p>
+<p>Using the <code>dist_summaries</code> function, we can see that, among the locations of the data-set, the average distance is about 55km and the minimum is about 387 meters. The estimate of phi of 4km is thus relatively small compared to the distances between locations in the data. In <a href="04_geostatistical-prediction.html" class="quarto-xref"><span>Chapter 4</span></a>, we will further investigate to what extent this small-scale spatial correlation can affect the predictions of the An. Gambiae counts.</p>
 </section><section id="sec-bootstrap" class="level3" data-number="3.3.3"><h3 data-number="3.3.3" class="anchored" data-anchor-id="sec-bootstrap">
 <span class="header-section-number">3.3.3</span> Using parametric bootstrap for computing confidence intervals</h3>
 <p>The bootstrap is a widely used resampling technique introduced by <span class="citation" data-cites="efron1979">Efron (<a href="references.html#ref-efron1979" role="doc-biblioref">1979</a>)</span> as a general approach to estimating the variability of statistical estimates without relying on strong parametric assumptions. While the classical non-parametric bootstrap resamples directly from the observed data, parametric bootstrap instead relies on simulating new datasets from an assumed parametric model, using plug-in estimates obtained from the original fit of the model to the data. This simulation-based method is particularly useful for complex models, such as those considered in this book, that yield an intractable likelihood function.</p>
-<p>We now describe how to carry out parametric bootstrap for geostatistical models in <code>RiskMap</code>. The use of simulation-based approaches will be more extensively covered in <span class="quarto-unresolved-ref">?sec-geo-prediction</span>, but, for the purpose of this section, it is first important to understand how data can be simulated from a geostatistical model.</p>
+<p>We now describe how to carry out parametric bootstrap for geostatistical models in <code>RiskMap</code>. The use of simulation-based approaches will be more extensively covered in <a href="04_geostatistical-prediction.html" class="quarto-xref"><span>Chapter 4</span></a>, but, for the purpose of this section, it is first important to understand how data can be simulated from a geostatistical model.</p>
 <p>The way we have formulated geostatistical models in <span class="quarto-unresolved-ref">?sec-geostat-models</span> provides a hint as to what step should be followed when simulating from a geostatistical model. Using the same notation of <span class="quarto-unresolved-ref">?sec-geostat-models</span>, these are the steps.</p>
 <ol type="1">
 <li><p>For a given set of predefined locations <span class="math inline">\(X\)</span> compute the covariance matrix <span class="math inline">\(\Sigma\)</span> with <span class="math inline">\((i,j)\)</span>-th entry <span class="math inline">\(\sigma^2 \rho(u_{ij})\)</span>.</p></li>
@@ -1554,9 +1557,8 @@ $median
 \]</span></p>
 <p>where <span class="math inline">\(\ell_i^{S}\)</span> is the log-likelihood of the so-called <em>saturated model</em>, and <span class="math inline">\(\ell_i^{F}\)</span> is the log-likelihood of the fitted model, both conditional on <span class="math inline">\(W_i\)</span>. The saturated model is a hypothetical model that fits the data <strong>perfectly</strong>, meaning it has as many parameters as data points. In such a model, the predicted values are exactly equal to the observed values, and therefore the log-likelihood reaches its maximum possible value. This model serves as a benchmark or upper bound against which the fit of any other model, including our fitted model, is compared. Hence, the difference <span class="math inline">\(\ell_i^{S} - \ell_i^{F}\)</span> reflects how much worse our model fits the data compared to this idealized scenario.</p>
 <p>While the residuals discussed above can provide useful insights into model fit, they are often less informative in the context of count data, especially for binary data and low counts. Moreover, even in the simpler case of linear geostatistical models where all three types of residuals introduced earlier (random effects residuals, Pearson residuals, and deviance residuals) are mathematically equivalent, it is easy to show that the correlation structure of the estimated residuals is related to the spatial correlation matrix of the fitted geostatistical model (see <a href="#sec-h-matrix" class="quarto-xref"><span>Section 3.5.3</span></a>). Whether this correlation in the estimated residuals is unimportant or poses a problem, particularly when using residuals to assess whether spatial dependence has been fully accounted for by the model, is still an open question and requires further investigation.</p>
-<p>Given these complexities, especially in the context of count data, we have chosen not to delve deeper into residual diagnostics in this edition of the book. Instead, model validation will be addressed more comprehensively in the context of geostatistical prediction in <span class="quarto-unresolved-ref">?sec-geo-prediction</span>.</p>
+<p>Given these complexities, especially in the context of count data, we have chosen not to delve deeper into residual diagnostics in this edition of the book. Instead, model validation will be addressed more comprehensively in the context of geostatistical prediction in <a href="04_geostatistical-prediction.html" class="quarto-xref"><span>Chapter 4</span></a>.</p>
 <p>Nevertheless, we note that some standard diagnostic tools from regression analysis (such as scatter plots of fitted values versus residuals) can still be informative and are worth exploring as part of routine model assessment <span class="citation" data-cites="weisberg2014">(Chapter 9, <a href="references.html#ref-weisberg2014" role="doc-biblioref">Weisberg 2014</a>)</span>.</p>
-<!-- UP TO HERE -->
 </section><section id="theory" class="level2" data-number="3.5"><h2 data-number="3.5" class="anchored" data-anchor-id="theory">
 <span class="header-section-number">3.5</span> Theory</h2>
 <section id="maximum-likelihood-estimation-for-non-gaussian-mixed-models-with-independent-random-effects" class="level3" data-number="3.5.1"><h3 data-number="3.5.1" class="anchored" data-anchor-id="maximum-likelihood-estimation-for-non-gaussian-mixed-models-with-independent-random-effects">
@@ -1728,7 +1730,7 @@ Figure&nbsp;3.14: Trace plot (left panel) and autocorrelation function plot (rig
 </section><section id="alternative-approaches" class="level4" data-number="3.5.2.4"><h4 data-number="3.5.2.4" class="anchored" data-anchor-id="alternative-approaches">
 <span class="header-section-number">3.5.2.4</span> Alternative approaches</h4>
 <p>In the sections above, we focused specifically on the implementation of the Monte Carlo Maximum Likelihood (MCML) method in <code>RiskMap</code>. However, other approaches are available, some of which are computationally more efficient than the MCML method we have illustrated. Our preference for this estimation method is based on two main reasons: 1) it delivers robust performance across a wide range of data scenarios, and 2) it does not require the specification of arbitrary prior distributions when prior information on the model parameters is unavailable.</p>
-<p>Alternative methods worth mentioning include the expectation-maximization algorithm for maximum likelihood estimation <span class="citation" data-cites="zhang2002">(<a href="references.html#ref-zhang2002" role="doc-biblioref">Zhang 2002</a>)</span>, integrated nested Laplace approximation (INLA) <span class="citation" data-cites="rue2009">(<a href="references.html#ref-rue2009" role="doc-biblioref">Rue, Martino, and Chopin 2009</a>)</span>, and implementations of the Metropolis-Adjusted Langevin Algorithm (MALA) for Bayesian inference <span class="citation" data-cites="christensen2006">(<a href="references.html#ref-christensen2006" role="doc-biblioref">O. Christensen, Roberts, and Sköld 2006</a>)</span>. While these methods are valuable, explaining and comparing them is not our focus here, as it would detract from the practical orientation of this book.</p>
+<p>Alternative methods worth mentioning include the expectation-maximization algorithm for maximum likelihood estimation <span class="citation" data-cites="zhang2002">(<a href="references.html#ref-zhang2002" role="doc-biblioref">Zhang 2002</a>)</span>, integrated nested Laplace approximation (INLA) <span class="citation" data-cites="rue2009">(<a href="references.html#ref-rue2009" role="doc-biblioref">Rue, Martino, and Chopin 2009</a>)</span>, and implementations of the Metropolis-Adjusted Langevin Algorithm (MALA) for Bayesian inference <span class="citation" data-cites="christensen2006">(<a href="references.html#ref-christensen2006" role="doc-biblioref">O. Christensen, Roberts, and Sköld 2006</a>)</span>. While these methods are valuable, explaining and comparing them is not our focus here, as it would detract from the practical orientation of this book. The <em>RiskMap</em> package itself will continue to evolve as computational improvements are made, and future editions of this book will update these sections without affecting the applied analysis content.</p>
 </section></section><section id="sec-h-matrix" class="level3" data-number="3.5.3"><h3 data-number="3.5.3" class="anchored" data-anchor-id="sec-h-matrix">
 <span class="header-section-number">3.5.3</span> The Hat matrix in linear geostatistical models</h3>
 <p>We consider the geostatistical model</p>
