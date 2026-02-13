@@ -16,7 +16,7 @@ fig-asp: 0.75
 | `glgpm` | `RiskMap` | Fitting generalized linear geostatistical models |
 | `s_variogram` | `RiskMap` | Computing the empirical variogram and carrying out permutation test for spatial independence |
 
-This chapter introduces the process of moving from exploratory analysis to the formal specification of statistical models, through to parameter estimation and interpretation of results. We outline the main steps involved, highlight the role of covariates, and present simple approaches for exploring and modelling non-linear relationships. We then turn to the assessment of residual spatial correlation, which motivates the use of geostatistical models, and describe how maximum likelihood methods can be applied for their estimation.
+This chapter introduces the process of moving from exploratory analysis to the formal specification of statistical models, through to parameter estimation and interpretation of results. We first outline the main steps involved, highlight the role of covariates, and present simple approaches for exploring and modelling non-linear relationships. We then turn to the assessment of residual spatial correlation, which motivates the use of geostatistical models, and describe how maximum likelihood methods can be applied for their estimation.
 
 ## Exploratory analysis
 
@@ -27,8 +27,6 @@ As illustrated in @fig-stages, exploratory analysis is the first step in any sta
 Assessment of the association between the health outcome of interest and non-categorical (i.e. continuous) risk factors can be carried out using graphical tools, such as scatter plots. The graphical inspection of the empirical association between the outcome and the covariates is especially useful to identify non-linear patterns in the relationship which should then be accounted for in the model formulation.
 
 In this section, we focus on the case where the observed outcome is a count, which requires a different treatment from continuously measured outcomes. The latter have been extensively discussed in the statistical literature and are covered in most standard textbooks (see, for example, Chapter 1 of @weisberg2014).
-
-
 
 #### When the outcome is an aggregated count {#sec-agg-count-exp}
 
@@ -88,9 +86,9 @@ ggplot(liberia, aes(x = elevation, y = elogit)) + geom_point() +
   
 ```
 
-@fig-elogit-elev-liberia shows the scatter plot of the empirical logit against elevation. In this plot, we have also added three lines though the `stat_smooth` from the `ggplot2` package. Using this function, we first pass the term `gam` to `method` to add a penalized smoothing spline [@hastie2001], represented by the blue solid line. The smoothing spline allows us to better discern the type of relationship and how to best capture it using a standard regression approach. As we can see from @fig-elogit-elev-liberia, the smoothing spline corroborates our initial observation of a positive relationship up to about 150 meters, followed by a plateau.
+@fig-elogit-elev-liberia shows the scatter plot of the empirical logit against elevation. In this plot, we have also added three lines through the `stat_smooth` function from the `ggplot2` package. Using this function, we first pass the term `gam` to `method` to add a penalized smoothing spline [@hastie2001], represented by the blue solid line. The smoothing spline allows us to better discern the type of relationship and how to best capture it using a standard regression approach. As we can see from @fig-elogit-elev-liberia, the smoothing spline corroborates our initial observation of a positive relationship up to about 150 meters, followed by a plateau.
 
-To capture this non-linear relationship, we can use the two following approaches. The first is based on a simple log-transformation of elevation and is represented in @fig-elogit-elev-liberia by the green line. If were to express this relationship using a standard Binomial regression model, this would take the form $$
+To capture this non-linear relationship, we can use the two following approaches. The first is based on a simple log-transformation of elevation and is represented in @fig-elogit-elev-liberia by the green line. If we were to express this relationship using a standard Binomial regression model, this would take the form $$
 \log\left\{\frac{p(x_i)}{1-p(x_i)}\right\} = \beta_0 + \beta_1 \log\{e(x_i)\}
 $$ {#eq-log-elev-glm} where $p(x_i)$ and $e(x_i)$ are the river-blindness prevalence and elevation at sampled location $x_i$, respectively.
 
@@ -100,7 +98,7 @@ $$ {#eq-lspline-elev-glm} Based on the equation above, the effect of elevation b
 
 Before proceeding further, it is important to explain the differences between the use of the logarithmic transformation (@eq-log-elev-glm) and the linear spline (@eq-lspline-elev-glm). We observe that both curves provide a similar fit to the data, with larger differences observed for larger values in elevation, where the log-transformed elevation models yield larger values for the predicted prevalence. This also suggests that if we were to extrapolate the predictions beyond 600 meters in elevation the implied pattern by the model with the log-transformed elevation would predict an increasingly larger elevation, which is unrealistic, since the fly that transmits the disease cannot breed at those altitudes. The linear spline model instead would generate predictions that would be very similar to those observed between 150 and 600 meters. From this point of view, the linear spline model would thus have more scientific validity than the other model. However, which of the two approaches should be chosen to model the effect of elevation is a question that closely depends on the research question to be addressed.
 
-If the interest of the study was in better understanding the association between elevation and prevalence, the linear spline model does not only provide a more credible explanation but also its regression parameters can be more easily interpreted. In fact, for a unit increase in elevation, the multiplicative change in the odds for river-blindness is $\exp\{\beta_1\}$, if elevation is below 150 meters, and $\exp\{\beta_1+\beta_2\}$, if elevation is above 150 meters. When instead we use the log-transformed elevation, the interpretation of $\beta_1$ in @eq-log-elev-glm is slightly more complicated, as it is based on the multiplicative increase in elevation by the same amount given by the base of the algorithm, which is about $e \approx 2.718$. To avoid this, one could rescale the regression coefficient as, for example, $\beta_1/\log_{2}(e)$ which would be interpreted as the multiplicative change in the odds for river-blindness for a doubling in elevation. However, a doubling in elevation is less meaningful when considering larger values of elevation.
+If the interest of the study was in better understanding the association between elevation and prevalence, the linear spline model does not only provide a more credible explanation but also its regression parameters can be more easily interpreted. In fact, for a unit increase in elevation, the multiplicative change in the odds for river-blindness is $\exp\{\beta_1\}$, if elevation is below 150 meters, and $\exp\{\beta_1+\beta_2\}$, if elevation is above 150 meters. When instead we use the log-transformed elevation, the interpretation of $\beta_1$ in @eq-log-elev-glm is more complicated, as it is based on the multiplicative increase in elevation by the same amount given by the base of the algorithm, which is about $e \approx 2.718$. To avoid this, one could rescale the regression coefficient as, for example, $\beta_1/\log_{2}(e)$ which would be interpreted as the multiplicative change in the odds for river-blindness for a doubling in elevation. However, a doubling in elevation is less meaningful when considering larger values of elevation.
 
 ::: callout-note
 The letter $e$ stands for the so-called Euler's number and represents the base of the natural logarithm. In the book, we write $\log(\cdot)$ to mean the "natural logarithm of $\cdot$".
@@ -124,7 +122,6 @@ ggplot(anopheles, aes(x = elevation, y = log_counts)) + geom_point() +
 
 The scatter plot in @fig-logcounts-elev-mosq shows a weak negative association, with the average number of mosquitoes tending to decrease as elevation increases. In this case, assuming a linear effect of elevation on the log of the expected mosquito count appears reasonable.
 
-
 #### When the outcome is an individual-level binary indicator {#sec-indiv-expl-analysis}
 
 We now consider the malaria data from Kenya (@sec-malaria-ch1) where the main outcome is the result from a rapid diagnostic test (RDT) for malaria from individuals within households. In this case, because the outcome only takes two values, 1 for a positive RDT test result and 0 otherwise, the direct application of the empirical logit from @eq-empirical-logit would not help us to generate informative scatter plots. Throughout the book, we will consider the data from the community survey only, hence we work with a subset of the data which we shall name `malkenya_comm`
@@ -143,7 +140,7 @@ malkenya_comm$Age_class <- cut(malkenya_comm$Age,
 
 ```
 
-Using the `cut` function, we first split age (in years) into classes through the argument `breaks`. The classification of age into $[0,5]$, $(5, 10]$ and $(10, 15]$ is common in many malaria epidemiology studies, as children are one of the groups at highest risk of malaria. The choice of the other classes of age reflects instead is made to balance the number of observations falling in each of the classes.
+Using the `cut` function, we first split age (in years) into classes through the argument `breaks`. The classification of age into $[0,5]$, $(5, 10]$ and $(10, 15]$ is common in many malaria epidemiology studies. For older ages, there is no strong requirement for a particular classification, and alternative groupings are equally plausible; the categories used here are intended purely for illustration.
 
 ```{r, collapse=TRUE}
 # Computation of the empirical logit by age groups and gender
@@ -217,11 +214,9 @@ glm_age_gender_no_interaction <- glm(RDT ~ Age +  pmax(Age-15, 0) + pmax(Age-40,
 anova(glm_age_gender_no_interaction, glm_age_gender_interaction, test = "Chisq")
 ```
 
-To carry out the likelihood ratio test to assess the null hypothesis that $\beta_{1}^*=\beta_{2}^*=\beta_{3}^*=0$, we first fit the simplified nested model under this null hypothesis. The likelihood ratio test can then be carried out using the `anova` command as shown. The p-value indicates that we do not find evidence against the null hypothesis, hence in our analysis of the data we might favour the simplified model that does not assume an interaction between the two genders. However, it is important to note that the likelihood used here comes from a standard Binomial model that does not account for residual spatial correlation. As will be shown later in the book, ignoring such correlation typically leads to underestimated standard errors and, consequently, p-values that are smaller than they should be. The resulting p-values from the likelihood ratio test may therefore be unreliable. Nonetheless, these exploratory analyses remain useful for identifying patterns that may or may not persist once a more flexible model is fitted. In practice, if an interaction appears weak or non-significant at this stage, one would expect even less evidence for it under a model that captures additional variability. Conversely, when certain relationships are scientifically plausible - such as age-specific differences between genders - it may still be appropriate to retain them regardless of their statistical significance.
+To carry out the likelihood ratio test to assess the null hypothesis that $\beta_{1}^*=\beta_{2}^*=\beta_{3}^*=0$, we first fit the simplified nested model under this null hypothesis. The likelihood ratio test can then be carried out using the `anova` command as shown. The p-value indicates that we do not find evidence against the null hypothesis, hence in our analysis of the data we might favour the simplified model that does not assume an interaction between the two genders. However, it is important to note that the likelihood used here comes from a standard Binomial model that does not account for residual spatial correlation. As will be shown later in the book, ignoring such correlation typically leads to underestimated standard errors for the regression coefficients and, consequently, p-values that are smaller than they should be. The resulting p-values from the likelihood ratio test may therefore be unreliable. Nonetheless, these exploratory analyses remain useful for identifying patterns that may or may not persist once a more flexible model is fitted. In practice, if an interaction appears weak or non-significant at this stage, one would expect even less evidence for it under a model that captures additional variability. Conversely, when certain relationships are scientifically plausible - such as age-specific differences between genders - it may still be appropriate to retain them regardless of their statistical significance.
 
-The approach just illustrated, can also be applied to explore the association with other continuous variables that are a property of the household and not of the individual. Let us, for example, consider the variable `elevation` from the `malkenya` data-set. 
-
-
+The approach just illustrated, can also be applied to explore the association with other continuous variables that are a property of the household and not of the individual. Let us, for example, consider the variable `elevation` from the `malkenya` data-set.
 
 ```{r, collapse=TRUE}
 malkenya_comm$elevation_class <- cut(malkenya_comm$elevation,
@@ -258,7 +253,7 @@ ggplot(elev_class_data, aes(x = elevation_mean, y = RDT),
 
 The resulting plot in @fig-elogit-elev-malkenya shows an approximately linear relationship with decreasing values of the empirical logit for increasing elevation. This is expected because the cooler environment at higher altitudes is less favourable to the development of the overall mosquito life cycle.
 
-An alternative approach to generate a scatter plot for assessing the association between elevation and the empirical logit would be to aggregate the data at household level, rather than using classes of elevation. However, this approach does not work as the one illustrated above when only one individual is sampled for each household. In the case of the `malkenya` data, the great majority of the households only include one individual making this second approach less useful than the one illustrated.
+An alternative approach to generate a scatter plot for assessing the association between elevation and the empirical logit would be to aggregate the data at household level, rather than using classes of elevation. However, this approach cannot be applied when only one individual is sampled for each household. In the case of the `malkenya` data, the great majority of the households only include one individual making this second approach less useful than the one illustrated.
 
 Other more sophisticated approaches for the exploration of the associations between covariates and binary outcomes are available. For example, the use of the empirical logit could be avoided by using non-parametric regression methods for Binomial outcomes [@bowman1997], also implemented in `sm` package in R. Our view is that a careful exploratory analysis based on simpler methods, such as those illustrated above, can be equally effective to inform the model formulation.
 
@@ -365,7 +360,7 @@ ggplot(df_long, aes(x = beta0, y = Variance, color = Model)) +
 
 @fig-var-bin-glmm shows the results of the simulation. In this figure, the red line corresponds to the variance of a standard Binomial model, obtained by setting $Z_i=0$ and computed as $n_i \mu_i (1-\mu_i)$ with $\mu_i = \exp\{\beta_0\}/(1+\exp\{\beta_0\})$. As expected, this plot shows that the variance of the simulated counts from the mixed model in @eq-bin-glmm-example exhibit a larger variance than would be expected under the standard Binomial model. It also indicates that the chosen value for the variance of $Z_i$ of $\tau^2 = 0.1$ corresponds to a significant amount of dispersion. One way to relate $\tau^2$ to the amount of overdispersion is by considering that, following from the properties of a univariate Gaussian distribution, *a priori* the $Z_i$ will take values between $-1.96 \sqrt{\tau^2}$ and $+1.96 \sqrt{\tau^2}$ with approximately 95$\%$ probability. That implies that $\exp\{Z_i\}$, which expresses the effect of the random effects on the odds ratios, will be with 95$\%$ probability between $\exp\{-1.96 \sqrt{\tau^2}\}$ and $\exp\{+1.96 \sqrt{\tau^2}\}$. By replacing $\tau^2$ with the chosen values for the simulation, those two become about 0.54 and 1.86, meaning that with the $Z_i$ with $95\%$ probability will have a multiplicative effect on the odds ratios between $0.54$ and $1.86$.
 
-We encourage you to do Exercise 1 and Exercise 2 at the end of this chapter, to further explore how generalized linear mixed models can be used as a tool to account for overdispersion.
+To consolidate the concepts introduced so far, we encourage you to complete Exercises 1 and 2 at the end of this chapter, which further explore the use of generalized linear mixed models as a tool for accounting for overdispersion.
 
 #### Maximum likelihood estimation of generalized linear mixed models for count data
 
@@ -395,11 +390,9 @@ fit_glmer_int <- glmer(An.gambiae ~ (1|ID_loc), family = poisson,
 
 To fit the model with `glmer`, we first must create a variable in our data-set that allows us to identify the location associated with each count. In this case, since every row corresponds to a different location, we simply use the row number to identify the locations and save this in the `ID_loc` variable. The random effects $Z_i$ are then included in the model by adding `(1 | ID_loc)` in the formula of the `glmer` function.
 
-When introducing the variable elevation, we standardize it so that its mean is 0 and its variance is 1. This helps the model-fitting algorithm converge more reliably and is generally good practice when covariates have very different scales. Importantly, standardizing a variable does not change the fit of the model to the data—it only changes how we interpret the regression coefficients. In other words, the model is mathematically equivalent; only the units of measurement differ.
+When introducing the variable elevation, we standardize it so that its mean is 0 and its variance is 1. This helps the model-fitting algorithm converge more reliably and is generally good practice when covariates have very different scales. Importantly, standardizing a variable does not change the fit of the model to the data—it only changes how we interpret the regression coefficients. In other words, the model is mathematically equivalent; only the units of measurement differ. For example, suppose we model mosquito counts using elevation measured in metres and obtain a regression coefficient of –0.002. This means that for every one-metre increase in elevation, the expected mosquito count decreases by about 0.2%. If we instead standardize elevation so that one unit represents one standard deviation (say 150 m), the corresponding coefficient becomes –0.002 × 150 = –0.30. Both models yield identical fitted values and predictions. The only difference is that in the standardized model, the coefficient refers to a one-standard-deviation change in elevation rather than a one-metre change.
 
-For example, suppose we model mosquito counts using elevation measured in metres and obtain a regression coefficient of –0.002. This means that for every one-metre increase in elevation, the expected mosquito count decreases by about 0.2%. If we instead standardize elevation so that one unit represents one standard deviation (say 150 m), the corresponding coefficient becomes –0.002 × 150 = –0.30. Both models yield identical fitted values and predictions. The only difference is that in the standardized model, the coefficient refers to a one-standard-deviation change in elevation rather than a one-metre change.
-
-The argument `nAGQ` is used to define the precision of the approximation of the maximum likelihood estimation algorithm. By default `nAGQ = 1`, which corresponds to the Laplace approximation. Values for `nAGQ` larger than 1 are used to define the number of points of the adaptive Gaussian-Hermite quadrature. The general principle is that the larger `nAGQ` the better, but at the expense of an increased computing time. Based on the guidelines and help pages of the `lme4` package, it is stated that a reasonable value for `nAGQ` is 25. For more technical details on this aspect, we refer the reader to @bates2015.
+The argument `nAGQ` is used to define the precision of the approximation of the maximum likelihood estimation algorithm. By default `nAGQ = 1`, which corresponds to the Laplace approximation. Values for `nAGQ` larger than 1 are used to define the number of points of the adaptive Gaussian-Hermite quadrature. The general principle is that the larger `nAGQ` the better, but at the expense of an increased computing time. Based on the guidelines and help pages of the `lme4` package, it is stated that a reasonable value for `nAGQ` is 25. For more technical details on this aspect, we refer you to @bates2015.
 
 We can now look at the summary of the fitted models to the mosquitoes data-set.
 
@@ -414,7 +407,7 @@ summary(fit_glmer_int)
 
 From the summary of the model that uses elevation, we observe that the estimated regression coefficient $\beta_{1}$ is statistically significantly different from 0. The interpretation of the estimated regression coefficient is the following: for an increase of about 100 meters in elevation, all other things being equal, the average number of mosquitoes decreases by about $100\% \times [1-\exp\{-0.19794\}] \approx 18\%$. Note that when using a standardized variable, a unit increase for this corresponds to an increase in the original unstandardized variable equal to its standard deviation, which for the `elevation` variable is about 100 meters.
 
-From the summaries of the two models, under `Random effects:`, we obtain the estimates associated with the random effects introduced in the model. In this case, since we only have introduced $Z_i$, this part of the summary provides the maximum likelihood estimate for $\tau^2$, the variance of $Z_i$, which is found on the line where `ID_loc` is printed. We then observe that the estimates for $\tau^2$ for the intercept-only model is `0.761`, whilst for the model with elevation this is `0.7146`. Note that the figures reported under `Std.Dev.` are simply the square root of the value reported under `Variance`. As expected, the introduction of elevation contributes to the explanation of the residual variation captured by $Z_i$, though by a very small amount. The estimated values of $\tau^2$ thus suggest that there is extra-Binomial variation in the data that is not accounted for by elevation.
+From the summaries of the two models, under `Random effects:`, we obtain the estimates associated with the random effects introduced in the model. In this case, since we only have introduced $Z_i$ as a random effect, this part of the summary provides the maximum likelihood estimate for $\tau^2$, the variance of $Z_i$, which is found on the line where `ID_loc` is printed. We then observe that the estimates for $\tau^2$ for the intercept-only model is `0.761`, whilst for the model with elevation this is `0.7146`. Note that the figures reported under `Std.Dev.` are simply the square root of the value reported under `Variance`. As expected, the introduction of elevation contributes to the explanation of the residual variation captured by $Z_i$, though by a very small amount. The estimated values of $\tau^2$ thus suggest that there is extra-Binomial variation in the data that is not accounted for by elevation.
 
 In the next section, we will illustrate how to assess the presence of residual correlation for continuous measurements and overdispersed count data.
 
@@ -430,7 +423,7 @@ The first issue is that we do not observe $Z_i$ as, by definition, this is a lat
 \hat{V}_{ij} = (\hat{Z}_{i} - \hat{Z}_j)^2.
 $$ {#eq-hat-squared-diff} Several options are available for estimating $Z_{i}$. Our choice is to use the model of the predictive distribution of $Z_i$, that is the distribution of $Z_{i}$ conditioned to the data $y_i$. This estimator for $Z_i$ is also readily available from the output of the `lmer` and `glmer` functions of the `lme4` package, as we will illustrate later in our example in this section.
 
-The second issue is that if we simply plot $\hat{V}_{ij}$ against the distances $u_{ij}$ (also known as *cloud variogram*), due to the high noisiness in the $\hat{V}_{ij}$, it may be quite difficult to assess the presence of an increasing trend in the $\hat{V}_{ij}$ and thus detect spatial correlation. Hence, it is general practice to group the distances $u_{ij}$ into classes, say $\mathcal{U}$, and then take average of all the $\hat{V}_{ij}$ that fall within $\mathcal{U}$.
+The second issue is that if we simply plot $\hat{V}_{ij}$ against the distances $u_{ij}$ (also known as *cloud variogram*; see Exercise 3 at the bottom of this chapter), due to the high noisiness in the $\hat{V}_{ij}$, it may be quite difficult to assess the presence of an increasing trend in the $\hat{V}_{ij}$ and thus detect spatial correlation. Hence, it is general practice to group the distances $u_{ij}$ into classes, say $\mathcal{U}$, and then take average of all the $\hat{V}_{ij}$ that fall within $\mathcal{U}$.
 
 We can now write the formal definition of the empirical variogram as $$
 \hat{V}(\mathcal{U}) = \frac{1}{2 |\mathcal{U}|} \sum_{(i, j): (u_i, u_j) \in \mathcal{U}} \hat{V}_{ij}
@@ -446,9 +439,9 @@ Before we can evaluate residual spatial correlation, there remains one crucial c
 
 4.  Use the resulting 10,000 empirical variograms to compute 95$\%$ confidence intervals, by taking the 0.025 and 0.975 quantiles of these for each distance class $\hat{V}(\mathcal{U})$.
 
-5.  If the observed empirical variogram lies entirely within the envelope generated in the previous step, we conclude that there is no evidence of residual spatial correlation in the data. When, instead, parts of the empirical variogram fall outside the envelope, this suggests the presence of residual spatial dependence. 
+5.  If the observed empirical variogram lies entirely within the envelope generated in the previous step, we conclude that there is no evidence of residual spatial correlation in the data. When, instead, parts of the empirical variogram fall outside the envelope, this suggests the presence of residual spatial dependence.
 
-In point 5 above, the extent and pattern of these deviations can vary considerably. In many cases, the departures from the envelope are quite subtle, with only a few points of the empirical variogram falling outside, as we will see in later examples. Such patterns may indicate a weak or complex form of spatial dependence that is difficult to recover from the data. Ultimately, only the fit of a geostatistical model can provide a definitive assessment of the extent of the spatial correlation. The empirical variogram should therefore be viewed as a diagnostic tool that helps flag potential issues, rather than as conclusive evidence on its own.
+In point 5 above, the extent and pattern of these deviations can vary considerably. In many cases, the departures from the envelope are quite subtle, with only a few points of the empirical variogram falling outside, as we will see in later examples. Such patterns may indicate weak spatial dependence that is difficult to recover from the data. Ultimately, only the fit of a geostatistical model can provide a definitive assessment of the extent of the spatial correlation. The empirical variogram should therefore be viewed as a diagnostic tool that helps to explore residual spatial correlation, rather than as conclusive evidence on its own.
 
 We now show an application of all the concepts introduced in this section to the Liberia data on river-blindness.
 
@@ -491,14 +484,14 @@ liberia_variog <- s_variogram(data = liberia,
                               n_permutation = 200)
 ```
 
-Through the argument `bins` we can specify the classes of distance, previously denoted by $\mathcal{U}$; check the help page of `s_variogram` to see how this is defined by default. The value passed to `bins` in the code above correspond to define the following classes of distance $\mathcal{U}$: $[15, 30]$, $(30, 40]$ and so forth, with the last class being $[350, +\infty)$, i.e. all pairs of locations whose distances are above 350km. The argument `n_permutation` allows the user to specify the number of permutations that are performed to generate the envelope for absence of spatial correlation previously described.
+Through the argument `bins` we can specify the classes of distance, previously denoted by $\mathcal{U}$; check the help page of `s_variogram` to see how this is defined by default. The values passed to `bins` in the code above correspond to define the following classes of distance $\mathcal{U}$: $[15, 30]$, $(30, 40]$ and so forth, with the last class being $[350, +\infty)$, i.e. all pairs of locations whose distances are above 350km. The argument `n_permutation` allows the user to specify the number of permutations that are performed to generate the envelope for absence of spatial correlation, previously described.
 
 ```{r collapse=TRUE}
 dist_summaries(data = liberia,
                scale_to_km = TRUE)
 ```
 
-The `dist_summaries` function within the `RiskMap` package can be used for gauging the extent of the area covered by your dataset, aiding in the selection of appropriate values to be passed to the `bins` argument. In the provided output above, we can observe that for the Liberia dataset, the minimum and maximum distances are approximately 3km and 533km, respectively. While there is not a one-size-fits-all recommendation for setting `bins`, two fundamental principles should inform your decision-making. Firstly, it is advisable to avoid choosing overly large distance intervals, as the uncertainty associated with the empirical variogram tends to increase with distance due to fewer available pairs of observations for estimation. Secondly, especially when spatial correlation is not strong, it is crucial to carefully explore the behavior of the variogram at smaller distances. Consequently, it is generally advisable to experiment with different `bins` configurations and observe how they impact the pattern of the empirical variogram.
+The `dist_summaries` function within the `RiskMap` package can be used for gauging the extent of the area covered by your dataset, aiding in the selection of appropriate values to be passed to the `bins` argument. In the provided output above, we observe that for the Liberia dataset, the minimum and maximum distances are approximately 3km and 533km, respectively. While there is not a one-size-fits-all recommendation for setting `bins`, two fundamental principles should inform your choice. Firstly, it is advisable to avoid choosing overly large distance intervals, as the uncertainty associated with the empirical variogram tends to increase with distance due to fewer available pairs of observations for estimation. Secondly, especially when spatial correlation is not strong, it is crucial to carefully explore the behavior of the variogram at smaller distances. Consequently, it is generally advisable to experiment with different `bins` configurations and observe how they impact the pattern of the empirical variogram.
 
 ```{r collapse=TRUE}
 #| label: fig-liberia-variog
@@ -508,7 +501,7 @@ plot_s_variogram(liberia_variog,
                  plot_envelope = TRUE)
 ```
 
-Finally, the `plot_s_variogram` function enables us to visualize the empirical variogram and, through the `plot_envelope` argument, include the envelope generated by the permutation procedure. As illustrated in @fig-liberia-variog, we observe that the empirical variogram falls outside the envelope at relatively short distances, typically below 30km. However, for distances exceeding 30km, the behavior of the empirical variogram does not significantly differ from variograms generated under the assumption of spatial independence. In summary, we interpret the evidence presented in @fig-liberia-variog as indicative of residual spatial correlation within the data. Nevertheless, it is essential to exercise caution when attempting to ascertain the scale of the spatial correlation using the empirical variogram. As we will emphasize throughout this book, the empirical variogram's sensitivity to the choice of bins values renders it an unreliable tool for drawing statistical inferences. In other words, we advocate employing the empirical variogram primarily to assess the presence of residual correlation.
+Finally, the `plot_s_variogram` function enables us to visualize the empirical variogram and, through the `plot_envelope` argument, include the envelope generated by the permutation procedure. As illustrated in @fig-liberia-variog, we observe that the empirical variogram falls outside the envelope at relatively short distances, typically below 30km. However, for distances exceeding 30km, the behavior of the empirical variogram does not significantly differ from variograms generated under the assumption of spatial independence. In summary, we interpret the evidence presented in @fig-liberia-variog as indicative of residual spatial correlation within the data. Nevertheless, it is essential to exercise caution when attempting to ascertain the scale of the spatial correlation using the empirical variogram. As we will emphasize throughout this book, the empirical variogram's sensitivity to the choice of bins values renders it an unreliable tool for drawing statistical inferences. In other words, we recommend employing the empirical variogram primarily to assess the presence of residual correlation.
 
 #### Exploring residual spatial correlation with linear Gaussian models {#sec-empirical-variog-lm}
 
@@ -516,21 +509,15 @@ When using a linear model to assess spatial correlation, it is important to dist
 
 ##### One observation per location
 
-To illustrate the use of the variogram in this context, we consider the Galicia data on lead concentration in moss samples. The simplest possible model for these data is a standard linear model without covariates, which assumes independence among observations:
-$$
+To illustrate the use of the variogram in this context, we consider the Galicia data on lead concentration in moss samples. The simplest possible model for these data is a standard linear model without covariates, which assumes independence among observations: $$
 Y_i = \beta_0 + U_i,
-$$
-{#eq-std-lm-galicia}
-where the $U_i$ are independent Gaussian random variables with mean zero and variance $\omega^2$. Our goal at this stage is to assess whether this assumption of independence is supported by the data, or whether there is evidence of spatial correlation.
+$$ {#eq-std-lm-galicia} where the $U_i$ are independent Gaussian random variables with mean zero and variance $\omega^2$. Our goal at this stage is to assess whether this assumption of independence is supported by the data, or whether there is evidence of spatial correlation.
 
-However, measurement error from the sampling device may contribute to the observed variability in $Y_i$. If such error is large relative to the underlying spatial variation, it can obscure the detection of spatial correlation in the residuals. One might therefore consider introducing an additional, location-specific random effect, say $Z_i$, with mean zero and variance $\tau^2$, leading to the model
-$$
+However, measurement error from the sampling device may contribute to the observed variability in $Y_i$. If such error is large relative to the underlying spatial variation, it can obscure the detection of spatial correlation in the residuals. One might therefore consider introducing an additional, location-specific random effect, say $Z_i$, with mean zero and variance $\tau^2$, leading to the model $$
 Y_i = \beta_0 + Z_i + U_i,
-$$
-{#eq-std-lm2-galicia}
-where $Z_i$ represents spatially structured variation due to unmeasured covariates, and $U_i$ represents unstructured variation, such as measurement error. However, this model is not identifiable because the two random effects, $Z_i$ and $U_i$, both contribute additively to the total variance, making it impossible to separate their effects unless one of two conditions is met:  
-(a) the measurement error variance $\omega^2$ is known from external information, or  
-(b) multiple measurements are available at each location, allowing the two sources of variation to be estimated separately.  
+$$ {#eq-std-lm2-galicia} where $Z_i$ represents spatially structured variation due to unmeasured covariates, and $U_i$ represents unstructured variation, such as measurement error. However, this model is not identifiable because the two random effects, $Z_i$ and $U_i$, both contribute additively to the total variance, making it impossible to separate their effects unless one of two conditions is met:\
+(a) the measurement error variance $\omega^2$ is known from external information, or\
+(b) multiple measurements are available at each location, allowing the two sources of variation to be estimated separately.\
 We will explore the latter scenario in the next section.
 
 For the Galicia data, we do not know the measurement device precision and we only have one observation per location. However, this does not prevent us from using the variogram based on the residuals from @eq-std-lm-galicia, while keeping in mind the limitations and uncertainty that are inherent to this exploratory tool as remarked at the end of the last paragraph.
@@ -557,7 +544,7 @@ plot_s_variogram(galicia_variog, plot_envelope = TRUE)
 
 ```
 
-In the code above, we first fit the linear model in @eq-std-lm-galicia and then extract the residuals from this. Note that for this simple model, the residuals of the model are obtained by simply centering the outcome to zero by subtracting its mean. 
+In the code above, we first fit the linear model in @eq-std-lm-galicia and then extract the residuals from this. Note that for this simple model, the residuals of the model are obtained by simply centering the outcome to zero by subtracting its mean.
 
 @fig-galicia-variog shows the empirical variogram and the 95% envelope for spatial independence. This clearly shows that the measurements of lead concentration are spatially correlated.
 
@@ -601,7 +588,7 @@ The application of the empirical variogram, whose results are shown in @fig-ital
 
 ## The linear geostatistical model {#sec-linear-model}
 
-In this section, we consider spatially referenced outcomes $Y_i$ that are continuous. We first consider the simpler case of a single measurement $Y_i$ per location $x_i$. Recalling the class of generalized linear models introduced in @sec-geostat-models, the linear predictor takes the form $$
+In this section, we focus on spatially referenced outcomes $Y_i$ that are continuous. We first consider the simpler case of a single measurement $Y_i$ per location $x_i$. Recalling the class of generalized linear models introduced in @sec-geostat-models, the linear predictor takes the form $$
 \mu_{i} = d(x_i)^\top \beta + S(x_i).
 $$ {#eq-linear-geostat-model-lp} Hence, in this case, we interpret $\beta$ as the effect on $\mu_i$ for a unit increase in $d(x_i)$. Let $U_i$ denote i.i.d. random variables representing the measurement error associated with $Y_i$, each having mean zero and variance $\omega^2$. Thanks to the linear properties of Gaussian random variables, we can also express the linear model in a compact expression, as $$
 Y_i = \mu_i + U_i = d(x_i)^\top \beta + S(x_i) + U_i.
@@ -610,7 +597,7 @@ $$ {#eq-linear-geostat-model} To fully specify a geostatistical model for our da
 1.  Defining the relationship between each covariate and the mean value $\mu_i$.
 2.  Selecting an appropriate correlation function for $S(x)$.
 
-As illustrated in the previous sections, the initial step of exploratory analysis allows us to handle the first aspect, where we determine the regression relationship between covariates and the mean value $\mu_i$. However, based on existing methods of exploratory analysis, it is difficult to understand what is a suitable correlation function at this stage. A commonly recommended starting point is the Matern correlation function (see @eq-matern), which offers considerable flexibility in capturing a wide range of correlation structures, under the assumption of stationarity and isotropy. As we shall illustrate in the next example, even estimating a Matern correlation function is a task that poses many inferential challenges due to the poor identifiability, especially, of its smoothness parameter $\kappa$.
+As illustrated in the previous sections, the initial step of exploratory analysis allows us to handle the first aspect, where we determine the regression relationship between covariates and the mean value $\mu_i$. However, based on existing methods of exploratory analysis, it is difficult to understand what is a suitable correlation function at this stage. A commonly recommended starting point is the Matern correlation function (see @eq-matern), which offers considerable flexibility in capturing a wide range of correlation structures, under the assumption of stationarity and isotropy. As we shall illustrate in the next example, even estimating a Matern correlation function is a task that poses many inferential challenges, especially due to the poor identifiability of its smoothness parameter $\kappa$.
 
 ### Evaluating the inclusion of the measurement error term $U_i$ and the specification of the smoothness parameter $\kappa$ {#sec-glm-parest}
 
@@ -618,7 +605,7 @@ In this section we analyse the Galicia data using a linear geostatistical model 
 Y_i = \mu + S(x_i) + U_i
 $$ {#eq-galicia-lgm} where were $S(x)$ is a Matern process with variance $\sigma^2$, scale parameter $\phi$ and and smoothness parameter $\kappa$; the $U_i$ correspond to the measurement error term and denote with $\omega^2$ their variance.
 
-We carry out the parameter estimation of the model using the `glgpm` function from the `RiskMap` package. This function implements maximum likelihood estimation for generalized linear mixed models using a Matern correlation function, while fixing the smoothness parameter $\kappa$ at prespecified value by the user. The object passed to the argument `data` in `glpm` can either be a `data.frame` object or an `sf` object. Below we illustrate the use of `glgpm` while distinguishing between these two cases.
+We carry out the parameter estimation of the model using the `glgpm` function from the `RiskMap` package. This function implements maximum likelihood estimation for generalized linear mixed models using a Matern correlation function, while fixing the smoothness parameter $\kappa$ at a prespecified value by the user. The object passed to the argument `data` in `glpm` can either be a `data.frame` object or an `sf` object. Below we illustrate the use of `glgpm` while distinguishing between these two cases.
 
 ```{r, collapse=TRUE}
 # Parameter estimation when the argument passed to `data` is a data-frame
@@ -636,19 +623,19 @@ The argument `crs` is used to specify the coordinate reference system (CRS) of t
 galicia_sf <- st_as_sf(galicia, coords = c("x", "y"), crs = 32629)
 
 fit_galicia_sf <- 
-glgpm(log(lead) ~ gp(kappa = 1.5), data=galicia_sf, family = "gaussian",
+glgpm(log(lead) ~ gp(kappa = 1.5), data = galicia_sf, family = "gaussian",
       scale_to_km = TRUE, messages = FALSE)
 ```
 
-The code above shows the alternative approach to estimate the model, when the argument passed to `data` is an `sf` object. In this case, the data-set `galicia` is converted into an `sf` object before the use of the `glgpm` function using `st_as_sf`. When when then fit the linear geostatistical model with `galicia_sf`, the only differences with the previous chunk of code that used `galicia` instead, is that the coordinates names in `gp()` and the `crs` argument in `glgpm` do not need to be specified as they are both directly obtained from `galicia_sf`.
+The code above shows the alternative approach to estimate the model, when the argument passed to `data` is an `sf` object. In this case, the data-set `galicia` is converted into an `sf` object before the use of the `glgpm` function using `st_as_sf`. When we then fit the linear geostatistical model by passing `galicia_sf` to the argument `data`, the only differences with the previous chunk of code that used `galicia` instead, is that the coordinates names in `gp()` and the `crs` argument in `glgpm` do not need to be specified as they are both directly obtained from `galicia_sf`.
 
 ```{r, collapse=TRUE}
 summary(fit_galicia)
 ```
 
-We can then inspect the point and interval estimates for the model through the `summary` function of the model as shown in the code chunk above. This output is presented in three sections: in the first section, we have the results for the regression coefficients; in the second section, we have the estimate for the variance of the measurement error component, $\omega^2$ whose point estimate is about 0.015; in the final section, we have the estimates for the parameters of the spatial covariance function, $\sigma^2$ and $\phi$ which are about 0.171 and 9.021 (km), respectively. The message `Variance of the nugget effect fixed at 0` indicates that the nugget has not been included in the mode; try Exercise 7 to see how this summary changes in the presence of the nugget term.
+We can then inspect the point and interval estimates for the model through the `summary` function of the model as shown in the code chunk above. This output is presented in three sections: in the first section, we have the results for the regression coefficients; in the second section, we have the estimate for the variance of the measurement error component, $\omega^2$ whose point estimate is about 0.015; in the final section, we have the estimates for the parameters of the spatial covariance function, $\sigma^2$ and $\phi$ which are about 0.171 and 9.021 (km), respectively. The message `Variance of the nugget effect fixed at 0` indicates that the nugget has not been included in the mode.
 
-At this point, you may be wondering, why we have used 1.5 for the value of $\kappa$ and whether there is a statistical approach to find the most suitable value for this. We show such an approach in the code below. However, before examining the code, we would like to point out an important aspect that relates to how the value of $\kappa$ can affect the estimate of the measurement error variance $\omega^2$. As we have shown, in @sec-matern-correlation, values of $\kappa$ that are closer to zero will give a rougher and less regular surface for $S(x)$. In the case of a single observation, when $\kappa$ is closer to zero, it will thus become increasingly difficult to estimate $\omega^2$ since the likelihood function may attribute most of the noisiness to $S(x)$ and rely less on $U_i$ to explain the unstructured random variation found in the data. As a consequence of this, we can expect that for value of $\kappa$ closer to zero, the estimates of $\omega^2$ will also be smaller and, on the contrary, when $\kappa$ is larger, the estimates of $\omega^2$ will also increase. The results generated in the below clearly illustrate this point.
+At this point, you may be wondering, why we have used 1.5 for the value of $\kappa$ and whether there is a statistical approach to find the most suitable value for this. We show such an approach in the code below. However, before examining the code, we would like to point out an important aspect that relates to how the value of $\kappa$ can affect the estimate of the measurement error variance $\omega^2$. As we have shown, in @sec-matern-correlation, values of $\kappa$ that are closer to zero will give a rougher and less regular surface for $S(x)$. In the case of a single observation, when $\kappa$ is closer to zero, it will thus become increasingly difficult to estimate $\omega^2$ since the likelihood function may attribute most of the noisiness to $S(x)$ and rely less on $U_i$ to explain the unstructured random variation found in the data. As a consequence of this, we can expect that for value of $\kappa$ closer to zero, the estimates of $\omega^2$ will also be smaller and, on the contrary, when $\kappa$ is larger, the estimates of $\omega^2$ will also increase. The results generated in the code below clearly illustrate this point.
 
 ```{r, collapse=TRUE}
 
@@ -693,7 +680,7 @@ abline(h = max(llik_values)-pchisq(0.95, df = 2)/2, lty="dashed")
 
 ```
 
-By examining the results shown in panel (a) of @fig-galicia-matern, we observe that, as expected, smaller values for $\kappa$ leads to smaller point estimates for $\omega^2$ and viceversa. This begs the question, what should be our chosen value for $\kappa$?
+By examining the results shown in panel (a) of @fig-galicia-matern, we observe that, as expected, smaller values for $\kappa$ lead to smaller point estimates for $\omega^2$ and viceversa. This begs the question, what should be our chosen value for $\kappa$?
 
 To answer this question, a natural approach is to estimate the model for different values of $\kappa$ and see which one gives the best fit to the data, according to the likelihood function. In panel (b) of @fig-galicia-matern, we show the results of this approach where we considered 10 values for $\kappa$ within the range 0.5 to 3.5 (see code above). In this plot, we have also added a horizontal line to help us to approximate a range of the most plausible value for $\kappa$. More precisely, the horizontal dashed line is computed by taking the maximum observed values of the likelihoods computed for the different values of $\kappa$, say $\hat{M}$ and we subtract the quantile 0.95 of a $\chi^2$ distribution with 1 degree of freedom. In R this horizontal line is obtained as
 
@@ -701,7 +688,7 @@ To answer this question, a natural approach is to estimate the model for differe
 max(llik_values)-pchisq(0.95, df = 2)/2
 ```
 
-where `llik_values` is as defined in the previous chunk of code. Note that this approach is essentially constructing the profile likelihood for $\kappa$ which one could use to derive a confidence interval for $\kappa$ with a finer segmentation for `kappa_values`. However, our current objective is not to derive the confidence interval for $\kappa$, but rather to gain a broad understanding of the $\kappa$ values supported by the dataset. The values of $\kappa$ that correspond to likelihood values above the horizontal line are approximately between 0.75 and 2.75. Hence, selecting $\kappa=1.5$ seems to be a reasonable one in this case. Now, you may be pondering: are there values other than $\kappa=1.5$ that could fit the data even better? Our answer is that it is not worth the effort to try estimate $\kappa$ more precisely because it is empirically very difficult and, under some scenarios, even impossible. Estimating $\kappa$ poses a well-documented challenge in geostatistics (@zhang2004), which justifies our adoption of a pragmatic approach that sets it at a predefined value. This issue is also further exacerbated when analyzing count data, which tend to be less informative about the correlation structure than continuously measured data.
+where `llik_values` is as defined in the previous chunk of code. Note that this approach is essentially constructing the profile likelihood for $\kappa$ which one could use to derive a confidence interval for $\kappa$ with a finer segmentation for `kappa_values`. However, our current objective is not to derive the confidence interval for $\kappa$, but rather to gain a broad understanding of the $\kappa$ values supported by the dataset. The values of $\kappa$ that correspond to likelihood values above the horizontal line are approximately between 0.75 and 2.75. Hence, selecting $\kappa=1.5$ seems to be a reasonable choice in this case. Now, you may be pondering: are there values other than $\kappa=1.5$ that could fit the data even better? Our answer is that it is not worth the effort to try estimate $\kappa$ more precisely because it is empirically very difficult and, under some scenarios, even impossible. Estimating $\kappa$ poses a well-documented challenge in geostatistics (@zhang2004), which justifies our adoption of a pragmatic approach that sets it at a predefined value. This issue is also further exacerbated when analyzing count data, which tend to be less informative about the correlation structure than continuously measured data.
 
 ### Modelling hierarchical geostatistical data using the `re()` function {#sec-add-re-glgm}
 
@@ -749,7 +736,10 @@ grid.arrange(map_regions, map_provinces, ncol = 2)
 ```
 
 Let $V_h$, for $h=1,\ldots,n_V$ and $Z_k$, for $k=1,\ldots,n_{Z}$, be a set of mutually independent Gaussian variables with zero means and variances $\sigma^2_{V}$ and $\sigma^2_{Z}$, respectively. Finally let $\mathcal{A}_h$, for $h=1,\ldots,n_V$ and $\mathcal{B}_k$, for $k=1,\ldots,n_{Z}$, denote the areas encompassed by the boundaries of the region and provinces, respectively. Since we have 10 repeated observations at each locations, we shall use $Y_{ij}$ to denote the $j$-th outcome (found in the data under the column `y`) at the $i$-th location $x_i$. The model from which we generated data $y_{ij}$ is $$
-Y_{ij} = \beta_0 + \overbrace{\beta_1 d(x_i) + S(x_i)}^\text{Location-level effect} + \underbrace{\sum_{h=1}^{n_{V}} I(x_i \in \mathcal{A}_h) \times V_h}_\text{Region effect} +\\ \overbrace{\sum_{k=1}^{n_{Z}} I(x_i \in \mathcal{B}_k) \times Z_k}^\text{Province effect} +  \underbrace{U_{ij}}_\text{Measurement error},
+\begin{aligned}
+Y_{ij} = \beta_0 &+ \overbrace{\beta_1 d(x_i) + S(x_i)}^\text{Location-level effect} + \underbrace{\sum_{h=1}^{n_{V}} I(x_i \in \mathcal{A}_h) \times V_h}_\text{Region effect} \\
+&+ \overbrace{\sum_{k=1}^{n_{Z}} I(x_i \in \mathcal{B}_k) \times Z_k}^\text{Province effect} + \underbrace{U_{ij}}_\text{Measurement error}
+\end{aligned}
 $$ {#eq-italy-sim-model} for $j=1,\ldots 10$ and $i=1,\ldots,200$, where, $d(x_i)$ is the log-transformed population density, $I(x \in \mathcal{R})$ is an indicator function that takes value 1 if the location $x$ falls within the boundaries of the area denoted by $\mathcal{R}$ and 0 otherwise. The covariance function chosen in the generation of the data was an exponential correlation function hence ${\rm cov}\{S(x), S(x') = \sigma^2 \exp\{-||x-x'||/\phi\}$.
 
 The inclusion of the random effects $V_h$, for the region, and $Z_k$, for the province, can be included by using the `re()` function into the `formula` passed to `glgpm` as shown below.
@@ -807,7 +797,7 @@ In all the three models, namely @eq-lp-bin, @eq-lp-bin-ind and @eq-poisson-lp, o
 
 ### Example: river-blindness in Liberia {#sec-liberia-estim1}
 
-In section @sec-agg-count-exp, we carried out the exploratory analysis of the river-blindness prevalence data to assess how the covariate of elevation could be introduced into the model. In @sec-empirical-variog-bin, we then tested for residual spatial correlation, when the log-transformed elevation is used as a covariate, using the empirical variogram. Based on these results, we now formulate a fit a Binomial geostatistical model to data. To achieve this, we extend the model presented in @eq-liberia-bin-mixed-elev through the inclusion of a spatial Gaussian process, $S(x)$, hence we write $$
+In section @sec-agg-count-exp, we carried out the exploratory analysis of the river-blindness prevalence data to assess how elevation could be introduced into the model. In @sec-empirical-variog-bin, we then tested for residual spatial correlation using the empirical variogram and log-transformed elevation as a covariate. Based on these results, we can now formulate a Binomial geostatistical model which we then fit to the data. Hence, we extend the model presented in @eq-liberia-bin-mixed-elev through the inclusion of a spatial Gaussian process, $S(x)$, and write $$
 \log\left\{\frac{p(x_i)}{1-p(x_i)}\right\} = \beta_{0} + \beta_{1}\log\{e(x_i)\} + S(x_i) + Z_i.
 $$ {#eq-liberia-geostat-bin-elev} We shall assume that $S(x_i)$ is a stationary isotropic Gaussian process with an exponential correlation function function $\rho(u) = \exp\{-u/\phi\}$, with scale parameter $\phi$.
 
@@ -832,13 +822,13 @@ summary(fit_liberia)
 
 ```
 
-When using the `glgpm` function to fit a Binomial model, we need to specify the Binomial denominators, i.e. the number of people tested at a location in this case, through the argument `den`. Other arguments of `glgpm` that are used for carrying out MCML are `control_mcmc`, that defines the setting parameters of the Monte Carlo Markov Chain algorithm, and `par0`, which represents our best guess for the unknown parameters of the Binomial geostatistical model. For more information on the default values of these two arguments, we refer the reader to the help page of the `glgpm` function. To understand how to change the default parameters in order to improve the MCML estimation, we advise you to read @sec-mcml. Also, remember that to enable the estimation of the nugget effect, $Z_i$, you should set `nugget=NULL` in the `gp` function, since by default the `glgpm` function excludes $Z_i$ when the out is non-Gaussian.
+When using the `glgpm` function to fit a Binomial model, we need to specify the Binomial denominators, i.e. the number of people tested at a location in this case, through the argument `den`. Other arguments of `glgpm` that are used for carrying out MCML are `control_mcmc`, that defines the setting parameters of the Monte Carlo Markov Chain algorithm, and `par0`, which represents our best guess for the unknown parameters of the Binomial geostatistical model. For more information on the default values of these two arguments, we refer you to the help page of the `glgpm` function. To understand how to change the default parameters in order to improve the MCML estimation, we advise you to read @sec-mcml. Also, remember that to enable the estimation of the nugget effect, $Z_i$, you should set `nugget=NULL` in the `gp` function, since by default the `glgpm` function excludes $Z_i$.
 
-In the above summary of the model, the interpretation of the regression coefficients is the same as in a standard logistic regression model. Hence, by taking the exponential of the estimate for the regression coefficient $\beta_1$, we could then express the effect for a unit increase in the covariate -- in this case the log-transformed elevation -- on the odds of disease prevalence. Finally, the interpretation of estimates of the covariance parameters is not affected by the type of distribution used to model the main outcome. From the above summary, we note the larger estimates of $\sigma^2$ than $\tau^2$ which suggest the dominance of spatial variation over the unstructured variation in the unexplained variation of disease prevalence. Finally, the estimate of $\phi$ indicates a relatively large spatial correlation with a *practical range* close to ($58.67 \times 3 \approx$)180km.
+In the above summary of the model, the interpretation of the regression coefficients is the same as in a standard logistic regression model. Hence, by taking the exponential of the estimate for the regression coefficient $\beta_1$, we can express the effect for a unit increase in the covariate -- in this case the log-transformed elevation -- on the odds of disease prevalence. Finally, the interpretation of estimates of the covariance parameters is not affected by the type of distribution used to model the main outcome. From the above summary, we note the larger estimates of $\sigma^2$ than $\tau^2$ which suggest the dominance of spatial variation over the unstructured variation in the unexplained variation of disease prevalence. Finally, the estimate of $\phi$ indicates a relatively large spatial correlation with a *practical range* close to ($58.67 \times 3 \approx$)180km.
 
 ### Example: *Anopheles Gambiae* mosquitoes in Cameroon {#sec-anopheles-fit}
 
-In @sec-agg-count-exp, we explored the association between elevation and the number of mosquitoes and found that the data showed that on average, the number of "Anopheles Gambiae\* (A. Gambiae) decreases for increasing elevation. We now fit a log-linear Poisson geostatistical model, with linear predictor $$
+In @sec-agg-count-exp, we explored the association between elevation and the number of mosquitoes and found that the data showed that on average, the number of *Anopheles Gambiae* (A. Gambiae) decreases for increasing elevation. We now fit a log-linear Poisson geostatistical model, with linear predictor $$
 \lambda(x_i) = \beta_0 + \beta_1 d(x_i) + S(x_i)
 $$ {#eq-anopheles} where $d(x_i)$ corresponds to the elevation in meters at location $x_i$. This time, we first convert the data frame `anopheles` into an `sf` object. This step is optional but recommended as it allows us to simplify the code syntax.
 
@@ -865,7 +855,7 @@ The estimate, $\hat{\beta}_1$, for the regression coefficient $\beta_1$ suggests
 dist_summaries(anopheles, scale_to_km = TRUE)
 ```
 
-Using the `dist_summaries` function, we can see that the average distance is about 55km and the minimum is about 387 meters. The estimate of phi of 4km is thus relatively small compared to the distances between locations in the data. In @sec-geo-prediction, we will further investigate to what extent this small-scale spatial correlation can affect the predictions of the An. Gambiae counts.
+Using the `dist_summaries` function, we can see that, among the locations of the data-set, the average distance is about 55km and the minimum is about 387 meters. The estimate of phi of 4km is thus relatively small compared to the distances between locations in the data. In @sec-geo-prediction, we will further investigate to what extent this small-scale spatial correlation can affect the predictions of the An. Gambiae counts.
 
 ### Using parametric bootstrap for computing confidence intervals {#sec-bootstrap}
 
@@ -982,25 +972,21 @@ This discrepancy arises because the Wald-type confidence intervals from `summary
 
 ## The residuals of a geostatistical model: issues to consider
 
-In geostatistical models, the concept of residuals, which are widely used in regression modelling to carry out model diagnostics, becomes more nuanced than in standard regression models (i.e., models that do not include random effects) . Generally, residuals aim to quantify the discrepancy between observed outcomes and what the model predicts. However, in GLGMs, there are multiple valid definitions of residuals, each offering a different perspective on the unexplained variation.
+In geostatistical models, the concept of residuals, which are widely used in regression modelling to carry out model diagnostics, becomes more nuanced than in standard regression models (i.e., models that do not include random effects) . Generally, residuals aim to quantify the discrepancy between observed outcomes and what the model predicts. However, in GLGMs, there are multiple valid definitions of residuals.
 
 If we define the residuals as the component of the model that expresses the variation in the outcome not explained by the covariates, then we are effectively referring to the random effects component of the linear predictor—i.e. $S(x_i)$, or $S(x_i) + Z_i$ if a nugget effect $Z_i$ is included. We refer to these as *random effects residuals*.
 
-Let $W_i$ denote the sum of all the random effects in the model, whether $W_i = S(x_i)$, $W_i = S(x_i) + Z_i$, or any other random effects structure. In addition to RERs, other types of residuals more common in standard regression modeling can also be used.
+Let $W_i$ denote the sum of all the random effects in the model, whether $W_i = S(x_i)$, $W_i = S(x_i) + Z_i$, or any other random effects structure. In addition to RERs, other types of residuals more common in standard regression modeling can also be used, however, because of the presence of random effects $W_i$, their definition becomes more convoluted.
 
-One such type is the *Pearson residual*:
-
-$$
-{\rm PR}_i = \frac{y_i - \hat{\text{E}}\left[Y_i \mid W_i\right]}{\sqrt{\hat{\text{Var}}\left[Y_i \mid W_i\right]}}
+Let us consider the *Pearson residuals*. Conditionally on $W_i$ we can define these as: $$
+{\rm PR}_i(W_i) = \frac{y_i - \hat{\text{E}}\left[Y_i]}{\sqrt{\hat{\text{Var}}\left[Y_i]}}
 $$
 
-where $\hat{\text{E}}\left[Y_i \mid W_i\right]$ and $\hat{\text{Var}}\left[Y_i \mid W_i\right]$ are estimates of the conditional expectation and variance of $Y_i$ given $W_i$. See @tbl-glm for the expressions of $\text{E}\left[Y_i \mid W_i\right]$ and $\text{Var}\left[Y_i \mid W_i\right]$ for the probability distributions considered in this book.
-
-For example, using Monte Carlo samples from $W_i$, say $W_{i,(j)}$ for $j = 1, \ldots, B$ (see @sec-mcmc-mala for how these samples are generated in `RiskMap`), the expectations can be estimated as:
+where $\hat{\text{E}}\left[Y_i\right]$ and $\hat{\text{Var}}\left[Y_i \right]$ are estimates of the predictive expectation and variance of $Y_i$. Using Monte Carlo samples, say $W_{i,(j)}$ for $j = 1, \ldots, B$, from the distribution of $W_i$ given the data (see @sec-mcmc-mala for how these samples are generated in `RiskMap`), the expectations can be estimated as:
 
 $$
-\hat{\text{E}}\left[Y_i \mid W_i\right] = \frac{1}{B} \sum_{j=1}^B \hat{\text{E}}\left[Y_i \mid W_{i,(j)}\right], \quad
-\hat{\text{Var}}\left[Y_i \mid W_i\right] = \frac{1}{B} \sum_{j=1}^B \hat{\text{Var}}\left[Y_i \mid W_{i,(j)}\right]
+\hat{\text{E}}\left[Y_i \right] = \frac{1}{B} \sum_{j=1}^B \hat{\text{E}}\left[Y_i \mid W_{i,(j)}\right], \quad
+\hat{\text{Var}}\left[Y_i \right] = \frac{1}{B} \sum_{j=1}^B \hat{\text{Var}}\left[Y_i \mid W_{i,(j)}\right]
 $$
 
 An alternative, especially useful when $Y_i$ is binary, is the *deviance residual*:
@@ -1021,41 +1007,52 @@ Nevertheless, we note that some standard diagnostic tools from regression analys
 
 ### Maximum likelihood estimation for non-Gaussian mixed models with independent random effects
 
-In this section, we provide more technical details on the derivation of the likelihood function for the mixed model specified in @eq-linear-predictor-glmms-ch2. While not essential for understanding the application and interpretation of geostatistical models, this section provides useful insights into computational challenges inherent to the models presented in this book. It is also important to point out that in this section we consider the case when the outcome $Y_i$ is a count.
+In this section, we provide more technical details on the derivation of the likelihood function for the mixed model specified in @eq-linear-predictor-glmms-ch2. While not essential for understanding the application and interpretation of geostatistical models, this section provides useful insights into computational challenges inherent to the models presented in this book. In this section, we restrict our attention to the case when the outcome $Y_i$ is a count.
 
 Let $\theta = (\beta, \tau^2)$ denote the vector of unknown parameters, where $\beta$ is the vector of regression coefficients and $\tau^2$ is the variance of the random effects $Z = (Z_1, \ldots, Z_n)$. The likelihood function for a set of observations $Y = (Y_1, \ldots, Y_n)$, for $i=1,\ldots,n$, under the model in @eq-linear-predictor-glmms-ch2, is obtained by deriving the marginal distribution of $Y_i$, hence $$
 L(\theta) = [Y] = \int_{R^n} \: [Z] [Y \:|\: Z] \: d Z
-$$ Since the elements $Z_i$ in $Z$ are mutually independent, we can write $$
+$$ 
+Since the elements $Z_i$ in $Z$ are mutually independent, we can write $$
 [Z] = \prod_{i=1}^n [Z_i]
-$$ and, using the conditional independence among the $Y$ given $Z$, we obtain $$
+$$ 
+and, using the conditional independence among the $Y$ given $Z$, we obtain $$
 [Y \:|\: Z] = \prod_{i=1}^n [Y_i | Z_i].
-$$ From these, it then follows that $$
+$$ From these, it then follows that 
+$$
 L(\theta) = \int_{R^n} \: \prod_{i=1}^n [Z_i] \prod_{i=1}^n [Y_i | Z_i] \: d Z = \prod_{i=1}^n \int_{R} \: [Z_i] [Y_i \:|\: Z_i] \: d Z_i.
-$$ {#eq-glmm-final} This shows that under the model in @eq-linear-predictor-glmms-ch2, whilst accounting for overdispersion, this model does not account for any source of correlation between the observations. This is because the likelihood function can be expressed, as shown in the equation above, as the product of $n$ likelihoods associated with each of the observations.
+$$ {#eq-glmm-final} 
+This shows that under the model in @eq-linear-predictor-glmms-ch2, whilst accounting for overdispersion, this model does not account for any source of correlation between the observations. This is because the likelihood function can be expressed, as shown in the equation above, as the product of $n$ likelihoods associated with each of the observations.
 
-Another important observation is that the integrals that express the likelihood in @eq-glmm-final, cannot be solved analytically and need to be approximated. Several solutions are available that are either based on maximum likelihood estimation or Bayesian methods of inference. The function `glmer` used in @sec-empirical-variog-lm provides both the Laplace and Gaussian quadrature approximations options. The former consists of finding the *peak* of the integrand - i.e. the function that is being integrated - and approximating that with a Gaussian distribution centered at that *peak*, using the curvature of the original distribution to determine the width of the Gaussian distribution. The Gaussian quadrature is another numerical integration technique used to approximate the integral of a function. It involves choosing specific points (nodes) and weights within the integration interval to approximate the integral. By strategically selecting these points and weights based on a Gaussian distribution, Gaussian quadrature can provide highly accurate results compared to other numerical integration methods, such as the Laplace approximation. For a comprehensive overview of these and other methods of approximations of intractable integrals, we find that @bishop2006 is one of the most accessible textbooks on this topic.
+Another important observation is that the integrals that express the likelihood in @eq-glmm-final, cannot be solved analytically and need to be approximated. Several solutions are available that are either based on maximum likelihood estimation or Bayesian methods of inference. The function `glmer` used in @sec-empirical-variog-lm provides both the Laplace and Gaussian quadrature approximations options. The former consists of finding the *peak* of the integrand - i.e. the function that is being integrated - and approximating that with a Gaussian distribution centered at that *peak*, using the curvature of the original distribution to determine the width of the Gaussian distribution. The Gaussian quadrature is another numerical integration technique used to approximate the integral of a function. It involves choosing specific points (nodes) and weights within the integration interval to approximate the integral. By strategically selecting these points and weights based on a Gaussian distribution, Gaussian quadrature can provide highly accurate results compared to other numerical integration methods, such as the Laplace approximation. For a comprehensive overview of these and other methods of approximations of intractable integrals, we consider @bishop2006 to be an accessible textbook on this topic.
 
 ### Maximum likelihood estimation for non-Gaussian generalized linear geostatistical models {#sec-glgm-lik}
 
-To derive the likelihood function of a generalized linear geostatistical model (GLGM), we consider the special case of a single observation per location without loss of generality. Let $Y$ and $Z$ denote the same vectors of random variables introduced in the previous section, with components $Y_i$ and $Z_i$ corresponding to the set of locations $X = (x_1, \ldots, x_n)$. Additionally, we define $S(X) = (S(x_1), \ldots, S(x_n))$ to represent the spatial Gaussian process at the sampled locations $X$. In this case the vector of unknown parameters is $\theta = (\beta, \sigma^2, \phi, \tau^2)$ and, as done in the previous section, we can obtain the likelihood function though the marginal distribution of the data, hence we write $$
+To derive the likelihood function of a generalized linear geostatistical model (GLGM), we consider the special case of a single observation per location without loss of generality. Let $Y$ and $Z$ denote the same vectors of random variables introduced in the previous section, with components $Y_i$ and $Z_i$ corresponding to the set of locations $X = (x_1, \ldots, x_n)$. Additionally, we define $S(X) = (S(x_1), \ldots, S(x_n))$ to represent the spatial Gaussian process at the sampled locations $X$. In this case the vector of unknown parameters is $\theta = (\beta, \sigma^2, \phi, \tau^2)$ and, as done in the previous section, we can obtain the likelihood function though the marginal distribution of the data, hence we write 
+$$
 L(\theta) = [Y] = \int_{R^n} \int_{R^n} \: [Z] [S] [Y \:|\: Z, S] \: d Z d S
-$$ {#eq-glgm-lik1} To simplify the explanation and notation in this section and the following ones, we will first rewrite the likelihood function in terms of the random effect $W_i = S(x_i) + Z_i$ and will denote this in its vector form as $W = (W_1, \ldots, W_n)$. Hence we write $$L(\theta) = [Y] = \int_{R^n} \: [W] [Y \:|\: W] \: d W$$ {#eq-glgm-lik2} In this model formulation, we assume that $Y$ conditionally on $W$ is a set of mutually independent outcomes, hence $$
+$$ {#eq-glgm-lik1} 
+To simplify the explanation and notation in this section and the following ones, we will first rewrite the likelihood function in terms of the random effect $W_i = S(x_i) + Z_i$ and will denote this in its vector form as $W = (W_1, \ldots, W_n)$. Hence we write $$L(\theta) = [Y] = \int_{R^n} \: [W] [Y \:|\: W] \: d W$$ {#eq-glgm-lik2} In this model formulation, we assume that $Y$ conditionally on $W$ is a set of mutually independent outcomes, hence 
+$$
 [Y | W]  = \prod_{i=1}^n [Y_i | W_i].
-$$ However, unlike in the previous section, the distribution of $[W]$ is a Multivariate Gaussian distribution with correlated components, hence we cannot split the integral into separate univariate ones as before. More specifically, $W$ follows a Multivariate Gaussian distribution with mean vector $0$ and covariance matrix $\Omega$, whose $(i, j)$-th entry is $$
+$$ 
+However, unlike in the previous section, the distribution of $[W]$ is a Multivariate Gaussian distribution with correlated components, hence we cannot split the integral into separate univariate ones as before. More specifically, $W$ follows a Multivariate Gaussian distribution with mean vector $0$ and covariance matrix $\Omega$, whose $(i, j)$-th entry is 
+$$
 [\Omega]_{ij} = 
 \begin{cases}
 \sigma^2 \rho(u_{ij}; \phi, \kappa) & \mbox{if }i\neq j \\
 \sigma^2 + \tau^2 &  \mbox{if }i = j
 \end{cases}
-$$ where $\rho(u;\phi,\kappa)$ is the Matern correlation function with scale parameter $\phi$ and smoothness parameter $\kappa$; see @eq-matern.
+$$ 
+where $\rho(u;\phi,\kappa)$ is the Matern correlation function with scale parameter $\phi$ and smoothness parameter $\kappa$; see @eq-matern.
 
 In the next two sections we provide a brief overview of Monte Carlo maximum likelihood and the use of Markov chain Monte Carlo to approximate @eq-glgm-lik2.
 
 #### Monte Carlo maximum likelihood {#sec-mcml}
 
-In maximum likelihood estimation, we aim to maximize the likelihood function to find the parameters that make our data the most likely to have been observed. Monte Carlo Maximum Likelihood (MCML) is a method introduced by @geyer1991, designed to handle situations where the likelihood function is difficult or impossible to compute directly. As shown above, non-Gaussian generalized linear geostatistical models yield an intractable likelihood function that involves a high-dimensional integral, hence we use MCML to approximate this.
+In maximum likelihood estimation, we aim to maximize the likelihood function to find the parameters that make our data the most likely to have been observed. Monte Carlo Maximum Likelihood (MCML) (see the seminal work by @geyer1991) is designed to handle situations where the likelihood function is intractable. In the case of a non-Gaussian generalized linear geostatistical model, its likelihood function involves a high-dimensional integral which can be approximated using MCML.
 
-MCML solves this problem using Monte Carlo methods, which involve random sampling to approximate the value of these integrals. One way to apply Monte Carlo methods in this context is through *importance sampling*. Importance sampling allows us to approximate the likelihood function by rewriting the likelihood in a form that can be estimated using samples from an easier distribution, known as the *importance sampling distribution*. To this end, we then rewrite @eq-glgm-lik2 as $$
+One way to apply Monte Carlo methods in this context is through *importance sampling*. Importance sampling allows us to approximate the likelihood function by rewriting the likelihood in a form that can be estimated using samples from an easier distribution, known as the *importance sampling distribution*. To this end, we then rewrite @eq-glgm-lik2 as 
+$$
 \begin{aligned}
 L(\theta) 
 &= \int [W, Y; \theta] \: dW  \\
@@ -1063,7 +1060,8 @@ L(\theta)
 &\propto  \int \frac{[W, Y; \theta]}{[W, Y; \theta_0]} [W | Y; \theta_0] \: dW  \\
 &= E\left\{\frac{[W, Y; \theta]}{[W, Y; \theta_0]}\right\},
 \end{aligned} 
-$$ {#eq-mcml1} where $\theta_0$ represents our best guess of $\theta_0$ and the expectation in the equation above is taken with respect to $[W | Y; \theta_0]$, which represent our *importance sampling distribution*.
+$$ {#eq-mcml1} 
+where $\theta_0$ represents our best guess of $\theta_0$ and the expectation in the equation above is taken with respect to $[W | Y; \theta_0]$, which represent our *importance sampling distribution*.
 
 Let $W_{(j)}$ represent the $j$-th sample out of $B$ drawn from the distribution $[W \mid Y; \theta_0]$. To simulate samples from $[W \mid Y; \theta_0]$, Markov chain Monte Carlo (MCMC) algorithms are required and we explain more in detail in the next section.
 
@@ -1071,15 +1069,13 @@ We approximate the expression in @eq-mcml1 as follows: $$
 L_{MC}(\theta) = \frac{1}{B} \sum_{j=1}^B \frac{[W_{(j)}, Y; \theta]}{[W_{(j)}, Y; \theta_0]}.
 $$ {#eq-mcml2}
 
-As $B \rightarrow \infty$, the Monte Carlo likelihood $L_{MC}$ converges to the exact likelihood function described in @eq-mcml1. The maximization of this Monte Carlo likelihood is performed using an optimization algorithm that uses the analytical expressions of the first and second derivatives. This approach is especially useful for exploring the likelihood surface, which can be relatively flat, particularly in the space of covariance parameters. To improve the approximation of the likelihood function in equation @eq-mcml2, this process can be repeated iteratively, replacing $\theta_0$ after each step with the estimate obtained from equation @eq-mcml2, until convergence is achieved. However, due to Monte Carlo error, the estimates after each iteration may still vary considerably, making convergence difficult to reach if very strict criteria are used.
-
-For spatial prediction, we take a pragmatic approach by running an initial MCML iteration, followed by a second iteration with 10,000 samples, without further iterations. This is because spatial prediction is generally less affected by Monte Carlo error, as will be demonstrated later. On the other hand, when the goal is to draw inferences about model parameters, more iterations may be needed to reduce Monte Carlo error to acceptable levels.
+As $B \rightarrow \infty$, the Monte Carlo likelihood $L_{MC}$ converges to the exact likelihood function described in @eq-mcml1. The maximization of this Monte Carlo likelihood is performed using an optimization algorithm that uses the analytical expressions of the first and second derivatives. This approach is especially useful for exploring the likelihood surface, which can be relatively flat, particularly in the space of covariance parameters. To improve the approximation of the likelihood function in equation @eq-mcml2, this process can be repeated iteratively, replacing $\theta_0$ after each step with the estimate obtained from equation @eq-mcml2, until convergence is achieved. However, due to Monte Carlo error, the estimates after each iteration may still vary considerably, making convergence difficult to reach if very strict criteria are used. In practice, relaxed convergence criteria or a fixed maximum number of iterations (typically 3-5) are employed with a sufficiently large number of Monte Carlo samples (e.g., $10,000$). Under these conditions, we find that the procedure provides reliable parameter estimates, and the impact of Monte Carlo error on spatial prediction has been observed to be negligible.
 
 #### Monte Carlo Markov Chain: sampling from the predictive distribution of the spatial Gaussian process {#sec-mcmc-mala}
 
 Building on the outline of the MCML method from the previous section, we now address the task of sampling from the distribution $[W \mid Y]$ to generate the samples $W_{(j)}$ used in equation @eq-mcml2. To simplify the notation, we will use $[W \mid Y]$ in place of $[W \mid Y; \theta_0]$, but it is important to emphasize that the parameters $\theta_0$ are considered fixed when sampling from $[W \mid Y]$. Since direct simulation from $[W \mid Y]$ is not feasible, we must rely on Markov chain Monte Carlo (MCMC) methods, which we will briefly introduce next.
 
-The \textit{Metropolis-Hastings algorithm} is a foundational technique in the field of MCMC methods, which are widely used for sampling from complex probability distributions. The primary goal of MCMC methods is to generate a sequence of samples from a target distribution where direct sampling is challenging, such as the distribution of $[W | Y]$. The Metropolis-Hastings algorithm, first introduced by @metropolis1953equation and later generalized by @hastings1970monte, achieves this by constructing a Markov chain that has $[W \| Y]$ as its stationary distribution. In what follows, we shall use $\pi(W)$ to denote the density function of $[W | Y]$ up to a constant of proportionality.
+The Metropolis-Hastings algorithm} is a foundational technique in the field of MCMC methods, which are widely used for sampling from complex probability distributions. The primary goal of MCMC methods is to generate a sequence of samples from a target distribution where direct sampling is challenging, such as the distribution of $[W | Y]$. The Metropolis-Hastings algorithm, first introduced by @metropolis1953equation and later generalized by @hastings1970monte, achieves this by constructing a Markov chain that has $[W \| Y]$ as its stationary distribution. In what follows, we shall use $\pi(W)$ to denote the density function of $[W | Y]$ up to a constant of proportionality.
 
 Given a current realization $W_{(k)}$ of the distribution $[W | Y]$ in the Markov chain, the algorithm proceeds as follows.
 
@@ -1091,7 +1087,7 @@ Given a current realization $W_{(k)}$ of the distribution $[W | Y]$ in the Marko
 
 The algorithm ensures that, under certain conditions, the chain converges to the target distribution $\pi(W)$ as the number of steps increases @roberts1996exponential.
 
-The functions of the `RiskMap` package for fitting Binomial and Poisson geostatistical models implement the \textit{Metropolis-Adjusted Langevin Algorithm (MALA)}, which is an improvement over traditional Metropolis-Hastings MCMC methods. Introduced by @rossky1978brownian and further developed by @roberts1996exponential, MALA incorporates gradient information from the target distribution to propose more informed moves, potentially leading to faster convergence and more efficient exploration of the target distribution.
+The functions of the `RiskMap` package for fitting Binomial and Poisson geostatistical models implement the *Metropolis-Adjusted Langevin Algorithm (MALA)*, which is an improvement over traditional Metropolis-Hastings MCMC methods. Introduced by @rossky1978brownian and further developed by @roberts1996exponential, MALA incorporates gradient information from the target distribution to propose more informed moves, potentially leading to faster convergence and more efficient exploration of the target distribution.
 
 MALA combines the Metropolis-Hastings framework with Langevin dynamics, where proposals $q(\cdot | \cdot)$ are defined as:
 
@@ -1103,7 +1099,7 @@ where $\epsilon$ is a step size parameter, $\nabla \log \pi(W_{(k)})$ is the gra
 
 By leveraging the gradient, MALA can propose moves that are more likely to be accepted, especially in high-dimensional spaces or regions of low probability density.
 
-In the context of Laplace sampling for geostatistical models, the \textit{Metropolis-Adjusted Langevin Algorithm (MALA)} is used to construct an efficient proposal distribution. The primary objective is to generate samples from a conditional distribution of latent Gaussian processes, which is challenging due to high dimensionality and complex dependence structures.
+In the context of Laplace sampling for geostatistical models, the *Metropolis-Adjusted Langevin Algorithm (MALA)* is used to construct an efficient proposal distribution. The primary objective is to generate samples from a conditional distribution of latent Gaussian processes, which is challenging due to high dimensionality and complex dependence structures.
 
 The Laplace sampling method, as implemented in the `RiskMap` package, utilizes a specific form of MALA. Here, the proposal distribution is derived from a second-order Taylor expansion around the mode of the target distribution $[W | Y]$. Let $\hat{w}$ be the mode of this conditional distribution, and let $\hat{\Omega}$ be the inverse of the negative Hessian matrix evaluated at $\hat{w}$, which approximates the local covariance structure of the distribution. We then define the random variable $\tilde{W}$ as
 
@@ -1210,7 +1206,7 @@ The code above performs an additional step in the MCML estimation, using 10,000 
 
 In the sections above, we focused specifically on the implementation of the Monte Carlo Maximum Likelihood (MCML) method in `RiskMap`. However, other approaches are available, some of which are computationally more efficient than the MCML method we have illustrated. Our preference for this estimation method is based on two main reasons: 1) it delivers robust performance across a wide range of data scenarios, and 2) it does not require the specification of arbitrary prior distributions when prior information on the model parameters is unavailable.
 
-Alternative methods worth mentioning include the expectation-maximization algorithm for maximum likelihood estimation [@zhang2002], integrated nested Laplace approximation (INLA) [@rue2009], and implementations of the Metropolis-Adjusted Langevin Algorithm (MALA) for Bayesian inference [@christensen2006]. While these methods are valuable, explaining and comparing them is not our focus here, as it would detract from the practical orientation of this book.
+Alternative methods worth mentioning include the expectation-maximization algorithm for maximum likelihood estimation [@zhang2002], integrated nested Laplace approximation (INLA) [@rue2009], and implementations of the Metropolis-Adjusted Langevin Algorithm (MALA) for Bayesian inference [@christensen2006]. While these methods are valuable, explaining and comparing them is not our focus here, as it would detract from the practical orientation of this book. The *RiskMap* package itself will continue to evolve as computational improvements are made, and future editions of this book will update these sections without affecting the applied analysis content.
 
 ### The Hat matrix in linear geostatistical models {#sec-h-matrix}
 
@@ -1220,62 +1216,49 @@ $$
 Y_i = d(x_i)^\top \beta + S(x_i) + Z_i
 $$
 
-where $Y_i$ is the observed response at location $ x_i $, $ d(x_i) $ is a $ p $-dimensional vector of covariates, $ \beta $ is a $ p \times 1 $ vector of regression coefficients, $ S(x_i) $ is a spatially structured random effect, and $ Z_i \sim N(0, \tau^2) $ is independent Gaussian noise. The model can be rewritten as
+where $Y_i$ is the observed response at location $x_i$, $d(x_i)$ is a $p$-dimensional vector of covariates, $\beta$ is a $p \times 1$ vector of regression coefficients, $S(x_i)$ is a spatially structured random effect, and $Z_i \sim N(0, \tau^2)$ is independent Gaussian noise. The model can be rewritten as
 
 $$
 Y = D\beta + S + Z
 $$
 
-where $ Y = (Y_1, \ldots, Y_n)\top $ is the $ n \times 1 $ vector of observations, $ S = (S(x_1), \ldots, S(x_n))^\top $ is the vector of spatially dependent random effects, $Z = (Z_1, \ldots, Z_n)$ is the noise, and $ D $ is an $ n \times p $ matrix of covariates given by
-
+where $Y = (Y_1, \ldots, Y_n)\top$ is the $ n \times 1$ vector of observations, $S = (S(x_1), \ldots, S(x_n))^\top$ is the vector of spatially dependent random effects, $Z = (Z_1, \ldots, Z_n)$ is the noise, and $D$ is an $n \times p$ matrix of covariates given by
 $$
 D = (d_1(X), \ldots, d_p(X))
 $$
-
-with each column $ d_j(X) = (d_j(x_1),\ldots,d_j(x_n))^\top$ representing the values of the $ j $-th covariate across all locations. This formulation accounts for both fixed effects through $ D\beta $ and spatial correlation through $ S(x_i) $. The covariance matrix of $ Y $ is
+with each column $d_j(X) = (d_j(x_1),\ldots,d_j(x_n))^\top$ representing the values of the $j$-th covariate across all locations. This formulation accounts for both fixed effects through $ D\beta $ and spatial correlation through $S(x_i)$. The covariance matrix of $Y$ is
 
 $$
 V = \Sigma + \tau^2 I
 $$
 
-where $ \Sigma $ is the spatial covariance matrix of $S$. Assuming the covariance parameters are known, the generalized least squares estimator for $ \beta $ is
-
+where $\Sigma$ is the spatial covariance matrix of $S$. Assuming the covariance parameters are known, the generalized least squares estimator for $\beta$ is
 $$
 \hat{\beta} = (D^T V^{-1} D)^{-1} D^T V^{-1} Y.
 $$
-
 The predictor for $S$ is the conditional expectation $E[S(x_i) \: | \: Y_i]$ is
-
 $$
 \hat{S} = \Sigma V^{-1} (Y - D\hat{\beta}).
 $$
-
 so the predictors for $Y$ can be written as
-
 $$
 \hat{Y} = D\hat{\beta} + \hat{S}.
 $$
-
 The hat matrix, which projects observations onto the fitted space, is
 
 $$
 H = [D - \Sigma V^{-1} D] (D^T V^{-1} D)^{-1} D^T V^{-1} + \Sigma V^{-1}.
 $$
-
 This matrix is symmetric since it consists of symmetric components, satisfying $H^T = H$. It is also idempotent, meaning $H^2 = H$, which follows from the properties of projection matrices. The diagonal elements $h_{ii}$ represent the leverage of each observation, quantifying how much each $ Y_i $ influences its own fitted value. The rank of $ H $ is at most $ p $, constrained by the rank of $ D $. Unlike in ordinary least squares where the hat matrix is $H = D (D^T D)^{-1} D^T$, here it depends on $V^{-1}$, accounting for spatial dependence. Since $V \neq I$, the hat matrix represents an oblique projection rather than an orthogonal one.
 
 The residuals, i.e. the estimate of $Z$ are given by
-
 $$
 \hat{Z} = Y - \hat{Y} = (I - H) Y.
 $$
-
 We note that the covariance structure of $\hat{Z}$ is
-
 $$
 \text{Var}(\hat{Z}) = (I - H) V (I - H)^T.
 $$
-
 Hence, the estimated residuals from a linear geostatistical model do have a correlation structure which relates to the chosen spatial correlation structure in $\Sigma$.
 
 ## Review questions
@@ -1309,3 +1292,5 @@ Hence, the estimated residuals from a linear geostatistical model do have a corr
         $$ where $d(x_i)$ is the measured elevation at location $x_i$. How strong is the overdispersion in the data? After fitting the model, extract the estimates of the random effects $Z_i$ and compute the empirical variogram with the 95% envelope for spatial independence. Repeat this for different classes of distances by changing the input passed to `bins` in the `s_variogram` function. How do the different specifications of `bins` affect the results?
 
 6.  *Parametric bootstrap.* Using the model fitted to the Anopheles gambiae mosquitoes in @sec-anopheles-fit, simulate 1000 data-sets using the `glgpm_sim` function and estimate the model to each of the simulated data-set. Use the resulting 1000 estimates to compute 95$\%$ confidence intervals for each of the model parameters and compare this with the confidence intervals obtained from the model summary.
+
+7.  In Section @sec-glm-parest, we explained that for a linear model with one observation per location, we cannot simultaneously estimate both the measurement error variance $\omega^2$ and the nugget effect variance $\tau^2$. However, if $\omega^2$ is known, we can fix this value and estimate the nugget effect. Suppose that for the Galicia data, the measurement device has a known standard error of $\omega = 0.15$ on the log-scale (i.e., $\omega^2 = 0.0225$). Fit the model $$Y_i = \mu + S(x_i) + Z_i + U_i$$ using `glgpm` by setting `nugget=NULL` and `fix_var_me = 0.0225` in the `gp()` function, with $\kappa = 1.5$. Compare the estimates of $\sigma^2$ and $\phi$ with those obtained from the model without the nugget effect (Equation 3.16). What is the estimated nugget variance $\hat{\tau}^2$? Repeat this analysis for different values of fixed measurement error variance: $\omega^2 \in \{0.01, 0.05, 0.10\}$. How do the estimates of $\sigma^2$, $\phi$, and $\tau^2$ change as the assumed measurement error variance increases?
