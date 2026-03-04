@@ -105,7 +105,7 @@ simulate_random_effects <- function(model, nsim = 1000, grid_range = c(-10, 10),
 In this chapter, we bring together the concepts introduced in the previous chapters, ranging from exploratory analysis to spatial prediction, through a series of case studies. Each case study provides a complete workflow, showing how the different stages of a geostatistical analysis fit together in practice. Some of these case studies are designed primarily to consolidate earlier material, while others also introduce new concepts and additional functionalities of the `RiskMap` package that extend beyond the basics. 
 
 
-## Mapping stunting and underwieght risk in Ghana {#sec-ghana}
+## Mapping stunting and underweight risk in Ghana {#sec-ghana}
 
 Malnutrition remains a critical public health issue in many low- and middle-income countries, particularly affecting children under five years of age. It can have long-term consequences on physical growth, cognitive development, and susceptibility to disease. Monitoring childhood nutritional status is essential for evaluating the effectiveness of health interventions and informing policy decisions.
 
@@ -434,7 +434,7 @@ We note that for a Gaussian linear geostatistical model, the `assess_pp` functio
 
 ```{r}
 #| label: fig-maln-pit
-#| fig-cap: "Assessment of the models calibration. The left panel shows the probability integral transform (PIT) curve for HAZ, and the right panel for WAZ. In both panels, the red dahsed line corresponds to the identity line."
+#| fig-cap: "Assessment of the models calibration. The left panel shows the probability integral transform (PIT) curve for HAZ, and the right panel for WAZ. In both panels, the red dashed line corresponds to the identity line."
 #| fig-width: 10
 #| fig-height: 4
 

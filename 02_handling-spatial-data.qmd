@@ -64,7 +64,7 @@ Administrative boundaries provide an essential spatial structure for many types 
 #| fig-cap: |
 #|   Administrative boundaries for Liberia retrieved using the `rgeoboundaries` package.
 #| fig-subcap:
-#|   - "Adimin level 0"
+#|   - "Admin level 0"
 #|   - "Admin level 1"
 
 par(mar = c(0, 0, 0, 0))  #| hide_line

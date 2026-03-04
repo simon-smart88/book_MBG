@@ -447,7 +447,7 @@ We now show an application of all the concepts introduced in this section to the
 
 #### Example: assessing spatial correlation for the Liberia data {#sec-empirical-variog-bin}
 
-We consider the Binomial mixed model that uses the log-transformed elevation as a covariate to model river blindness prevalence, hence $$
+We consider the Binomial mixed model that uses the log-transformed elevation as a covariate to model river-blindness prevalence, hence $$
 \log\left\{\frac{p(x_i)}{1-p(x_i)}\right\} = \beta_{0} + \beta_{1}\log\{e(x_i)\} + Z_i
 $$ {#eq-liberia-bin-mixed-elev} where $e(x_i)$ is the elevation in meters at location $x_i$ and the $Z_i$ are i.i.d. Gaussian variables with mean 0 and variance $\tau^2$. We first fit the model above using the `glmer` function.
 
